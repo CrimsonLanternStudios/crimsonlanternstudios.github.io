@@ -424,6 +424,29 @@ class CrimsonDoom {
         document.getElementById('restartButton').addEventListener('click', () => this.restart());
         document.getElementById('nextLevelButton').addEventListener('click', () => this.nextLevel());
         document.getElementById('saveButton').addEventListener('click', () => this.saveGame());
+        
+        // Add quit button handler if it exists
+        const quitButton = document.getElementById('quitButton');
+        if (quitButton) {
+            quitButton.addEventListener('click', () => this.quitToMenu());
+        }
+    }
+    
+    quitToMenu() {
+        // Release pointer lock
+        if (document.pointerLockElement) {
+            document.exitPointerLock();
+        }
+        
+        // Hide all overlays
+        this.ui.gameOver.style.display = 'none';
+        this.ui.levelComplete.style.display = 'none';
+        this.ui.container.classList.add('hidden');
+        
+        // Show main menu
+        this.ui.menu.classList.remove('hidden');
+        
+        this.running = false;
     }
     
     previousWeapon() {
@@ -512,8 +535,15 @@ class CrimsonDoom {
         
         // Reset ammo
         Object.values(this.weapons).forEach(w => {
-            w.ammo = w === this.weapons.pistol ? 50 : 0;
+            if (w.infinite) {
+                w.ammo = 999;
+            } else {
+                w.ammo = 0;
+            }
         });
+        
+        // Hide game over screen
+        this.ui.gameOver.style.display = 'none';
         
         this.startGame();
     }
@@ -532,9 +562,13 @@ class CrimsonDoom {
     }
     
     restart() {
-        this.generateLevel();
         this.health = this.maxHealth;
+        this.armor = 50; // Give some armor on restart
+        
+        // Hide game over screen
         this.ui.gameOver.style.display = 'none';
+        
+        this.generateLevel();
         this.running = true;
         this.updateUI();
     }
@@ -697,6 +731,12 @@ class CrimsonDoom {
     
     gameOver() {
         this.running = false;
+        
+        // Release pointer lock
+        if (document.pointerLockElement) {
+            document.exitPointerLock();
+        }
+        
         this.ui.finalKills.textContent = this.totalKills;
         this.ui.finalLevel.textContent = this.level;
         this.ui.gameOver.style.display = 'block';
@@ -704,6 +744,12 @@ class CrimsonDoom {
     
     levelComplete() {
         this.running = false;
+        
+        // Release pointer lock
+        if (document.pointerLockElement) {
+            document.exitPointerLock();
+        }
+        
         this.ui.levelComplete.style.display = 'block';
         document.getElementById('levelNumber').textContent = this.level;
         document.getElementById('levelKills').textContent = this.kills;

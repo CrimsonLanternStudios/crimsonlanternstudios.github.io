@@ -359,7 +359,7 @@ class LevelGenerator {
         const enemiesPerRoom = 1 + Math.floor(level / 2);
         
         rooms.forEach((room, i) => {
-            if (i > 0) { // Skip spawn room
+            if (i > 1) { // Skip first TWO rooms to give player breathing room
                 const count = Math.floor(Math.random() * enemiesPerRoom) + 1;
                 
                 for (let e = 0; e < count; e++) {
