@@ -77,7 +77,7 @@ class Enemy {
         this.size = 0.3;
     }
     
-    update(playerX, playerY) {
+    update(playerX, playerY, canMoveCallback) {
         if (this.dead) return false;
         
         const dx = playerX - this.x;
@@ -90,8 +90,26 @@ class Enemy {
         
         if (this.active) {
             if (distance > this.attackRange) {
-                this.x += (dx / distance) * this.speed;
-                this.y += (dy / distance) * this.speed;
+                // Calculate next position
+                const moveX = (dx / distance) * this.speed;
+                const moveY = (dy / distance) * this.speed;
+                const nextX = this.x + moveX;
+                const nextY = this.y + moveY;
+                
+                // Check if can move (wall collision)
+                if (canMoveCallback && canMoveCallback(nextX, nextY)) {
+                    this.x = nextX;
+                    this.y = nextY;
+                } else if (canMoveCallback) {
+                    // Try moving only in X
+                    if (canMoveCallback(nextX, this.y)) {
+                        this.x = nextX;
+                    }
+                    // Try moving only in Y
+                    else if (canMoveCallback(this.x, nextY)) {
+                        this.y = nextY;
+                    }
+                }
             }
             
             if (this.attackCooldown > 0) {
@@ -262,6 +280,13 @@ class CrimsonDoom {
     }
     
     setupAudio() {
+        this.audioInitialized = false;
+        this.sounds = {};
+    }
+    
+    initAudio() {
+        if (this.audioInitialized) return;
+        
         try {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             this.sounds = {
@@ -270,13 +295,19 @@ class CrimsonDoom {
                 pickup: this.createPickupSound.bind(this),
                 door: this.createDoorSound.bind(this)
             };
+            this.audioInitialized = true;
+            console.log('Audio initialized!');
         } catch(e) {
-            console.log('Web Audio not supported');
+            console.log('Web Audio not supported:', e);
             this.audioContext = null;
         }
     }
     
     playSound(soundName) {
+        if (!this.audioInitialized) {
+            this.initAudio();
+        }
+        
         if (!this.audioContext || !this.sounds[soundName]) return;
         
         try {
@@ -515,11 +546,21 @@ class CrimsonDoom {
     }
     
     startGame() {
+        console.log('=== STARTING GAME ===');
+        console.log('Level:', this.level);
+        console.log('Pistol ammo:', this.weapons.pistol.ammo, 'Infinite:', this.weapons.pistol.infinite);
+        
         this.ui.menu.classList.add('hidden');
         this.ui.container.classList.remove('hidden');
         this.generateLevel();
         this.running = true;
         this.updateUI();
+        
+        console.log('Enemies spawned:', this.enemies.length);
+        console.log('Pickups spawned:', this.pickups.length);
+        console.log('Keys spawned:', this.keyItems.length);
+        console.log('Sprites loaded:', Object.keys(SPRITES).length);
+        
         this.gameLoop();
     }
     
@@ -654,9 +695,13 @@ class CrimsonDoom {
             const dist = Math.sqrt(dx * dx + dy * dy);
             
             const enemyAngle = Math.atan2(dy, dx);
-            const angleDiff = Math.abs(enemyAngle - angle);
+            let angleDiff = Math.abs(enemyAngle - angle);
             
-            if (angleDiff < 0.2 && dist < closestDist) {
+            // Normalize angle difference to 0-PI range
+            if (angleDiff > Math.PI) angleDiff = 2 * Math.PI - angleDiff;
+            
+            // Much more forgiving hit detection (0.4 radians = ~23 degrees)
+            if (angleDiff < 0.4 && dist < closestDist && dist < 20) {
                 closestDist = dist;
                 closestEnemy = enemy;
             }
@@ -676,7 +721,11 @@ class CrimsonDoom {
     
     updateEnemies() {
         this.enemies.forEach(enemy => {
-            const shouldAttack = enemy.update(this.engine.player.x, this.engine.player.y);
+            const shouldAttack = enemy.update(
+                this.engine.player.x, 
+                this.engine.player.y,
+                (x, y) => this.engine.canMove(x, y)
+            );
             
             if (shouldAttack) {
                 const damage = enemy.attack();
