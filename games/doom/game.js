@@ -645,6 +645,12 @@ class CrimsonDoom {
     nextLevel() {
         this.level++;
         this.ui.levelComplete.style.display = 'none';
+        
+        // Make sure music is still playing
+        if (this.audioInitialized && !this.musicPlaying) {
+            this.startMusic();
+        }
+        
         this.generateLevel();
         this.running = true;
         this.updateUI();
@@ -756,12 +762,28 @@ class CrimsonDoom {
             // Calculate perpendicular distance from ray to enemy center
             const perpDist = Math.abs(distance * Math.sin(angleDiff));
             
-            // Enemy hitbox radius (larger = easier to hit)
-            const hitRadius = 0.4;
+            // Enemy hitbox radius
+            const hitRadius = 0.3; // Made slightly smaller
             
             // Check if ray passes through enemy hitbox
             if (perpDist < hitRadius && distance < 20 && Math.abs(angleDiff) < Math.PI/3) {
-                if (distance < closestDist) {
+                // WALL CHECK - Cast ray to enemy and check for walls
+                const steps = Math.floor(distance * 2);
+                const stepX = dx / steps;
+                const stepY = dy / steps;
+                let blocked = false;
+                
+                for (let i = 1; i < steps; i++) {
+                    const checkX = playerX + stepX * i;
+                    const checkY = playerY + stepY * i;
+                    
+                    if (!this.engine.canMove(checkX, checkY)) {
+                        blocked = true;
+                        break;
+                    }
+                }
+                
+                if (!blocked && distance < closestDist) {
                     closestDist = distance;
                     closestEnemy = enemy;
                 }
@@ -927,56 +949,59 @@ class CrimsonDoom {
         const exitDy = this.exitY + 0.5 - this.engine.player.y;
         const exitDist = Math.sqrt(exitDx * exitDx + exitDy * exitDy);
         
-        // Create a pulsing portal effect
-        const pulseScale = 1.0 + Math.sin(this.time * 0.05) * 0.2;
-        
-        // Draw a large glowing portal
-        const exitAngle = Math.atan2(exitDy, exitDx);
-        let exitRelAngle = exitAngle - this.engine.player.angle;
-        while (exitRelAngle > Math.PI) exitRelAngle -= 2 * Math.PI;
-        while (exitRelAngle < -Math.PI) exitRelAngle += 2 * Math.PI;
-        
-        if (Math.abs(exitRelAngle) < this.engine.player.fov / 2 && exitDist < 15) {
-            const exitScreenX = (exitRelAngle / this.engine.player.fov + 0.5) * this.canvas.width;
-            const exitSize = (this.canvas.height / exitDist) * 1.5 * pulseScale;
-            const exitScreenY = (this.canvas.height / 2) - (exitSize / 2);
+        // Only render exit if within reasonable distance
+        if (exitDist < 10) {
+            // Create a pulsing portal effect
+            const pulseScale = 1.0 + Math.sin(this.time * 0.05) * 0.2;
             
-            // Draw glowing portal
-            ctx.save();
-            ctx.globalAlpha = 0.8;
+            // Draw a large glowing portal
+            const exitAngle = Math.atan2(exitDy, exitDx);
+            let exitRelAngle = exitAngle - this.engine.player.angle;
+            while (exitRelAngle > Math.PI) exitRelAngle -= 2 * Math.PI;
+            while (exitRelAngle < -Math.PI) exitRelAngle += 2 * Math.PI;
             
-            // Outer glow
-            const gradient = ctx.createRadialGradient(
-                exitScreenX, exitScreenY + exitSize/2, 0,
-                exitScreenX, exitScreenY + exitSize/2, exitSize
-            );
-            gradient.addColorStop(0, 'rgba(0, 255, 255, 0.8)');
-            gradient.addColorStop(0.5, 'rgba(0, 200, 255, 0.4)');
-            gradient.addColorStop(1, 'rgba(0, 100, 200, 0)');
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(
-                exitScreenX - exitSize,
-                exitScreenY - exitSize/2,
-                exitSize * 2,
-                exitSize * 2
-            );
-            
-            // Portal text
-            ctx.globalAlpha = 1.0;
-            ctx.fillStyle = '#00FFFF';
-            ctx.font = `${Math.max(12, exitSize * 0.2)}px "Courier New"`;
-            ctx.textAlign = 'center';
-            ctx.fillText('EXIT', exitScreenX, exitScreenY + exitSize/2);
-            
-            // Distance indicator
-            if (exitDist < 3) {
-                ctx.fillStyle = '#FFFF00';
-                ctx.font = `${Math.max(10, exitSize * 0.15)}px "Courier New"`;
-                ctx.fillText('PRESS SPACE', exitScreenX, exitScreenY + exitSize/2 + 20);
+            if (Math.abs(exitRelAngle) < this.engine.player.fov / 2) {
+                const exitScreenX = (exitRelAngle / this.engine.player.fov + 0.5) * this.canvas.width;
+                const exitSize = Math.min((this.canvas.height / exitDist) * 1.2 * pulseScale, this.canvas.height * 0.5);
+                const exitScreenY = (this.canvas.height / 2) - (exitSize / 2);
+                
+                // Draw glowing portal
+                ctx.save();
+                ctx.globalAlpha = 0.7;
+                
+                // Outer glow
+                const gradient = ctx.createRadialGradient(
+                    exitScreenX, exitScreenY + exitSize/2, 0,
+                    exitScreenX, exitScreenY + exitSize/2, exitSize
+                );
+                gradient.addColorStop(0, 'rgba(0, 255, 255, 0.8)');
+                gradient.addColorStop(0.5, 'rgba(0, 200, 255, 0.4)');
+                gradient.addColorStop(1, 'rgba(0, 100, 200, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(
+                    exitScreenX - exitSize,
+                    exitScreenY - exitSize/2,
+                    exitSize * 2,
+                    exitSize * 2
+                );
+                
+                // Portal text
+                ctx.globalAlpha = 1.0;
+                ctx.fillStyle = '#00FFFF';
+                ctx.font = `${Math.max(12, Math.min(exitSize * 0.2, 32))}px "Courier New"`;
+                ctx.textAlign = 'center';
+                ctx.fillText('EXIT', exitScreenX, exitScreenY + exitSize/2);
+                
+                // Distance indicator
+                if (exitDist < 2) {
+                    ctx.fillStyle = '#FFFF00';
+                    ctx.font = `${Math.max(10, Math.min(exitSize * 0.15, 20))}px "Courier New"`;
+                    ctx.fillText('PRESS SPACE', exitScreenX, exitScreenY + exitSize/2 + 20);
+                }
+                
+                ctx.restore();
             }
-            
-            ctx.restore();
         }
         
         // Render pickups
