@@ -283,7 +283,7 @@ class CrimsonDoom {
         this.loadGame();
         
         // Volume control
-        this.masterVolume = parseFloat(localStorage.getItem('crimsonDoomVolume') || '0.5');
+        this.masterVolume = parseFloat(localStorage.getItem('crimsonDoomVolume') || '1.0');
     }
     
     setVolume(volume) {
@@ -861,6 +861,8 @@ class CrimsonDoom {
     }
     
     update() {
+        if (!this.running) return; // Don't update if game stopped
+        
         this.time++;
         this.engine.update();
         this.updateEnemies();
@@ -1008,6 +1010,8 @@ class CrimsonDoom {
     }
     
     render() {
+        if (!this.running) return; // Don't render if game stopped
+        
         this.engine.render();
         this.renderSprites();
         this.renderEffects();
