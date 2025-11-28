@@ -1,5 +1,30 @@
-// Crimson Doom - Game Logic
+// Crimson Doom - Game Logic with REAL DOOM SPRITES
 // Built by Claude for Crimson Lantern Studios
+
+// DOOM Sprites - Extracted from Freedoom WAD
+const SPRITES = {
+    enemy: new Image(),
+    enemyDead: new Image(),
+    pistol: new Image(),
+    pistolFire: new Image(),
+    shotgun: new Image(),
+    shotgunFire: new Image()
+};
+
+// Load sprites from base64 data
+function loadSprites() {
+    const spriteData = EOF
+cat /home/claude/CrimsonDoom/sprite_data.json >> /mnt/user-data/outputs/game_v3.js
+cat >> /mnt/user-data/outputs/game_v3.js << 'EOF'
+;
+    
+    SPRITES.enemy.src = 'data:image/png;base64,' + spriteData.enemy.data;
+    SPRITES.enemyDead.src = 'data:image/png;base64,' + spriteData.enemy_dead.data;
+    SPRITES.pistol.src = 'data:image/png;base64,' + spriteData.pistol.data;
+    SPRITES.pistolFire.src = 'data:image/png;base64,' + spriteData.pistol_fire.data;
+    SPRITES.shotgun.src = 'data:image/png;base64,' + spriteData.shotgun.data;
+    SPRITES.shotgunFire.src = 'data:image/png;base64,' + spriteData.shotgun_fire.data;
+}
 
 class Enemy {
     constructor(x, y, type = 'demon') {
@@ -15,7 +40,6 @@ class Enemy {
         this.active = false;
         this.dead = false;
         this.size = 0.3;
-        this.color = '#ff0000';
     }
     
     update(playerX, playerY) {
@@ -25,19 +49,16 @@ class Enemy {
         const dy = playerY - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        // Activate if player is close
         if (distance < this.detectionRange) {
             this.active = true;
         }
         
         if (this.active) {
-            // Move towards player
             if (distance > this.attackRange) {
                 this.x += (dx / distance) * this.speed;
                 this.y += (dy / distance) * this.speed;
             }
             
-            // Attack cooldown
             if (this.attackCooldown > 0) {
                 this.attackCooldown--;
             }
@@ -47,7 +68,7 @@ class Enemy {
     }
     
     attack() {
-        this.attackCooldown = 60; // 1 second at 60fps
+        this.attackCooldown = 60;
         return this.damage;
     }
     
@@ -55,7 +76,7 @@ class Enemy {
         this.health -= amount;
         if (this.health <= 0) {
             this.dead = true;
-            return true; // Enemy killed
+            return true;
         }
         return false;
     }
@@ -83,7 +104,6 @@ class Weapon {
     
     fire() {
         if (!this.canFire()) return false;
-        
         this.ammo--;
         this.cooldown = this.fireRate;
         return true;
@@ -92,10 +112,6 @@ class Weapon {
     update() {
         if (this.cooldown > 0) this.cooldown--;
     }
-    
-    reload(amount) {
-        this.ammo = Math.min(this.maxAmmo, this.ammo + amount);
-    }
 }
 
 class CrimsonDoom {
@@ -103,30 +119,25 @@ class CrimsonDoom {
         this.canvas = document.getElementById('gameCanvas');
         this.engine = new RaycastEngine(this.canvas);
         
-        // Game state
         this.running = false;
         this.health = 100;
         this.maxHealth = 100;
         this.armor = 0;
         this.kills = 0;
         
-        // Weapons
         this.weapons = {
             pistol: new Weapon('PISTOL', 25, 50, 15, 0.02),
             shotgun: new Weapon('SHOTGUN', 15, 24, 30, 0.1)
         };
         this.currentWeapon = this.weapons.pistol;
         
-        // Enemies
         this.enemies = [];
         this.spawnEnemies();
         
-        // Effects
         this.muzzleFlash = 0;
         this.screenShake = 0;
         this.damageFlash = 0;
         
-        // UI elements
         this.ui = {
             health: document.getElementById('health'),
             armor: document.getElementById('armor'),
@@ -139,22 +150,16 @@ class CrimsonDoom {
             finalKills: document.getElementById('finalKills')
         };
         
-        // Setup event listeners
+        // Load sprites then setup
+        loadSprites();
         this.setupControls();
     }
     
     spawnEnemies() {
-        // Spawn enemies in strategic positions
         const spawnPoints = [
-            {x: 6.5, y: 4.5},
-            {x: 10.5, y: 4.5},
-            {x: 4.5, y: 9.5},
-            {x: 11.5, y: 9.5},
-            {x: 8.5, y: 8.5},
-            {x: 13.5, y: 13.5},
-            {x: 2.5, y: 13.5},
-            {x: 7.5, y: 2.5},
-            {x: 12.5, y: 6.5},
+            {x: 6.5, y: 4.5}, {x: 10.5, y: 4.5}, {x: 4.5, y: 9.5},
+            {x: 11.5, y: 9.5}, {x: 8.5, y: 8.5}, {x: 13.5, y: 13.5},
+            {x: 2.5, y: 13.5}, {x: 7.5, y: 2.5}, {x: 12.5, y: 6.5},
             {x: 3.5, y: 10.5}
         ];
         
@@ -166,14 +171,11 @@ class CrimsonDoom {
     setupControls() {
         document.addEventListener('keydown', (e) => {
             this.engine.handleKeyDown(e);
-            
-            // Weapon switching
             if (e.key === '1') this.currentWeapon = this.weapons.pistol;
             if (e.key === '2') this.currentWeapon = this.weapons.shotgun;
         });
         
         document.addEventListener('keyup', (e) => this.engine.handleKeyUp(e));
-        
         document.addEventListener('mousemove', (e) => this.engine.handleMouseMove(e));
         
         this.canvas.addEventListener('click', (e) => {
@@ -187,7 +189,6 @@ class CrimsonDoom {
             this.engine.handlePointerLockChange();
         });
         
-        // Menu buttons
         document.getElementById('startButton').addEventListener('click', () => this.startGame());
         document.getElementById('restartButton').addEventListener('click', () => this.restart());
     }
@@ -218,11 +219,9 @@ class CrimsonDoom {
     shoot() {
         if (!this.currentWeapon.fire()) return;
         
-        // Visual effects
         this.muzzleFlash = 10;
         this.screenShake = 5;
         
-        // Raycast for hit detection
         for (let i = 0; i < this.currentWeapon.pellets; i++) {
             const spread = (Math.random() - 0.5) * this.currentWeapon.spread;
             const hitEnemy = this.checkRayHit(this.engine.player.angle + spread);
@@ -239,7 +238,6 @@ class CrimsonDoom {
         const sin = Math.sin(angle);
         const cos = Math.cos(angle);
         
-        // Find closest enemy in firing line
         let closestEnemy = null;
         let closestDist = Infinity;
         
@@ -250,7 +248,6 @@ class CrimsonDoom {
             const dy = enemy.y - this.engine.player.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             
-            // Check if enemy is in front of player
             const enemyAngle = Math.atan2(dy, dx);
             const angleDiff = Math.abs(enemyAngle - angle);
             
@@ -275,7 +272,6 @@ class CrimsonDoom {
     }
     
     takeDamage(amount) {
-        // Armor absorbs some damage
         const armorDamage = Math.min(this.armor, amount);
         this.armor -= armorDamage;
         
@@ -309,9 +305,7 @@ class CrimsonDoom {
     renderEnemies() {
         const ctx = this.engine.ctx;
         
-        // Sort enemies by distance (far to near)
         const sortedEnemies = this.enemies
-            .filter(e => !e.dead)
             .map(e => {
                 const dx = e.x - this.engine.player.x;
                 const dy = e.y - this.engine.player.y;
@@ -324,47 +318,41 @@ class CrimsonDoom {
             .sort((a, b) => b.distance - a.distance);
         
         sortedEnemies.forEach(({enemy, distance, angle}) => {
-            // Calculate angle relative to player view
-            let relativeAngle = angle - this.engine.player.angle;
+            if (enemy.dead) return;
             
-            // Normalize angle
+            let relativeAngle = angle - this.engine.player.angle;
             while (relativeAngle > Math.PI) relativeAngle -= 2 * Math.PI;
             while (relativeAngle < -Math.PI) relativeAngle += 2 * Math.PI;
             
-            // Check if enemy is in FOV
             if (Math.abs(relativeAngle) > this.engine.player.fov / 2) return;
             
-            // Calculate screen position
             const screenX = (relativeAngle / this.engine.player.fov + 0.5) * this.canvas.width;
             const spriteHeight = (this.canvas.height / distance) * 0.8;
             const spriteWidth = spriteHeight;
-            
-            // Draw enemy as colored rectangle (placeholder for sprite)
-            const shade = Math.max(0.3, 1 - (distance / this.engine.maxDepth));
-            ctx.fillStyle = this.shadeColor(enemy.color, shade);
-            
             const screenY = (this.canvas.height / 2) - (spriteHeight / 2);
             
-            // Simple enemy sprite (rectangle)
-            ctx.fillRect(
+            const shade = Math.max(0.3, 1 - (distance / this.engine.maxDepth));
+            ctx.globalAlpha = shade;
+            
+            // Draw REAL sprite
+            ctx.drawImage(
+                SPRITES.enemy,
                 screenX - spriteWidth / 2,
                 screenY,
                 spriteWidth,
                 spriteHeight
             );
             
-            // Draw health bar
+            ctx.globalAlpha = 1.0;
+            
+            // Health bar
             const barWidth = spriteWidth;
             const barHeight = 4;
             ctx.fillStyle = '#000';
             ctx.fillRect(screenX - barWidth / 2, screenY - 10, barWidth, barHeight);
-            ctx.fillStyle = '#0f0';
+            ctx.fillStyle = enemy.health > 30 ? '#0f0' : '#f00';
             ctx.fillRect(screenX - barWidth / 2, screenY - 10, barWidth * (enemy.health / 100), barHeight);
         });
-    }
-    
-    shadeColor(color, factor) {
-        return this.engine.shadeColor(color, factor);
     }
     
     renderEffects() {
@@ -396,7 +384,6 @@ class CrimsonDoom {
         ctx.lineTo(centerX, centerY + 10);
         ctx.stroke();
         
-        // Weapon sprite (simple representation)
         this.renderWeapon();
     }
     
@@ -404,18 +391,22 @@ class CrimsonDoom {
         const ctx = this.engine.ctx;
         const weaponY = this.canvas.height - 120 + (this.screenShake > 0 ? Math.random() * this.screenShake : 0);
         
-        if (this.currentWeapon.name === 'PISTOL') {
-            ctx.fillStyle = '#333';
-            ctx.fillRect(this.canvas.width / 2 - 20, weaponY, 40, 80);
-            ctx.fillStyle = '#666';
-            ctx.fillRect(this.canvas.width / 2 - 15, weaponY + 10, 30, 60);
-        } else {
-            ctx.fillStyle = '#4a3c28';
-            ctx.fillRect(this.canvas.width / 2 - 40, weaponY, 80, 60);
-            ctx.fillStyle = '#333';
-            ctx.fillRect(this.canvas.width / 2 - 35, weaponY + 10, 70, 15);
-            ctx.fillRect(this.canvas.width / 2 - 35, weaponY + 35, 70, 15);
-        }
+        // Draw REAL weapon sprite
+        const weaponSprite = this.muzzleFlash > 5 ? 
+            (this.currentWeapon.name === 'PISTOL' ? SPRITES.pistolFire : SPRITES.shotgunFire) :
+            (this.currentWeapon.name === 'PISTOL' ? SPRITES.pistol : SPRITES.shotgun);
+        
+        const scale = 2;
+        const weaponWidth = weaponSprite.width * scale;
+        const weaponHeight = weaponSprite.height * scale;
+        
+        ctx.drawImage(
+            weaponSprite,
+            this.canvas.width / 2 - weaponWidth / 2,
+            weaponY,
+            weaponWidth,
+            weaponHeight
+        );
         
         if (this.screenShake > 0) this.screenShake--;
     }
@@ -423,12 +414,10 @@ class CrimsonDoom {
     gameLoop() {
         if (!this.running) return;
         
-        // Update
         this.engine.update();
         this.updateEnemies();
         this.currentWeapon.update();
         
-        // Render
         this.engine.render();
         this.renderEnemies();
         this.renderEffects();
@@ -437,7 +426,6 @@ class CrimsonDoom {
     }
 }
 
-// Initialize game when page loads
 window.addEventListener('load', () => {
     new CrimsonDoom();
 });
