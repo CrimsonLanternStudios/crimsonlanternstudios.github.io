@@ -550,8 +550,12 @@
             muteBtn.textContent = isMuted ? '🔇 Unmute' : '🔊 Mute';
             
             // Try to mute/unmute via JS-DOS API if available
-            if (dosInstance && dosInstance.setVolume) {
-                dosInstance.setVolume(isMuted ? 0 : 1);
+            try {
+                if (dosInstance && typeof dosInstance.setVolume === 'function') {
+                    dosInstance.setVolume(isMuted ? 0 : 1);
+                }
+            } catch (e) {
+                console.log('setVolume not available:', e);
             }
             
             // Fallback: try to find and mute audio elements
@@ -575,9 +579,13 @@
          */
         function backToMenu() {
             if (confirm('Return to main menu? Your progress will be lost.')) {
-                // Clean up DOS instance
-                if (dosInstance && dosInstance.exit) {
-                    dosInstance.exit();
+                // Clean up DOS instance safely
+                try {
+                    if (dosInstance && typeof dosInstance.exit === 'function') {
+                        dosInstance.exit();
+                    }
+                } catch (e) {
+                    console.log('exit not available:', e);
                 }
                 
                 // Reset UI
