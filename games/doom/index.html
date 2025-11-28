@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRIMSON DOOM - Full Experience</title>
     <style>
+        .hidden {
+            display: none !important;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -261,7 +265,7 @@
             </div>
         </div>
         
-        <div id="gameOver" style="display: none;">
+        <div id="gameOver" class="hidden">
             <h1>GAME OVER</h1>
             <p style="font-size: 24px; margin: 20px 0;">
                 LEVEL: <span id="finalLevel">1</span><br>
@@ -272,7 +276,7 @@
             <button id="quitButton" class="menu-button">QUIT TO MENU</button>
         </div>
         
-        <div id="levelComplete" style="display: none;">
+        <div id="levelComplete" class="hidden">
             <h1>LEVEL COMPLETE!</h1>
             <p style="font-size: 24px; margin: 20px 0;">
                 LEVEL: <span id="levelNumber">1</span><br>

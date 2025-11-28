@@ -569,7 +569,7 @@ class CrimsonDoom {
         }
         
         // Hide all overlays
-        this.ui.gameOver.style.display = 'none';
+        this.ui.gameOver.classList.add('hidden');
         this.ui.levelComplete.style.display = 'none';
         this.ui.container.classList.add('hidden');
         
@@ -683,7 +683,7 @@ class CrimsonDoom {
         });
         
         // Hide game over screen
-        this.ui.gameOver.style.display = 'none';
+        this.ui.gameOver.classList.add('hidden');
         
         this.startGame();
     }
@@ -694,7 +694,7 @@ class CrimsonDoom {
     
     nextLevel() {
         this.level++;
-        this.ui.levelComplete.style.display = 'none';
+        this.ui.levelComplete.classList.add('hidden');
         
         // Make sure music is still playing
         if (this.audioInitialized && !this.musicPlaying) {
@@ -719,7 +719,7 @@ class CrimsonDoom {
         this.armor = 50; // Give some armor on restart
         
         // Hide game over screen
-        this.ui.gameOver.style.display = 'none';
+        this.ui.gameOver.classList.add('hidden');
         
         this.generateLevel();
         this.running = true;
@@ -948,13 +948,12 @@ class CrimsonDoom {
         
         this.ui.finalKills.textContent = this.totalKills;
         this.ui.finalLevel.textContent = this.level;
-        this.ui.gameOver.style.display = 'block';
+        this.ui.gameOver.classList.remove('hidden');
     }
     
     levelComplete() {
         console.log('=== LEVEL COMPLETE ===');
         console.log('Running:', this.running);
-        console.log('UI levelComplete element:', this.ui.levelComplete);
         
         this.running = false;
         
@@ -964,12 +963,9 @@ class CrimsonDoom {
             console.log('Pointer unlocked');
         }
         
-        if (this.ui.levelComplete) {
-            this.ui.levelComplete.style.display = 'block';
-            console.log('Level complete screen shown');
-        } else {
-            console.error('levelComplete element not found!');
-        }
+        // Show level complete screen
+        this.ui.levelComplete.classList.remove('hidden');
+        console.log('Level complete screen shown');
         
         document.getElementById('levelNumber').textContent = this.level;
         document.getElementById('levelKills').textContent = this.kills;
