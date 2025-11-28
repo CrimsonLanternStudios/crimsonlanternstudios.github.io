@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Classic DOOM - Crimson Lantern Studios</title>
+    
+    <!-- JS-DOS v7 Stylesheets -->
+    <link rel="stylesheet" href="https://v8.js-dos.com/v7/emulators-ui/emulators-ui.css">
+    
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header styling matching main site */
+        header {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.3rem;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        nav {
+            margin-top: 1rem;
+        }
+        
+        nav a {
+            color: white;
+            margin: 0 1rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            font-size: 1rem;
+        }
+        
+        nav a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+        
+        /* Main content area */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        /* Game container */
+        #game-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Loading screen */
+        #loading-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        #loading-screen h2 {
+            color: #8B0000;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        #loading-screen .subtitle {
+            color: #aaa;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+        
+        /* Play button */
+        .play-button {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            color: #fff;
+            border: 3px solid #fff;
+            padding: 20px 60px;
+            font-size: 28px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+            margin: 1rem;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.5);
+        }
+        
+        .play-button:hover {
+            background: linear-gradient(135deg, #A00000 0%, #FF1744 100%);
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(139, 0, 0, 0.8);
+        }
+        
+        .play-button:disabled {
+            background: #444;
+            border-color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Controls panel */
+        .controls-panel {
+            background: rgba(40, 40, 40, 0.9);
+            border: 2px solid #8B0000;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .controls-panel h3 {
+            color: #DC143C;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .control-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .control-key {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        /* JS-DOS canvas container */
+        #jsdos-container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: #000;
+            border: 3px solid #8B0000;
+            border-radius: 5px;
+            display: none;
+            position: relative;
+        }
+        
+        #jsdos-container.active {
+            display: block;
+        }
+        
+        /* Canvas within container */
+        #jsdos-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+        }
+        
+        /* Control buttons bar */
+        .game-controls {
+            display: none;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .game-controls.active {
+            display: flex;
+        }
+        
+        .control-btn {
+            background: #333;
+            color: #fff;
+            border: 2px solid #8B0000;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+        
+        .control-btn:hover {
+            background: #8B0000;
+            transform: translateY(-2px);
+        }
+        
+        .control-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Loading indicator */
+        .loader {
+            border: 4px solid #333;
+            border-top: 4px solid #DC143C;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 2rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #loading-status {
+            color: #aaa;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Legal notice */
+        .legal-notice {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.8rem;
+            color: #888;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        .legal-notice a {
+            color: #DC143C;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: #888;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.8rem;
+            border-top: 1px solid #333;
+        }
+        
+        footer a {
+            color: #DC143C;
+        }
+        
+        /* Fullscreen styles */
+        .fullscreen-mode #jsdos-container {
+            max-width: 100%;
+            max-height: 100vh;
+            border: none;
+            border-radius: 0;
+        }
+        
+        /* Mobile touch controls hint */
+        .touch-hint {
+            display: none;
+            color: #FFD700;
+            text-align: center;
+            margin: 0.5rem 0;
+            font-size: 0.85rem;
+        }
+        
+        @media (pointer: coarse) {
+            .touch-hint {
+                display: block;
+            }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            nav a {
+                display: block;
+                margin: 0.3rem 0;
+            }
+            
+            .play-button {
+                padding: 15px 40px;
+                font-size: 20px;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Error message */
+        .error-message {
+            background: rgba(139, 0, 0, 0.3);
+            border: 2px solid #8B0000;
+            color: #ff6666;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .error-message.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔥 CLASSIC DOOM 🔥</h1>
+        <p>The Original 1993 FPS Experience - Powered by JS-DOS</p>
+        <nav>
+            <a href="../../index.html">Home</a>
+            <a href="../doom/index.html">Crimson Doom</a>
+            <a href="../../index.html#games">All Games</a>
+            <a href="../../index.html#contact">Contact</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div id="game-container">
+            <!-- Loading Screen -->
+            <div id="loading-screen">
+                <h2>CLASSIC DOOM</h2>
+                <p class="subtitle">Play the legendary 1993 shooter in your browser</p>
+                
+                <!-- Error Message -->
+                <div id="error-message" class="error-message">
+                    <p>Failed to load the game. Please try refreshing the page.</p>
+                </div>
+                
+                <!-- Play Button -->
+                <button id="play-button" class="play-button">
+                    ▶ PLAY DOOM
+                </button>
+                
+                <!-- Loading Indicator (hidden by default) -->
+                <div id="loader" class="loader" style="display: none;"></div>
+                <p id="loading-status" style="display: none;">Initializing DOS emulator...</p>
+                
+                <!-- Controls Panel -->
+                <div class="controls-panel">
+                    <h3>🎮 CONTROLS</h3>
+                    <div class="controls-grid">
+                        <div class="control-item">
+                            <span>Move Forward/Back</span>
+                            <span class="control-key">W / S or ↑ / ↓</span>
+                        </div>
+                        <div class="control-item">
+                            <span>Turn Left/Right</span>
+                            <span class="control-key">← / →</span>
+                        </div>
+                        <div class="control-item">
+                            <span>Strafe Left/Right</span>
+                            <span class="control-key">A / D</span>
+                        </div>
+                        <div class="control-item">
+                            <span>Shoot</span>
+                            <span class="control-key">Ctrl or Space</span>
+                        </div>
+                        <div class="control-item">
+                            <span>Use / Open Doors</span>
+                            <span class="control-key">Space / E</span>
+                        </div>
+                        <div class="control-item">
+                            <span>Run</span>
+                            <span class="control-key">Shift</span>
+                        </div>
+                        <div class="control-item">
+                            <span>Change Weapon</span>
+                            <span class="control-key">1 - 7</span>
+                        </div>
+                        <div class="control-item">
+                            <span>Automap</span>
+                            <span class="control-key">Tab</span>
+                        </div>
+                    </div>
+                    <p class="touch-hint">📱 Touch controls are available on mobile devices</p>
+                </div>
+                
+                <!-- Legal Notice -->
+                <div class="legal-notice">
+                    <p>This uses <strong>Freedoom</strong> - a free, open-source game compatible with DOOM engines.</p>
+                    <p>Powered by <a href="https://js-dos.com" target="_blank" rel="noopener">JS-DOS</a> emulator.</p>
+                    <p>Not affiliated with id Software or Bethesda Softworks.</p>
+                </div>
+            </div>
+            
+            <!-- Game Canvas Container (hidden until game starts) -->
+            <div id="jsdos-container"></div>
+            
+            <!-- Game Controls Bar -->
+            <div id="game-controls" class="game-controls">
+                <button id="fullscreen-btn" class="control-btn">⛶ Fullscreen</button>
+                <button id="mute-btn" class="control-btn">🔊 Mute</button>
+                <button id="restart-btn" class="control-btn">🔄 Restart</button>
+                <button id="back-btn" class="control-btn">◀ Back to Menu</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Crimson Lantern Studios. All rights reserved.</p>
+        <p>Classic DOOM engine emulation by <a href="https://js-dos.com" target="_blank" rel="noopener">JS-DOS</a></p>
+        <p>Game content: <a href="https://freedoom.github.io" target="_blank" rel="noopener">Freedoom Project</a> (GNU GPL)</p>
+    </footer>
+    
+    <!-- JS-DOS v7 Scripts -->
+    <script src="https://v8.js-dos.com/v7/emulators/emulators.js"></script>
+    <script src="https://v8.js-dos.com/v7/emulators-ui/emulators-ui.js"></script>
+    
+    <script>
+        // Set JS-DOS path prefix
+        emulators.pathPrefix = "https://v8.js-dos.com/v7/emulators/";
+        
+        // Game state
+        let dosInstance = null;
+        let isMuted = false;
+        let isFullscreen = false;
+        
+        // DOM Elements
+        const playButton = document.getElementById('play-button');
+        const loadingScreen = document.getElementById('loading-screen');
+        const jsdosContainer = document.getElementById('jsdos-container');
+        const gameControls = document.getElementById('game-controls');
+        const loader = document.getElementById('loader');
+        const loadingStatus = document.getElementById('loading-status');
+        const errorMessage = document.getElementById('error-message');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const muteBtn = document.getElementById('mute-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const backBtn = document.getElementById('back-btn');
+        
+        /**
+         * Start the DOOM game
+         * Initializes the JS-DOS emulator and loads the Freedoom bundle
+         */
+        async function startGame() {
+            try {
+                // Show loading state
+                playButton.disabled = true;
+                playButton.textContent = 'LOADING...';
+                loader.style.display = 'block';
+                loadingStatus.style.display = 'block';
+                errorMessage.classList.remove('visible');
+                
+                // Update status
+                loadingStatus.textContent = 'Loading DOS emulator...';
+                
+                // Create the DOS instance using Dos function from emulators-ui
+                // Using a public Doom shareware bundle from js-dos CDN
+                loadingStatus.textContent = 'Loading DOOM...';
+                
+                // Initialize Dos with the container element
+                dosInstance = await Dos(jsdosContainer).run("https://cdn.dos.zone/original/2X/2/24b00b14f118580763440ecaddcc948f8cb94f14.jsdos");
+                
+                // Hide loading screen, show game
+                loadingScreen.style.display = 'none';
+                jsdosContainer.classList.add('active');
+                gameControls.classList.add('active');
+                
+                console.log('DOOM loaded successfully!');
+                
+            } catch (error) {
+                console.error('Failed to load DOOM:', error);
+                playButton.disabled = false;
+                playButton.textContent = '▶ PLAY DOOM';
+                loader.style.display = 'none';
+                loadingStatus.style.display = 'none';
+                errorMessage.classList.add('visible');
+                errorMessage.querySelector('p').textContent = 
+                    `Failed to load the game: ${error.message || 'Unknown error'}. Please try refreshing.`;
+            }
+        }
+        
+        /**
+         * Toggle fullscreen mode
+         */
+        function toggleFullscreen() {
+            const container = jsdosContainer;
+            
+            if (!document.fullscreenElement) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+                isFullscreen = true;
+                fullscreenBtn.textContent = '⛶ Exit Fullscreen';
+                document.body.classList.add('fullscreen-mode');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                isFullscreen = false;
+                fullscreenBtn.textContent = '⛶ Fullscreen';
+                document.body.classList.remove('fullscreen-mode');
+            }
+        }
+        
+        /**
+         * Toggle mute state
+         */
+        function toggleMute() {
+            isMuted = !isMuted;
+            muteBtn.textContent = isMuted ? '🔇 Unmute' : '🔊 Mute';
+            
+            // Try to mute/unmute via JS-DOS API if available
+            try {
+                if (dosInstance && typeof dosInstance.setVolume === 'function') {
+                    dosInstance.setVolume(isMuted ? 0 : 1);
+                }
+            } catch (e) {
+                console.log('setVolume not available:', e);
+            }
+            
+            // Fallback: try to find and mute audio elements
+            const audioElements = document.querySelectorAll('audio');
+            audioElements.forEach(audio => {
+                audio.muted = isMuted;
+            });
+        }
+        
+        /**
+         * Restart the game
+         */
+        function restartGame() {
+            if (confirm('Are you sure you want to restart? Your progress will be lost.')) {
+                location.reload();
+            }
+        }
+        
+        /**
+         * Go back to menu
+         */
+        function backToMenu() {
+            if (confirm('Return to main menu? Your progress will be lost.')) {
+                // Clean up DOS instance safely
+                try {
+                    if (dosInstance && typeof dosInstance.exit === 'function') {
+                        dosInstance.exit();
+                    }
+                } catch (e) {
+                    console.log('exit not available:', e);
+                }
+                
+                // Reset UI
+                loadingScreen.style.display = 'flex';
+                jsdosContainer.classList.remove('active');
+                gameControls.classList.remove('active');
+                playButton.disabled = false;
+                playButton.textContent = '▶ PLAY DOOM';
+                dosInstance = null;
+            }
+        }
+        
+        // Handle fullscreen change events
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                isFullscreen = false;
+                fullscreenBtn.textContent = '⛶ Fullscreen';
+                document.body.classList.remove('fullscreen-mode');
+            }
+        });
+        
+        // Event Listeners
+        playButton.addEventListener('click', startGame);
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        muteBtn.addEventListener('click', toggleMute);
+        restartBtn.addEventListener('click', restartGame);
+        backBtn.addEventListener('click', backToMenu);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // F11 or F for fullscreen
+            if (e.key === 'F11' || (e.key === 'f' && e.altKey)) {
+                e.preventDefault();
+                if (jsdosContainer.classList.contains('active')) {
+                    toggleFullscreen();
+                }
+            }
+            
+            // M for mute
+            if (e.key === 'm' && e.altKey) {
+                e.preventDefault();
+                if (jsdosContainer.classList.contains('active')) {
+                    toggleMute();
+                }
+            }
+            
+            // Escape to exit fullscreen is handled natively
+        });
+        
+        // Gamepad support detection
+        window.addEventListener('gamepadconnected', (e) => {
+            console.log('Gamepad connected:', e.gamepad.id);
+            // JS-DOS v7 has built-in gamepad support
+        });
+        
+        // Prevent context menu on game canvas
+        jsdosContainer.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
