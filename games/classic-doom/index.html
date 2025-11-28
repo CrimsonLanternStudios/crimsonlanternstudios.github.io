@@ -486,20 +486,25 @@
                 loadingStatus.textContent = 'Loading DOOM...';
                 
                 // Initialize Dos with local assets
+                // JS-DOS v8 has its own loading UI, so we hide our loading screen
                 dosInstance = Dos(jsdosContainer, {
                     url: "assets/doom.jsdos",
                     pathPrefix: "assets/emulators/",
                     noCloud: true,
+                    autoStart: true,
                     onEvent: (event, ci) => {
+                        console.log('JS-DOS Event:', event);
                         if (event === "ci-ready") {
                             console.log('DOOM loaded successfully!');
-                            // Hide loading screen, show game
-                            loadingScreen.style.display = 'none';
-                            jsdosContainer.classList.add('active');
-                            gameControls.classList.add('active');
                         }
                     }
                 });
+                
+                // Hide our loading screen and show the JS-DOS container immediately
+                // JS-DOS v8 has its own loading UI that will be displayed
+                loadingScreen.style.display = 'none';
+                jsdosContainer.classList.add('active');
+                gameControls.classList.add('active');
                 
             } catch (error) {
                 console.error('Failed to load DOOM:', error);
