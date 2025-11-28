@@ -331,15 +331,23 @@ class LevelGenerator {
         const pickups = [];
         
         rooms.forEach((room, i) => {
-            if (i > 0 && Math.random() < 0.6) {
-                const type = Math.random() < 0.5 ? 'health' : 
-                             Math.random() < 0.7 ? 'ammo' : 'armor';
+            if (i > 0) {
+                // Always place at least one pickup per room
+                const numPickups = 1 + Math.floor(Math.random() * 2);
                 
-                pickups.push({
-                    x: room.center.x + 0.5,
-                    y: room.center.y + 0.5,
-                    type: type
-                });
+                for (let p = 0; p < numPickups; p++) {
+                    const type = Math.random() < 0.4 ? 'health' : 
+                                 Math.random() < 0.6 ? 'ammo' : 'armor';
+                    
+                    const offsetX = (Math.random() - 0.5) * (room.width - 2);
+                    const offsetY = (Math.random() - 0.5) * (room.height - 2);
+                    
+                    pickups.push({
+                        x: room.center.x + offsetX + 0.5,
+                        y: room.center.y + offsetY + 0.5,
+                        type: type
+                    });
+                }
             }
         });
         

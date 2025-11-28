@@ -24,7 +24,7 @@ function loadSprites() {
 // ============================================================================
 
 class Weapon {
-    constructor(name, damage, ammo, maxAmmo, fireRate, spread, pellets = 1, spriteName, fireSpriteName) {
+    constructor(name, damage, ammo, maxAmmo, fireRate, spread, pellets = 1, spriteName, fireSpriteName, infinite = false) {
         this.name = name;
         this.damage = damage;
         this.ammo = ammo;
@@ -35,15 +35,18 @@ class Weapon {
         this.cooldown = 0;
         this.spriteName = spriteName;
         this.fireSpriteName = fireSpriteName;
+        this.infinite = infinite;
     }
     
     canFire() {
-        return this.cooldown === 0 && this.ammo > 0;
+        return this.cooldown === 0 && (this.infinite || this.ammo > 0);
     }
     
     fire() {
         if (!this.canFire()) return false;
-        this.ammo--;
+        if (!this.infinite) {
+            this.ammo--;
+        }
         this.cooldown = this.fireRate;
         return true;
     }
@@ -62,10 +65,10 @@ class Enemy {
         this.x = x;
         this.y = y;
         this.type = type;
-        this.health = 100;
-        this.maxHealth = 100;
-        this.speed = 0.02;
-        this.damage = 10;
+        this.health = 60;
+        this.maxHealth = 60;
+        this.speed = 0.015;
+        this.damage = 5;
         this.attackCooldown = 0;
         this.attackRange = 1.5;
         this.detectionRange = 8;
@@ -149,10 +152,14 @@ class Pickup {
                 player.health = Math.min(player.health + 25, player.maxHealth);
                 return true;
             case 'armor':
-                player.armor = Math.min(player.armor + 10, 100);
+                player.armor = Math.min(player.armor + 25, 100);
                 return true;
             case 'ammo':
-                Object.values(player.weapons).forEach(w => w.addAmmo(10));
+                Object.values(player.weapons).forEach(w => {
+                    if (!w.infinite) {
+                        w.addAmmo(50);
+                    }
+                });
                 return true;
             default:
                 return false;
@@ -202,7 +209,7 @@ class CrimsonDoom {
         
         // Initialize weapons
         this.weapons = {
-            pistol: new Weapon('PISTOL', 20, 50, 200, 12, 0.02, 1, 'pistol', 'pistol_fire'),
+            pistol: new Weapon('PISTOL', 20, 999, 999, 12, 0.02, 1, 'pistol', 'pistol_fire', true),
             shotgun: new Weapon('SHOTGUN', 10, 24, 100, 30, 0.08, 7, 'shotgun', 'shotgun_fire'),
             chaingun: new Weapon('CHAINGUN', 15, 200, 400, 5, 0.03, 1, 'chaingun', 'chaingun_fire'),
             rocket: new Weapon('ROCKET', 100, 20, 50, 40, 0, 1, 'rocket', 'rocket'),
@@ -250,7 +257,105 @@ class CrimsonDoom {
         
         loadSprites();
         this.setupControls();
+        this.setupAudio();
         this.loadGame();
+    }
+    
+    setupAudio() {
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.sounds = {
+                shoot: this.createShootSound.bind(this),
+                hit: this.createHitSound.bind(this),
+                pickup: this.createPickupSound.bind(this),
+                door: this.createDoorSound.bind(this)
+            };
+        } catch(e) {
+            console.log('Web Audio not supported');
+            this.audioContext = null;
+        }
+    }
+    
+    playSound(soundName) {
+        if (!this.audioContext || !this.sounds[soundName]) return;
+        
+        try {
+            this.sounds[soundName]();
+        } catch(e) {
+            console.log('Error playing sound:', e);
+        }
+    }
+    
+    createShootSound() {
+        const ctx = this.audioContext;
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.frequency.setValueAtTime(200, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + 0.1);
+    }
+    
+    createHitSound() {
+        const ctx = this.audioContext;
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.frequency.setValueAtTime(150, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.2);
+        
+        gainNode.gain.setValueAtTime(0.4, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+        
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + 0.2);
+    }
+    
+    createPickupSound() {
+        const ctx = this.audioContext;
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.frequency.setValueAtTime(400, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + 0.1);
+    }
+    
+    createDoorSound() {
+        const ctx = this.audioContext;
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.frequency.setValueAtTime(100, ctx.currentTime);
+        oscillator.frequency.linearRampToValueAtTime(150, ctx.currentTime + 0.3);
+        
+        gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + 0.3);
     }
     
     setupControls() {
@@ -265,6 +370,17 @@ class CrimsonDoom {
                 if (this.unlockedWeapons.has(weaponName)) {
                     this.currentWeaponIndex = weaponIndex;
                     this.currentWeapon = this.weapons[weaponName];
+                }
+            }
+            
+            // Check for exit
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                const dx = this.exitX + 0.5 - this.engine.player.x;
+                const dy = this.exitY + 0.5 - this.engine.player.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 2) {
+                    this.levelComplete();
                 }
             }
             
@@ -351,11 +467,26 @@ class CrimsonDoom {
         this.keyItems = levelData.keys.map(k => new Key(k.x, k.y, k.color));
         
         // Unlock weapons based on level
-        if (this.level >= 2) this.unlockedWeapons.add('shotgun');
-        if (this.level >= 4) this.unlockedWeapons.add('chaingun');
-        if (this.level >= 6) this.unlockedWeapons.add('rocket');
-        if (this.level >= 8) this.unlockedWeapons.add('plasma');
-        if (this.level >= 10) this.unlockedWeapons.add('bfg');
+        if (this.level >= 2 && !this.unlockedWeapons.has('shotgun')) {
+            this.unlockedWeapons.add('shotgun');
+            this.weapons.shotgun.ammo = 50;
+        }
+        if (this.level >= 4 && !this.unlockedWeapons.has('chaingun')) {
+            this.unlockedWeapons.add('chaingun');
+            this.weapons.chaingun.ammo = 200;
+        }
+        if (this.level >= 6 && !this.unlockedWeapons.has('rocket')) {
+            this.unlockedWeapons.add('rocket');
+            this.weapons.rocket.ammo = 30;
+        }
+        if (this.level >= 8 && !this.unlockedWeapons.has('plasma')) {
+            this.unlockedWeapons.add('plasma');
+            this.weapons.plasma.ammo = 200;
+        }
+        if (this.level >= 10 && !this.unlockedWeapons.has('bfg')) {
+            this.unlockedWeapons.add('bfg');
+            this.weapons.bfg.ammo = 50;
+        }
         
         this.kills = 0;
     }
@@ -456,6 +587,7 @@ class CrimsonDoom {
     shoot() {
         if (!this.currentWeapon.fire()) return;
         
+        this.playSound('shoot');
         this.muzzleFlash = 10;
         this.screenShake = this.currentWeapon.name === 'BFG' ? 10 : 5;
         
@@ -466,6 +598,7 @@ class CrimsonDoom {
             if (hitEnemy && hitEnemy.takeDamage(this.currentWeapon.damage)) {
                 this.kills++;
                 this.totalKills++;
+                this.playSound('hit');
             }
         }
         
@@ -505,13 +638,6 @@ class CrimsonDoom {
         this.updatePickups();
         this.updateKeys();
         this.currentWeapon.update();
-        
-        // Check for level exit
-        const dx = this.exitX - this.engine.player.x;
-        const dy = this.exitY - this.engine.player.y;
-        if (Math.sqrt(dx * dx + dy * dy) < 1) {
-            this.levelComplete();
-        }
     }
     
     updateEnemies() {
@@ -531,6 +657,7 @@ class CrimsonDoom {
             
             if (!pickup.collected && pickup.checkCollision(this.engine.player.x, this.engine.player.y)) {
                 pickup.collect(this);
+                this.playSound('pickup');
                 this.updateUI();
             }
         });
@@ -544,6 +671,7 @@ class CrimsonDoom {
                 key.collected = true;
                 this.keys[key.color] = true;
                 this.engine.unlockDoor(key.color);
+                this.playSound('door');
                 this.updateUI();
                 console.log('Picked up', key.color, 'key!');
             }
@@ -584,7 +712,7 @@ class CrimsonDoom {
     updateUI() {
         this.ui.health.textContent = Math.max(0, Math.floor(this.health));
         this.ui.armor.textContent = Math.floor(this.armor);
-        this.ui.ammo.textContent = this.currentWeapon.ammo;
+        this.ui.ammo.textContent = this.currentWeapon.infinite ? '∞' : this.currentWeapon.ammo;
         this.ui.weapon.textContent = this.currentWeapon.name;
         this.ui.kills.textContent = this.kills;
         this.ui.level.textContent = this.level;
@@ -605,6 +733,63 @@ class CrimsonDoom {
     
     renderSprites() {
         const ctx = this.engine.ctx;
+        
+        // Render EXIT PORTAL (most important - render first so it's behind everything)
+        const exitDx = this.exitX + 0.5 - this.engine.player.x;
+        const exitDy = this.exitY + 0.5 - this.engine.player.y;
+        const exitDist = Math.sqrt(exitDx * exitDx + exitDy * exitDy);
+        
+        // Create a pulsing portal effect
+        const pulseScale = 1.0 + Math.sin(this.time * 0.05) * 0.2;
+        
+        // Draw a large glowing portal
+        const exitAngle = Math.atan2(exitDy, exitDx);
+        let exitRelAngle = exitAngle - this.engine.player.angle;
+        while (exitRelAngle > Math.PI) exitRelAngle -= 2 * Math.PI;
+        while (exitRelAngle < -Math.PI) exitRelAngle += 2 * Math.PI;
+        
+        if (Math.abs(exitRelAngle) < this.engine.player.fov / 2 && exitDist < 15) {
+            const exitScreenX = (exitRelAngle / this.engine.player.fov + 0.5) * this.canvas.width;
+            const exitSize = (this.canvas.height / exitDist) * 1.5 * pulseScale;
+            const exitScreenY = (this.canvas.height / 2) - (exitSize / 2);
+            
+            // Draw glowing portal
+            ctx.save();
+            ctx.globalAlpha = 0.8;
+            
+            // Outer glow
+            const gradient = ctx.createRadialGradient(
+                exitScreenX, exitScreenY + exitSize/2, 0,
+                exitScreenX, exitScreenY + exitSize/2, exitSize
+            );
+            gradient.addColorStop(0, 'rgba(0, 255, 255, 0.8)');
+            gradient.addColorStop(0.5, 'rgba(0, 200, 255, 0.4)');
+            gradient.addColorStop(1, 'rgba(0, 100, 200, 0)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(
+                exitScreenX - exitSize,
+                exitScreenY - exitSize/2,
+                exitSize * 2,
+                exitSize * 2
+            );
+            
+            // Portal text
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = '#00FFFF';
+            ctx.font = `${Math.max(12, exitSize * 0.2)}px "Courier New"`;
+            ctx.textAlign = 'center';
+            ctx.fillText('EXIT', exitScreenX, exitScreenY + exitSize/2);
+            
+            // Distance indicator
+            if (exitDist < 3) {
+                ctx.fillStyle = '#FFFF00';
+                ctx.font = `${Math.max(10, exitSize * 0.15)}px "Courier New"`;
+                ctx.fillText('PRESS SPACE', exitScreenX, exitScreenY + exitSize/2 + 20);
+            }
+            
+            ctx.restore();
+        }
         
         // Render pickups
         this.pickups.forEach(pickup => {
