@@ -493,9 +493,19 @@
                     noCloud: true,
                     autoStart: true,
                     onEvent: (event, ci) => {
-                        console.log('JS-DOS Event:', event);
                         if (event === "ci-ready") {
                             console.log('DOOM loaded successfully!');
+                        } else if (event === "error") {
+                            console.error('JS-DOS Error:', ci);
+                            // Show error to user
+                            jsdosContainer.classList.remove('active');
+                            gameControls.classList.remove('active');
+                            loadingScreen.style.display = 'flex';
+                            playButton.disabled = false;
+                            playButton.textContent = '▶ PLAY DOOM';
+                            errorMessage.classList.add('visible');
+                            errorMessage.querySelector('p').textContent = 
+                                'Failed to load the game. Please try refreshing.';
                         }
                     }
                 });
