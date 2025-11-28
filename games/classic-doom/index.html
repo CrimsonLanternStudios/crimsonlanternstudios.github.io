@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Classic DOOM - Crimson Lantern Studios</title>
     
-    <!-- JS-DOS v7 Stylesheets -->
-    <link rel="stylesheet" href="https://v8.js-dos.com/v7/emulators-ui/emulators-ui.css">
+    <!-- JS-DOS v8 Stylesheets (hosted locally to avoid CORS issues) -->
+    <link rel="stylesheet" href="assets/js-dos.css">
     
     <style>
         /* Reset and base styles */
@@ -443,14 +443,10 @@
         <p>Game content: <a href="https://freedoom.github.io" target="_blank" rel="noopener">Freedoom Project</a> (GNU GPL)</p>
     </footer>
     
-    <!-- JS-DOS v7 Scripts -->
-    <script src="https://v8.js-dos.com/v7/emulators/emulators.js"></script>
-    <script src="https://v8.js-dos.com/v7/emulators-ui/emulators-ui.js"></script>
+    <!-- JS-DOS v8 Scripts (hosted locally to avoid CORS issues) -->
+    <script src="assets/js-dos.js"></script>
     
     <script>
-        // Set JS-DOS path prefix
-        emulators.pathPrefix = "https://v8.js-dos.com/v7/emulators/";
-        
         // Game state
         let dosInstance = null;
         let isMuted = false;
@@ -471,7 +467,7 @@
         
         /**
          * Start the DOOM game
-         * Initializes the JS-DOS emulator and loads the Freedoom bundle
+         * Initializes the JS-DOS v8 emulator and loads the locally hosted Doom bundle
          */
         async function startGame() {
             try {
@@ -485,19 +481,25 @@
                 // Update status
                 loadingStatus.textContent = 'Loading DOS emulator...';
                 
-                // Create the DOS instance using Dos function from emulators-ui
-                // Using a public Doom shareware bundle from js-dos CDN
+                // Create the DOS instance using JS-DOS v8 API
+                // Using locally hosted Doom bundle to avoid CORS issues
                 loadingStatus.textContent = 'Loading DOOM...';
                 
-                // Initialize Dos with the container element
-                dosInstance = await Dos(jsdosContainer).run("https://cdn.dos.zone/original/2X/2/24b00b14f118580763440ecaddcc948f8cb94f14.jsdos");
-                
-                // Hide loading screen, show game
-                loadingScreen.style.display = 'none';
-                jsdosContainer.classList.add('active');
-                gameControls.classList.add('active');
-                
-                console.log('DOOM loaded successfully!');
+                // Initialize Dos with local assets
+                dosInstance = Dos(jsdosContainer, {
+                    url: "assets/doom.jsdos",
+                    pathPrefix: "assets/emulators/",
+                    noCloud: true,
+                    onEvent: (event, ci) => {
+                        if (event === "ci-ready") {
+                            console.log('DOOM loaded successfully!');
+                            // Hide loading screen, show game
+                            loadingScreen.style.display = 'none';
+                            jsdosContainer.classList.add('active');
+                            gameControls.classList.add('active');
+                        }
+                    }
+                });
                 
             } catch (error) {
                 console.error('Failed to load DOOM:', error);
