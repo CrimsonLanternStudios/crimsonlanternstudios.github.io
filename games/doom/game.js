@@ -222,8 +222,6 @@ class CrimsonDoom {
         this.muzzleFlash = 10;
         this.screenShake = 5;
         
-        // Play shoot sound (if we had audio)
-        
         // Raycast for hit detection
         for (let i = 0; i < this.currentWeapon.pellets; i++) {
             const spread = (Math.random() - 0.5) * this.currentWeapon.spread;
@@ -313,6 +311,7 @@ class CrimsonDoom {
         
         // Sort enemies by distance (far to near)
         const sortedEnemies = this.enemies
+            .filter(e => !e.dead)
             .map(e => {
                 const dx = e.x - this.engine.player.x;
                 const dy = e.y - this.engine.player.y;
@@ -340,36 +339,27 @@ class CrimsonDoom {
             const spriteHeight = (this.canvas.height / distance) * 0.8;
             const spriteWidth = spriteHeight;
             
+            // Draw enemy as colored rectangle (placeholder for sprite)
+            const shade = Math.max(0.3, 1 - (distance / this.engine.maxDepth));
+            ctx.fillStyle = this.shadeColor(enemy.color, shade);
+            
             const screenY = (this.canvas.height / 2) - (spriteHeight / 2);
             
-            // Apply distance shading
-            const shade = Math.max(0.3, 1 - (distance / this.engine.maxDepth));
-            ctx.globalAlpha = shade;
-            
-            // Draw sprite
-            const sprite = enemy.dead ? 
-                this.engine.textureGen.getTexture('enemyDead') : 
-                this.engine.textureGen.getTexture('enemy');
-            
-            ctx.drawImage(
-                sprite,
+            // Simple enemy sprite (rectangle)
+            ctx.fillRect(
                 screenX - spriteWidth / 2,
                 screenY,
                 spriteWidth,
                 spriteHeight
             );
             
-            ctx.globalAlpha = 1.0;
-            
-            // Draw health bar for living enemies
-            if (!enemy.dead) {
-                const barWidth = spriteWidth * 0.8;
-                const barHeight = 4;
-                ctx.fillStyle = '#000';
-                ctx.fillRect(screenX - barWidth / 2, screenY - 10, barWidth, barHeight);
-                ctx.fillStyle = enemy.health > 30 ? '#0f0' : '#f00';
-                ctx.fillRect(screenX - barWidth / 2, screenY - 10, barWidth * (enemy.health / 100), barHeight);
-            }
+            // Draw health bar
+            const barWidth = spriteWidth;
+            const barHeight = 4;
+            ctx.fillStyle = '#000';
+            ctx.fillRect(screenX - barWidth / 2, screenY - 10, barWidth, barHeight);
+            ctx.fillStyle = '#0f0';
+            ctx.fillRect(screenX - barWidth / 2, screenY - 10, barWidth * (enemy.health / 100), barHeight);
         });
     }
     
@@ -414,21 +404,18 @@ class CrimsonDoom {
         const ctx = this.engine.ctx;
         const weaponY = this.canvas.height - 120 + (this.screenShake > 0 ? Math.random() * this.screenShake : 0);
         
-        const weaponSprite = this.currentWeapon.name === 'PISTOL' ? 
-            this.engine.textureGen.getTexture('pistol') : 
-            this.engine.textureGen.getTexture('shotgun');
-        
-        const scale = 2;
-        const weaponWidth = weaponSprite.width * scale;
-        const weaponHeight = weaponSprite.height * scale;
-        
-        ctx.drawImage(
-            weaponSprite,
-            this.canvas.width / 2 - weaponWidth / 2,
-            weaponY,
-            weaponWidth,
-            weaponHeight
-        );
+        if (this.currentWeapon.name === 'PISTOL') {
+            ctx.fillStyle = '#333';
+            ctx.fillRect(this.canvas.width / 2 - 20, weaponY, 40, 80);
+            ctx.fillStyle = '#666';
+            ctx.fillRect(this.canvas.width / 2 - 15, weaponY + 10, 30, 60);
+        } else {
+            ctx.fillStyle = '#4a3c28';
+            ctx.fillRect(this.canvas.width / 2 - 40, weaponY, 80, 60);
+            ctx.fillStyle = '#333';
+            ctx.fillRect(this.canvas.width / 2 - 35, weaponY + 10, 70, 15);
+            ctx.fillRect(this.canvas.width / 2 - 35, weaponY + 35, 70, 15);
+        }
         
         if (this.screenShake > 0) this.screenShake--;
     }

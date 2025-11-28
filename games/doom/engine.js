@@ -1,278 +1,5 @@
-// Crimson Doom - Enhanced Raycasting Engine with Textures
+// Crimson Doom - Raycasting Engine WITH TEXTURES (V2 - Actually Working Edition)
 // Built by Claude for Crimson Lantern Studios
-
-class TextureGenerator {
-    constructor() {
-        this.textures = {};
-        this.generateTextures();
-    }
-    
-    generateTextures() {
-        // Generate wall textures
-        this.textures.wall1 = this.createBrickTexture('#8B0000', '#650000');
-        this.textures.wall2 = this.createStoneTexture('#666666', '#444444');
-        this.textures.wall3 = this.createPanelTexture('#654321', '#543210');
-        this.textures.wall4 = this.createTechTexture('#006400', '#004400');
-        
-        // Generate floor/ceiling textures
-        this.textures.floor = this.createFloorTexture('#4a4a4a', '#3a3a3a');
-        this.textures.ceiling = this.createFloorTexture('#2a2a2a', '#1a1a1a');
-        
-        // Generate enemy sprites
-        this.textures.enemy = this.createEnemySprite();
-        this.textures.enemyDead = this.createDeadEnemySprite();
-        
-        // Generate weapon sprites
-        this.textures.pistol = this.createPistolSprite();
-        this.textures.shotgun = this.createShotgunSprite();
-    }
-    
-    createBrickTexture(color1, color2) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        
-        // Background
-        ctx.fillStyle = color1;
-        ctx.fillRect(0, 0, 64, 64);
-        
-        // Bricks
-        ctx.fillStyle = color2;
-        for (let y = 0; y < 64; y += 16) {
-            for (let x = 0; x < 64; x += 32) {
-                const offsetX = (y / 16) % 2 === 0 ? 0 : 16;
-                ctx.fillRect(x + offsetX, y, 30, 14);
-            }
-        }
-        
-        // Mortar lines
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        for (let y = 0; y < 64; y += 16) {
-            ctx.beginPath();
-            ctx.moveTo(0, y);
-            ctx.lineTo(64, y);
-            ctx.stroke();
-        }
-        
-        return canvas;
-    }
-    
-    createStoneTexture(color1, color2) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        
-        ctx.fillStyle = color1;
-        ctx.fillRect(0, 0, 64, 64);
-        
-        // Random stone pattern
-        for (let i = 0; i < 50; i++) {
-            ctx.fillStyle = Math.random() > 0.5 ? color2 : color1;
-            const x = Math.random() * 64;
-            const y = Math.random() * 64;
-            const size = Math.random() * 8 + 2;
-            ctx.fillRect(x, y, size, size);
-        }
-        
-        return canvas;
-    }
-    
-    createPanelTexture(color1, color2) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        
-        ctx.fillStyle = color1;
-        ctx.fillRect(0, 0, 64, 64);
-        
-        // Panel borders
-        ctx.strokeStyle = color2;
-        ctx.lineWidth = 3;
-        ctx.strokeRect(8, 8, 48, 48);
-        ctx.strokeRect(4, 4, 56, 56);
-        
-        return canvas;
-    }
-    
-    createTechTexture(color1, color2) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        
-        ctx.fillStyle = color1;
-        ctx.fillRect(0, 0, 64, 64);
-        
-        // Tech lines
-        ctx.strokeStyle = color2;
-        ctx.lineWidth = 2;
-        for (let i = 0; i < 5; i++) {
-            ctx.beginPath();
-            ctx.moveTo(0, i * 12);
-            ctx.lineTo(64, i * 12);
-            ctx.stroke();
-        }
-        
-        // Dots
-        ctx.fillStyle = '#00ff00';
-        for (let i = 0; i < 4; i++) {
-            ctx.fillRect(8 + i * 16, 8, 4, 4);
-        }
-        
-        return canvas;
-    }
-    
-    createFloorTexture(color1, color2) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        
-        ctx.fillStyle = color1;
-        ctx.fillRect(0, 0, 64, 64);
-        
-        // Tile pattern
-        ctx.strokeStyle = color2;
-        ctx.lineWidth = 1;
-        for (let x = 0; x < 64; x += 32) {
-            for (let y = 0; y < 64; y += 32) {
-                ctx.strokeRect(x, y, 32, 32);
-            }
-        }
-        
-        return canvas;
-    }
-    
-    createEnemySprite() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        
-        // Body (demon-like)
-        ctx.fillStyle = '#8B0000';
-        ctx.fillRect(20, 20, 24, 35);
-        
-        // Head
-        ctx.fillStyle = '#A52A2A';
-        ctx.fillRect(22, 15, 20, 15);
-        
-        // Horns
-        ctx.fillStyle = '#654321';
-        ctx.fillRect(20, 12, 6, 8);
-        ctx.fillRect(38, 12, 6, 8);
-        
-        // Eyes (glowing)
-        ctx.fillStyle = '#ff0000';
-        ctx.fillRect(26, 20, 4, 4);
-        ctx.fillRect(34, 20, 4, 4);
-        
-        // Arms
-        ctx.fillStyle = '#8B0000';
-        ctx.fillRect(14, 25, 6, 20);
-        ctx.fillRect(44, 25, 6, 20);
-        
-        // Legs
-        ctx.fillRect(24, 55, 6, 9);
-        ctx.fillRect(34, 55, 6, 9);
-        
-        // Outline for definition
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(20, 20, 24, 35);
-        ctx.strokeRect(22, 15, 20, 15);
-        
-        return canvas;
-    }
-    
-    createDeadEnemySprite() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        
-        // Dead body (horizontal)
-        ctx.fillStyle = '#4a0000';
-        ctx.fillRect(10, 40, 44, 12);
-        
-        // Blood pool
-        ctx.fillStyle = '#8B0000';
-        ctx.beginPath();
-        ctx.ellipse(32, 48, 25, 8, 0, 0, Math.PI * 2);
-        ctx.fill();
-        
-        return canvas;
-    }
-    
-    createPistolSprite() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 80;
-        canvas.height = 120;
-        const ctx = canvas.getContext('2d');
-        
-        // Gun body
-        ctx.fillStyle = '#333';
-        ctx.fillRect(25, 40, 30, 50);
-        
-        // Barrel
-        ctx.fillStyle = '#222';
-        ctx.fillRect(35, 20, 10, 30);
-        
-        // Handle
-        ctx.fillStyle = '#654321';
-        ctx.fillRect(30, 70, 20, 30);
-        
-        // Trigger
-        ctx.fillStyle = '#888';
-        ctx.fillRect(40, 75, 6, 10);
-        
-        // Highlights
-        ctx.fillStyle = '#666';
-        ctx.fillRect(27, 42, 4, 40);
-        ctx.fillRect(37, 22, 4, 25);
-        
-        return canvas;
-    }
-    
-    createShotgunSprite() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 100;
-        canvas.height = 120;
-        const ctx = canvas.getContext('2d');
-        
-        // Stock
-        ctx.fillStyle = '#654321';
-        ctx.fillRect(10, 60, 40, 20);
-        
-        // Main body
-        ctx.fillStyle = '#333';
-        ctx.fillRect(20, 45, 60, 25);
-        
-        // Barrels (double barrel)
-        ctx.fillStyle = '#222';
-        ctx.fillRect(35, 25, 12, 30);
-        ctx.fillRect(53, 25, 12, 30);
-        
-        // Pump
-        ctx.fillStyle = '#654321';
-        ctx.fillRect(50, 55, 20, 10);
-        
-        // Highlights
-        ctx.fillStyle = '#555';
-        ctx.fillRect(37, 27, 10, 25);
-        ctx.fillRect(55, 27, 10, 25);
-        
-        return canvas;
-    }
-    
-    getTexture(name) {
-        return this.textures[name];
-    }
-}
 
 class RaycastEngine {
     constructor(canvas) {
@@ -280,9 +7,6 @@ class RaycastEngine {
         this.ctx = canvas.getContext('2d');
         this.width = canvas.width;
         this.height = canvas.height;
-        
-        // Initialize texture generator
-        this.textureGen = new TextureGenerator();
         
         // Player properties
         this.player = {
@@ -294,7 +18,7 @@ class RaycastEngine {
             rotSpeed: 0.03
         };
         
-        // Level map (1-4 = different wall types, 0 = empty)
+        // Level map (1 = wall, 0 = empty)
         this.map = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -317,13 +41,8 @@ class RaycastEngine {
         this.mapWidth = this.map[0].length;
         this.mapHeight = this.map.length;
         
-        // Wall texture mapping
-        this.wallTextures = {
-            1: this.textureGen.getTexture('wall1'),
-            2: this.textureGen.getTexture('wall2'),
-            3: this.textureGen.getTexture('wall3'),
-            4: this.textureGen.getTexture('wall4')
-        };
+        // Generate textures
+        this.wallTextures = this.generateWallTextures();
         
         // Rendering settings
         this.rayCount = 320;
@@ -335,6 +54,163 @@ class RaycastEngine {
         this.mouseLocked = false;
     }
     
+    generateWallTextures() {
+        const textures = {};
+        
+        // Texture 1: Red Bricks
+        textures[1] = this.createBrickTexture('#8B0000', '#650000', '#2a0000');
+        
+        // Texture 2: Gray Stone
+        textures[2] = this.createStoneTexture('#666666', '#555555', '#444444');
+        
+        // Texture 3: Brown Panels
+        textures[3] = this.createPanelTexture('#654321', '#543210', '#3a2a10');
+        
+        // Texture 4: Green Tech
+        textures[4] = this.createTechTexture('#006400', '#004400', '#00ff00');
+        
+        return textures;
+    }
+    
+    createBrickTexture(baseColor, mortarColor, shadowColor) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        
+        // Background (mortar)
+        ctx.fillStyle = mortarColor;
+        ctx.fillRect(0, 0, 64, 64);
+        
+        // Draw bricks
+        for (let y = 0; y < 64; y += 16) {
+            for (let x = 0; x < 64; x += 32) {
+                const offset = (y / 16) % 2 === 0 ? 0 : 16;
+                
+                // Brick
+                ctx.fillStyle = baseColor;
+                ctx.fillRect(x + offset + 1, y + 1, 30, 14);
+                
+                // Brick highlight
+                ctx.fillStyle = this.lightenColor(baseColor, 1.2);
+                ctx.fillRect(x + offset + 1, y + 1, 28, 3);
+                ctx.fillRect(x + offset + 1, y + 1, 3, 12);
+                
+                // Brick shadow
+                ctx.fillStyle = shadowColor;
+                ctx.fillRect(x + offset + 28, y + 12, 3, 3);
+                ctx.fillRect(x + offset + 1, y + 12, 30, 2);
+            }
+        }
+        
+        return canvas;
+    }
+    
+    createStoneTexture(baseColor, darkColor, lightColor) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        
+        // Base color
+        ctx.fillStyle = baseColor;
+        ctx.fillRect(0, 0, 64, 64);
+        
+        // Random stone chunks
+        for (let i = 0; i < 100; i++) {
+            const x = Math.random() * 64;
+            const y = Math.random() * 64;
+            const size = Math.random() * 6 + 2;
+            const shade = Math.random() > 0.5 ? darkColor : lightColor;
+            
+            ctx.fillStyle = shade;
+            ctx.fillRect(x, y, size, size);
+        }
+        
+        // Add some larger blocks
+        for (let i = 0; i < 20; i++) {
+            const x = Math.random() * 60;
+            const y = Math.random() * 60;
+            ctx.fillStyle = Math.random() > 0.5 ? darkColor : baseColor;
+            ctx.fillRect(x, y, 8, 8);
+        }
+        
+        return canvas;
+    }
+    
+    createPanelTexture(baseColor, borderColor, shadowColor) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        
+        // Background
+        ctx.fillStyle = baseColor;
+        ctx.fillRect(0, 0, 64, 64);
+        
+        // Panel border
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 4;
+        ctx.strokeRect(6, 6, 52, 52);
+        
+        // Inner panel
+        ctx.strokeStyle = shadowColor;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(10, 10, 44, 44);
+        
+        // Highlight
+        ctx.strokeStyle = this.lightenColor(baseColor, 1.3);
+        ctx.lineWidth = 1;
+        ctx.strokeRect(8, 8, 48, 48);
+        
+        return canvas;
+    }
+    
+    createTechTexture(baseColor, darkColor, lightColor) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        
+        // Background
+        ctx.fillStyle = baseColor;
+        ctx.fillRect(0, 0, 64, 64);
+        
+        // Horizontal lines
+        ctx.strokeStyle = darkColor;
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 8; i++) {
+            ctx.beginPath();
+            ctx.moveTo(0, i * 8);
+            ctx.lineTo(64, i * 8);
+            ctx.stroke();
+        }
+        
+        // Indicator lights
+        ctx.fillStyle = lightColor;
+        for (let i = 0; i < 6; i++) {
+            ctx.fillRect(8 + i * 10, 4, 4, 4);
+            ctx.fillRect(8 + i * 10, 28, 4, 4);
+            ctx.fillRect(8 + i * 10, 52, 4, 4);
+        }
+        
+        return canvas;
+    }
+    
+    lightenColor(color, factor) {
+        // Parse hex color
+        const r = parseInt(color.slice(1, 3), 16);
+        const g = parseInt(color.slice(3, 5), 16);
+        const b = parseInt(color.slice(5, 7), 16);
+        
+        // Lighten
+        const newR = Math.min(255, Math.floor(r * factor));
+        const newG = Math.min(255, Math.floor(g * factor));
+        const newB = Math.min(255, Math.floor(b * factor));
+        
+        return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+    }
+    
     castRay(angle) {
         const sin = Math.sin(angle);
         const cos = Math.cos(angle);
@@ -342,8 +218,9 @@ class RaycastEngine {
         let distance = 0;
         let hitWall = false;
         let wallType = 0;
-        let hitX, hitY;
-        let side = 0; // 0 = vertical wall, 1 = horizontal wall
+        let hitX = 0;
+        let hitY = 0;
+        let side = 0; // Which side of wall (for shading)
         
         while (!hitWall && distance < this.maxDepth) {
             distance += 0.01;
@@ -363,7 +240,7 @@ class RaycastEngine {
                 hitX = testX;
                 hitY = testY;
                 
-                // Determine which side of wall we hit
+                // Determine which side we hit (for texture mapping)
                 const dx = testX - mapX;
                 const dy = testY - mapY;
                 side = (Math.abs(dx - 0.5) > Math.abs(dy - 0.5)) ? 0 : 1;
@@ -378,13 +255,18 @@ class RaycastEngine {
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.width, this.height);
         
-        // Draw ceiling with texture
-        this.drawTexturedPlane(0, this.height / 2, this.textureGen.getTexture('ceiling'));
+        // Draw ceiling
+        this.ctx.fillStyle = '#2a2a2a';
+        this.ctx.fillRect(0, 0, this.width, this.height / 2);
         
-        // Draw floor with texture
-        this.drawTexturedPlane(this.height / 2, this.height, this.textureGen.getTexture('floor'));
+        // Draw floor with simple gradient
+        const gradient = this.ctx.createLinearGradient(0, this.height / 2, 0, this.height);
+        gradient.addColorStop(0, '#4a4a4a');
+        gradient.addColorStop(1, '#2a2a2a');
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(0, this.height / 2, this.width, this.height / 2);
         
-        // Cast rays for walls
+        // Cast rays
         for (let x = 0; x < this.rayCount; x++) {
             const rayAngle = (this.player.angle - this.player.fov / 2) + 
                            (x / this.rayCount) * this.player.fov;
@@ -409,23 +291,22 @@ class RaycastEngine {
                 // Calculate texture X coordinate
                 let texX;
                 if (side === 0) {
-                    texX = hitY % 1;
+                    texX = (hitY % 1) * texture.width;
                 } else {
-                    texX = hitX % 1;
+                    texX = (hitX % 1) * texture.width;
                 }
-                texX = Math.floor(texX * texture.width);
+                texX = Math.floor(texX);
                 
                 // Draw textured wall slice
                 const sliceWidth = this.width / this.rayCount;
                 
                 // Apply distance shading
-                const shade = Math.max(0.3, 1 - (correctedDistance / this.maxDepth));
-                this.ctx.globalAlpha = shade;
+                const shade = Math.max(0.2, 1 - (correctedDistance / this.maxDepth));
                 
-                // Additional shading for side walls
-                if (side === 1) {
-                    this.ctx.globalAlpha *= 0.8;
-                }
+                // Additional shading for horizontal walls
+                const sideShade = side === 1 ? 0.7 : 1.0;
+                
+                this.ctx.globalAlpha = shade * sideShade;
                 
                 this.ctx.drawImage(
                     texture,
@@ -436,12 +317,6 @@ class RaycastEngine {
                 this.ctx.globalAlpha = 1.0;
             }
         }
-    }
-    
-    drawTexturedPlane(startY, endY, texture) {
-        const pattern = this.ctx.createPattern(texture, 'repeat');
-        this.ctx.fillStyle = pattern;
-        this.ctx.fillRect(0, startY, this.width, endY - startY);
     }
     
     update() {
@@ -490,6 +365,18 @@ class RaycastEngine {
             this.player.x = newX;
             this.player.y = newY;
         }
+    }
+    
+    shadeColor(color, factor) {
+        const r = parseInt(color.slice(1, 3), 16);
+        const g = parseInt(color.slice(3, 5), 16);
+        const b = parseInt(color.slice(5, 7), 16);
+        
+        const newR = Math.floor(r * factor);
+        const newG = Math.floor(g * factor);
+        const newB = Math.floor(b * factor);
+        
+        return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
     }
     
     handleKeyDown(e) {
