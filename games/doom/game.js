@@ -977,11 +977,15 @@ class CrimsonDoom {
         }
         
         // Hide canvas to ensure overlay shows
+        console.log('Canvas element:', this.canvas);
+        console.log('Canvas display before:', this.canvas.style.display);
         this.canvas.style.display = 'none';
+        console.log('Canvas display after:', this.canvas.style.display);
         
         // Show level complete screen
         this.ui.levelComplete.classList.remove('hidden');
         console.log('Level complete screen shown');
+        console.log('Level complete classes:', this.ui.levelComplete.className);
         
         document.getElementById('levelNumber').textContent = this.level;
         document.getElementById('levelKills').textContent = this.kills;
