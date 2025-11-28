@@ -457,6 +457,22 @@ class CrimsonDoom {
     
     setupControls() {
         document.addEventListener('keydown', (e) => {
+            // Check for exit FIRST (before engine consumes spacebar)
+            if ((e.key === ' ' || e.key === 'Spacebar') && this.running) {
+                const dx = this.exitX + 0.5 - this.engine.player.x;
+                const dy = this.exitY + 0.5 - this.engine.player.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                console.log('Spacebar pressed! Distance to exit:', dist);
+                
+                if (dist < 2) {
+                    console.log('Close enough to exit - calling levelComplete()');
+                    this.levelComplete();
+                    return; // Don't let engine handle this
+                }
+            }
+            
+            // Now let engine handle the key
             this.engine.handleKeyDown(e);
             
             // Weapon switching
@@ -467,17 +483,6 @@ class CrimsonDoom {
                 if (this.unlockedWeapons.has(weaponName)) {
                     this.currentWeaponIndex = weaponIndex;
                     this.currentWeapon = this.weapons[weaponName];
-                }
-            }
-            
-            // Check for exit
-            if (e.key === ' ' || e.key === 'Spacebar') {
-                const dx = this.exitX + 0.5 - this.engine.player.x;
-                const dy = this.exitY + 0.5 - this.engine.player.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                
-                if (dist < 2) {
-                    this.levelComplete();
                 }
             }
             
