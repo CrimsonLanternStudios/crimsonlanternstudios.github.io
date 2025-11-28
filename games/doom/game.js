@@ -253,6 +253,10 @@ class CrimsonDoom {
         
         this.muzzleFlash = 0;
         this.screenShake = 0;
+        
+        // Pickup notification
+        this.pickupMessage = '';
+        this.pickupTimer = 0;
         this.damageFlash = 0;
         
         this.time = 0;
@@ -870,11 +874,31 @@ class CrimsonDoom {
             pickup.update(this.time);
             
             if (!pickup.collected && pickup.checkCollision(this.engine.player.x, this.engine.player.y)) {
-                pickup.collect(this);
-                this.playSound('pickup');
-                this.updateUI();
+                const result = pickup.collect(this);
+                if (result) {
+                    this.playSound('pickup');
+                    // Show pickup message
+                    if (pickup.type === 'health') {
+                        this.showPickupMessage('+25 HEALTH');
+                    } else if (pickup.type === 'armor') {
+                        this.showPickupMessage('+25 ARMOR');
+                    } else if (pickup.type === 'ammo') {
+                        this.showPickupMessage('+50 AMMO');
+                    }
+                    this.updateUI();
+                }
             }
         });
+        
+        // Update pickup timer
+        if (this.pickupTimer > 0) {
+            this.pickupTimer--;
+        }
+    }
+    
+    showPickupMessage(message) {
+        this.pickupMessage = message;
+        this.pickupTimer = 60; // 1 second at 60fps
     }
     
     updateKeys() {
@@ -923,14 +947,25 @@ class CrimsonDoom {
     }
     
     levelComplete() {
+        console.log('=== LEVEL COMPLETE ===');
+        console.log('Running:', this.running);
+        console.log('UI levelComplete element:', this.ui.levelComplete);
+        
         this.running = false;
         
         // Release pointer lock
         if (document.pointerLockElement) {
             document.exitPointerLock();
+            console.log('Pointer unlocked');
         }
         
-        this.ui.levelComplete.style.display = 'block';
+        if (this.ui.levelComplete) {
+            this.ui.levelComplete.style.display = 'block';
+            console.log('Level complete screen shown');
+        } else {
+            console.error('levelComplete element not found!');
+        }
+        
         document.getElementById('levelNumber').textContent = this.level;
         document.getElementById('levelKills').textContent = this.kills;
     }
@@ -961,7 +996,7 @@ class CrimsonDoom {
         const ctx = this.engine.ctx;
         
         // DEBUG: Draw enemy hitboxes (comment out to disable)
-        const DEBUG_HITBOXES = true;
+        const DEBUG_HITBOXES = false;
         
         if (DEBUG_HITBOXES) {
             this.enemies.forEach(enemy => {
@@ -1158,6 +1193,15 @@ class CrimsonDoom {
         ctx.moveTo(centerX, centerY - 10);
         ctx.lineTo(centerX, centerY + 10);
         ctx.stroke();
+        
+        // Pickup message
+        if (this.pickupTimer > 0) {
+            const alpha = Math.min(1, this.pickupTimer / 15);
+            ctx.fillStyle = `rgba(0, 255, 0, ${alpha})`;
+            ctx.font = '20px "Courier New"';
+            ctx.textAlign = 'center';
+            ctx.fillText(this.pickupMessage, centerX, centerY - 60);
+        }
         
         this.renderWeapon();
     }
