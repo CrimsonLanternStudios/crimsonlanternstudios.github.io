@@ -3,179 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crimson Doom - Crimson Lantern Studios</title>
+    <title>CRIMSON DOOM - Full Experience</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             background: #000;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            color: #fff;
+        }
+        
+        #gameContainer {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            font-family: 'Courier New', monospace;
-            color: #ff0000;
-            overflow: hidden;
-        }
-
-        #gameContainer {
+            height: 100vh;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
         }
-
+        
         #gameCanvas {
-            border: 4px solid #8B0000;
-            box-shadow: 0 0 30px #ff0000;
+            border: 3px solid #8B0000;
             cursor: crosshair;
             image-rendering: pixelated;
-            image-rendering: crisp-edges;
         }
-
+        
         #ui {
             position: absolute;
-            bottom: 10px;
-            left: 0;
-            right: 0;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            justify-content: space-around;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            border-top: 2px solid #8B0000;
-            font-size: 20px;
+            gap: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            border: 2px solid #8B0000;
+            border-radius: 5px;
+        }
+        
+        .stat {
+            text-align: center;
+            font-size: 18px;
             text-shadow: 2px 2px 4px #000;
         }
-
-        #ui span {
-            font-weight: bold;
+        
+        .stat-label {
+            font-size: 12px;
+            color: #aaa;
+            display: block;
+            margin-bottom: 3px;
         }
-
-        #mainMenu {
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        #health .stat-value { color: #f00; }
+        #armor .stat-value { color: #0f0; }
+        #ammo .stat-value { color: #ff0; }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        #mainMenu, #gameOver, #levelComplete {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            background: rgba(0, 0, 0, 0.95);
             z-index: 1000;
-            gap: 30px;
         }
-
+        
         #mainMenu h1 {
             font-size: 72px;
-            color: #ff0000;
+            color: #8B0000;
             text-shadow: 4px 4px 8px #000;
-            letter-spacing: 4px;
+            margin-bottom: 30px;
+            letter-spacing: 5px;
         }
-
-        #mainMenu p {
+        
+        .menu-subtitle {
             font-size: 18px;
-            color: #888;
+            color: #aaa;
+            margin-bottom: 40px;
         }
-
-        .menuButton {
+        
+        .menu-button {
             background: #8B0000;
             color: #fff;
-            border: 3px solid #ff0000;
+            border: 2px solid #fff;
             padding: 15px 40px;
             font-size: 24px;
             font-family: 'Courier New', monospace;
             cursor: pointer;
-            transition: all 0.2s;
+            margin: 10px;
+            transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-
-        .menuButton:hover {
-            background: #ff0000;
+        
+        .menu-button:hover {
+            background: #A00000;
             transform: scale(1.05);
-            box-shadow: 0 0 20px #ff0000;
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.8);
         }
-
-        #instructions {
-            color: #666;
+        
+        .controls {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
             font-size: 14px;
-            max-width: 600px;
-            text-align: center;
-            line-height: 1.6;
+            line-height: 1.8;
         }
-
-        #gameOver {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(139, 0, 0, 0.95);
-            padding: 40px;
-            border: 4px solid #ff0000;
-            text-align: center;
-            z-index: 999;
+        
+        .controls h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 18px;
         }
-
-        #gameOver h2 {
-            font-size: 48px;
-            margin-bottom: 20px;
+        
+        #gameOver h1, #levelComplete h1 {
+            font-size: 64px;
+            color: #8B0000;
+            margin-bottom: 30px;
         }
-
-        .hidden {
-            display: none !important;
+        
+        #levelComplete h1 {
+            color: #00AA00;
         }
-
-        #credits {
+        
+        .footer {
             position: absolute;
             bottom: 10px;
-            right: 10px;
             font-size: 12px;
-            color: #444;
+            color: #555;
+            text-align: center;
+            width: 100%;
+        }
+        
+        #keys {
+            font-size: 20px;
+            margin-left: 10px;
+        }
+        
+        .weapon-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border: 2px solid #8B0000;
+            border-radius: 5px;
+            min-width: 200px;
+        }
+        
+        .weapon-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff0;
+            margin-bottom: 10px;
+        }
+        
+        .weapon-hint {
+            font-size: 12px;
+            color: #888;
         }
     </style>
 </head>
 <body>
     <div id="gameContainer">
-        <div id="mainMenu">
-            <h1>CRIMSON DOOM</h1>
-            <p>A Crimson Lantern Studios Production</p>
-            <button class="menuButton" id="startButton">START GAME</button>
-            <div id="instructions">
-                <p><strong>CONTROLS:</strong></p>
-                <p>WASD - Move | Mouse - Look Around | Click - Shoot | 1/2 - Change Weapon</p>
-                <p>Click Start to begin. Click on the game to lock mouse cursor.</p>
-            </div>
-            <div id="credits">
-                Fan tribute to id Software's DOOM. Not affiliated with id Software/Bethesda.<br>
-                Built by Claude (Anthropic) for Crimson Lantern Studios © 2025
-            </div>
-        </div>
-
         <canvas id="gameCanvas" width="640" height="400"></canvas>
         
         <div id="ui" class="hidden">
-            <div>HEALTH: <span id="health">100</span></div>
-            <div>ARMOR: <span id="armor">0</span></div>
-            <div>AMMO: <span id="ammo">50</span></div>
-            <div>WEAPON: <span id="weapon">PISTOL</span></div>
-            <div>KILLS: <span id="kills">0</span></div>
+            <div id="health" class="stat">
+                <span class="stat-label">HEALTH</span>
+                <span class="stat-value">100</span>
+            </div>
+            <div id="armor" class="stat">
+                <span class="stat-label">ARMOR</span>
+                <span class="stat-value">0</span>
+            </div>
+            <div id="ammo" class="stat">
+                <span class="stat-label">AMMO</span>
+                <span class="stat-value">50</span>
+            </div>
+            <div id="weapon" class="stat">
+                <span class="stat-label">WEAPON</span>
+                <span class="stat-value">PISTOL</span>
+            </div>
+            <div id="kills" class="stat">
+                <span class="stat-label">KILLS</span>
+                <span class="stat-value">0</span>
+            </div>
+            <div id="level" class="stat">
+                <span class="stat-label">LEVEL</span>
+                <span class="stat-value">1</span>
+            </div>
+            <div id="keys" class="stat">
+                <span class="stat-label">KEYS</span>
+                <span class="stat-value"></span>
+            </div>
         </div>
-
-        <div id="gameOver">
-            <h2>YOU DIED</h2>
-            <p>Demons Killed: <span id="finalKills">0</span></p>
-            <button class="menuButton" id="restartButton">RESTART</button>
+        
+        <div class="weapon-indicator hidden">
+            <div class="weapon-name" id="currentWeaponName">PISTOL</div>
+            <div class="weapon-hint">1-6: Switch | Q/E: Cycle | Scroll: Cycle</div>
+        </div>
+        
+        <div id="mainMenu">
+            <h1>CRIMSON DOOM</h1>
+            <p class="menu-subtitle">A Crimson Lantern Studios Production</p>
+            
+            <button id="startButton" class="menu-button">NEW GAME</button>
+            <button id="continueButton" class="menu-button" style="display: none;">CONTINUE</button>
+            
+            <div class="controls">
+                <h3>CONTROLS:</h3>
+                <div>WASD - Move | Mouse - Look Around | Click - Shoot</div>
+                <div>1-6 - Change Weapon | Q/E - Cycle Weapons | Space - Open Doors</div>
+                <div>Collect keys to open colored doors. Find the exit to advance!</div>
+            </div>
+            
+            <div class="footer">
+                Built by Claude (Anthropic) for Crimson Lantern Studios<br>
+                Sprites from Freedoom project (freedoom.github.io)<br>
+                Not affiliated with id Software or Bethesda Softworks
+            </div>
+        </div>
+        
+        <div id="gameOver" style="display: none;">
+            <h1>GAME OVER</h1>
+            <p style="font-size: 24px; margin: 20px 0;">
+                LEVEL: <span id="finalLevel">1</span><br>
+                TOTAL KILLS: <span id="finalKills">0</span>
+            </p>
+            <button id="restartButton" class="menu-button">RESTART LEVEL</button>
+            <button id="newGameButton" class="menu-button">NEW GAME</button>
+        </div>
+        
+        <div id="levelComplete" style="display: none;">
+            <h1>LEVEL COMPLETE!</h1>
+            <p style="font-size: 24px; margin: 20px 0;">
+                LEVEL: <span id="levelNumber">1</span><br>
+                KILLS: <span id="levelKills">0</span>
+            </p>
+            <button id="nextLevelButton" class="menu-button">NEXT LEVEL</button>
+            <button id="saveButton" class="menu-button">SAVE & QUIT</button>
         </div>
     </div>
-
-    <script src="engine.js?v=2"></script>
-    <script src="game.js?v=2"></script>
+    
+    <script src="levelgen.js?v=3"></script>
+    <script src="engine.js?v=3"></script>
+    <script src="game.js?v=3"></script>
 </body>
 </html>
