@@ -651,6 +651,10 @@ class CrimsonDoom {
         
         this.ui.menu.classList.add('hidden');
         this.ui.container.classList.remove('hidden');
+        
+        // Show canvas
+        this.canvas.style.display = 'block';
+        
         this.generateLevel();
         this.running = true;
         this.updateUI();
@@ -696,6 +700,9 @@ class CrimsonDoom {
         this.level++;
         this.ui.levelComplete.classList.add('hidden');
         
+        // Show canvas again
+        this.canvas.style.display = 'block';
+        
         // Make sure music is still playing
         if (this.audioInitialized && !this.musicPlaying) {
             this.startMusic();
@@ -720,6 +727,9 @@ class CrimsonDoom {
         
         // Hide game over screen
         this.ui.gameOver.classList.add('hidden');
+        
+        // Show canvas
+        this.canvas.style.display = 'block';
         
         this.generateLevel();
         this.running = true;
@@ -946,22 +956,28 @@ class CrimsonDoom {
             document.exitPointerLock();
         }
         
+        // Hide canvas
+        this.canvas.style.display = 'none';
+        
         this.ui.finalKills.textContent = this.totalKills;
         this.ui.finalLevel.textContent = this.level;
         this.ui.gameOver.classList.remove('hidden');
     }
     
     levelComplete() {
+        this.running = false;
+        
         console.log('=== LEVEL COMPLETE ===');
         console.log('Running:', this.running);
-        
-        this.running = false;
         
         // Release pointer lock
         if (document.pointerLockElement) {
             document.exitPointerLock();
             console.log('Pointer unlocked');
         }
+        
+        // Hide canvas to ensure overlay shows
+        this.canvas.style.display = 'none';
         
         // Show level complete screen
         this.ui.levelComplete.classList.remove('hidden');
