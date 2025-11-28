@@ -277,6 +277,19 @@ class CrimsonDoom {
         this.setupControls();
         this.setupAudio();
         this.loadGame();
+        
+        // Volume control
+        this.masterVolume = parseFloat(localStorage.getItem('crimsonDoomVolume') || '0.5');
+    }
+    
+    setVolume(volume) {
+        this.masterVolume = Math.max(0, Math.min(1, volume));
+        localStorage.setItem('crimsonDoomVolume', this.masterVolume.toString());
+        
+        // Update music volume if playing
+        if (this.musicGain) {
+            this.musicGain.gain.setValueAtTime(0.08 * this.masterVolume, this.audioContext.currentTime);
+        }
     }
     
     setupAudio() {
@@ -311,14 +324,14 @@ class CrimsonDoom {
         
         // Create a simple looping bassline
         const bass = this.audioContext.createOscillator();
-        const bassGain = this.audioContext.createGain();
+        this.musicGain = this.audioContext.createGain();
         
         bass.type = 'triangle';
         bass.frequency.setValueAtTime(55, this.audioContext.currentTime); // A1
-        bassGain.gain.setValueAtTime(0.08, this.audioContext.currentTime);
+        this.musicGain.gain.setValueAtTime(0.08 * this.masterVolume, this.audioContext.currentTime);
         
-        bass.connect(bassGain);
-        bassGain.connect(this.audioContext.destination);
+        bass.connect(this.musicGain);
+        this.musicGain.connect(this.audioContext.destination);
         
         // Bassline pattern (repeating every 4 seconds)
         const now = this.audioContext.currentTime;
@@ -341,7 +354,7 @@ class CrimsonDoom {
         this.musicPlaying = true;
         this.musicOscillator = bass;
         
-        console.log('Music started!');
+        console.log('Music started at volume:', this.masterVolume);
     }
     
     stopMusic() {
@@ -377,7 +390,7 @@ class CrimsonDoom {
         oscillator.frequency.setValueAtTime(200, ctx.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.1);
         
-        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.3 * this.masterVolume, ctx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
         
         oscillator.start(ctx.currentTime);
@@ -395,7 +408,7 @@ class CrimsonDoom {
         oscillator.frequency.setValueAtTime(150, ctx.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.2);
         
-        gainNode.gain.setValueAtTime(0.4, ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.4 * this.masterVolume, ctx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
         
         oscillator.start(ctx.currentTime);
@@ -413,7 +426,7 @@ class CrimsonDoom {
         oscillator.frequency.setValueAtTime(400, ctx.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.1);
         
-        gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.2 * this.masterVolume, ctx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
         
         oscillator.start(ctx.currentTime);
@@ -431,7 +444,7 @@ class CrimsonDoom {
         oscillator.frequency.setValueAtTime(100, ctx.currentTime);
         oscillator.frequency.linearRampToValueAtTime(150, ctx.currentTime + 0.3);
         
-        gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.2 * this.masterVolume, ctx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
         
         oscillator.start(ctx.currentTime);
@@ -504,6 +517,34 @@ class CrimsonDoom {
         document.getElementById('restartButton').addEventListener('click', () => this.restart());
         document.getElementById('nextLevelButton').addEventListener('click', () => this.nextLevel());
         document.getElementById('saveButton').addEventListener('click', () => this.saveGame());
+        
+        // Volume controls
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumePercent = document.getElementById('volumePercent');
+        const testSoundButton = document.getElementById('testSoundButton');
+        
+        if (volumeSlider) {
+            // Set initial value from saved volume
+            volumeSlider.value = this.masterVolume * 100;
+            volumePercent.textContent = Math.round(this.masterVolume * 100);
+            
+            volumeSlider.addEventListener('input', (e) => {
+                const volume = parseInt(e.target.value) / 100;
+                this.setVolume(volume);
+                volumePercent.textContent = Math.round(volume * 100);
+            });
+        }
+        
+        if (testSoundButton) {
+            testSoundButton.addEventListener('click', () => {
+                // Initialize audio if needed
+                if (!this.audioInitialized) {
+                    this.initAudio();
+                }
+                // Play test sound
+                this.playSound('shoot');
+            });
+        }
         
         // Add quit button handler if it exists
         const quitButton = document.getElementById('quitButton');
@@ -655,6 +696,13 @@ class CrimsonDoom {
         this.running = true;
         this.updateUI();
         this.saveGame();
+        
+        // Re-lock pointer after a brief delay
+        setTimeout(() => {
+            if (this.canvas && this.running) {
+                this.canvas.requestPointerLock();
+            }
+        }, 100);
     }
     
     restart() {
