@@ -297,9 +297,58 @@ class CrimsonDoom {
             };
             this.audioInitialized = true;
             console.log('Audio initialized!');
+            
+            // Start background music
+            this.startMusic();
         } catch(e) {
             console.log('Web Audio not supported:', e);
             this.audioContext = null;
+        }
+    }
+    
+    startMusic() {
+        if (!this.audioContext || this.musicPlaying) return;
+        
+        // Create a simple looping bassline
+        const bass = this.audioContext.createOscillator();
+        const bassGain = this.audioContext.createGain();
+        
+        bass.type = 'triangle';
+        bass.frequency.setValueAtTime(55, this.audioContext.currentTime); // A1
+        bassGain.gain.setValueAtTime(0.08, this.audioContext.currentTime);
+        
+        bass.connect(bassGain);
+        bassGain.connect(this.audioContext.destination);
+        
+        // Bassline pattern (repeating every 4 seconds)
+        const now = this.audioContext.currentTime;
+        const notes = [55, 55, 82.5, 55, 73.5, 55, 82.5, 65.5]; // A, A, E, A, D, A, E, C
+        const beatLength = 0.5;
+        
+        const playBassPattern = () => {
+            const startTime = this.audioContext.currentTime;
+            notes.forEach((freq, i) => {
+                bass.frequency.setValueAtTime(freq, startTime + i * beatLength);
+            });
+            
+            // Loop every 4 seconds
+            setTimeout(playBassPattern, 4000);
+        };
+        
+        bass.start();
+        playBassPattern();
+        
+        this.musicPlaying = true;
+        this.musicOscillator = bass;
+        
+        console.log('Music started!');
+    }
+    
+    stopMusic() {
+        if (this.musicOscillator) {
+            this.musicOscillator.stop();
+            this.musicPlaying = false;
+            this.musicOscillator = null;
         }
     }
     
@@ -681,8 +730,8 @@ class CrimsonDoom {
     }
     
     checkRayHit(angle) {
-        const sin = Math.sin(angle);
-        const cos = Math.cos(angle);
+        const playerX = this.engine.player.x;
+        const playerY = this.engine.player.y;
         
         let closestEnemy = null;
         let closestDist = Infinity;
@@ -690,20 +739,32 @@ class CrimsonDoom {
         this.enemies.forEach(enemy => {
             if (enemy.dead) return;
             
-            const dx = enemy.x - this.engine.player.x;
-            const dy = enemy.y - this.engine.player.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            // Vector from player to enemy
+            const dx = enemy.x - playerX;
+            const dy = enemy.y - playerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
             
+            // Normalize enemy direction
             const enemyAngle = Math.atan2(dy, dx);
-            let angleDiff = Math.abs(enemyAngle - angle);
             
-            // Normalize angle difference to 0-PI range
-            if (angleDiff > Math.PI) angleDiff = 2 * Math.PI - angleDiff;
+            // Calculate angle difference
+            let angleDiff = enemyAngle - angle;
+            // Normalize to -PI to PI
+            while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+            while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
             
-            // Much more forgiving hit detection (0.4 radians = ~23 degrees)
-            if (angleDiff < 0.4 && dist < closestDist && dist < 20) {
-                closestDist = dist;
-                closestEnemy = enemy;
+            // Calculate perpendicular distance from ray to enemy center
+            const perpDist = Math.abs(distance * Math.sin(angleDiff));
+            
+            // Enemy hitbox radius (larger = easier to hit)
+            const hitRadius = 0.4;
+            
+            // Check if ray passes through enemy hitbox
+            if (perpDist < hitRadius && distance < 20 && Math.abs(angleDiff) < Math.PI/3) {
+                if (distance < closestDist) {
+                    closestDist = distance;
+                    closestEnemy = enemy;
+                }
             }
         });
         
@@ -828,6 +889,38 @@ class CrimsonDoom {
     
     renderSprites() {
         const ctx = this.engine.ctx;
+        
+        // DEBUG: Draw enemy hitboxes (comment out to disable)
+        const DEBUG_HITBOXES = true;
+        
+        if (DEBUG_HITBOXES) {
+            this.enemies.forEach(enemy => {
+                if (enemy.dead) return;
+                
+                const dx = enemy.x - this.engine.player.x;
+                const dy = enemy.y - this.engine.player.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx);
+                
+                let relAngle = angle - this.engine.player.angle;
+                while (relAngle > Math.PI) relAngle -= 2 * Math.PI;
+                while (relAngle < -Math.PI) relAngle += 2 * Math.PI;
+                
+                if (Math.abs(relAngle) < this.engine.player.fov / 2 && dist < 15) {
+                    const screenX = (relAngle / this.engine.player.fov + 0.5) * this.canvas.width;
+                    const size = (this.canvas.height / dist) * 0.4; // Hitbox radius visualization
+                    
+                    ctx.strokeStyle = 'red';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(
+                        screenX - size/2,
+                        this.canvas.height/2 - size/2,
+                        size,
+                        size
+                    );
+                }
+            });
+        }
         
         // Render EXIT PORTAL (most important - render first so it's behind everything)
         const exitDx = this.exitX + 0.5 - this.engine.player.x;
