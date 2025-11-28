@@ -11,6 +11,7 @@ Browser-based DOOM experience powered by JS-DOS emulator.
 - **Mobile Support:** Touch controls available on mobile devices
 - **Gamepad Support:** Connect a controller for console-like experience
 - **Volume Control:** Mute/unmute audio
+- **Locally Hosted Assets:** All game files are served locally to avoid CORS issues
 
 ## 🚀 Quick Start
 
@@ -22,17 +23,16 @@ Browser-based DOOM experience powered by JS-DOS emulator.
 ## 🔧 Technical Details
 
 ### Engine
-- **JS-DOS v7** - Production-ready DOS emulator
-- Loaded from CDN: `https://v8.js-dos.com/v7/`
+- **JS-DOS v8** - Production-ready DOS emulator
+- All assets hosted locally in the `assets/` folder to avoid CORS issues
 
 ### Game Bundle
-- Uses a pre-packaged `.jsdos` bundle from dos.zone CDN
+- Uses a locally hosted `.jsdos` bundle
 - Contains DOOM shareware content
 
 ### Requirements
 - Modern web browser with JavaScript enabled
-- Internet connection (for loading CDN resources)
-- ~10MB initial download
+- No external internet connection required (all assets are local)
 
 ## 🎮 Controls
 
@@ -76,8 +76,20 @@ Browser-based DOOM experience powered by JS-DOS emulator.
 
 ```
 classic-doom/
-├── index.html    # Main game page with JS-DOS integration
-└── README.md     # This file
+├── assets/
+│   ├── doom.jsdos           # Game bundle (DOOM shareware)
+│   ├── js-dos.js            # JS-DOS v8 main script
+│   ├── js-dos.css           # JS-DOS v8 styles
+│   └── emulators/           # Emulator core files (WASM/JS)
+│       ├── emulators.js
+│       ├── wdosbox.js
+│       ├── wdosbox.wasm
+│       ├── wdosbox-x.js
+│       ├── wdosbox-x.wasm
+│       ├── wlibzip.js
+│       └── wlibzip.wasm
+├── index.html               # Main game page with JS-DOS integration
+└── README.md                # This file
 ```
 
 ## 🌐 Browser Compatibility
@@ -94,9 +106,16 @@ classic-doom/
 ## ⚙️ Customization
 
 ### Changing the Game Bundle
-Edit `index.html` and modify the bundle URL:
+1. Create a new `.jsdos` bundle using [JS-DOS Studio](https://dos.zone/studio/)
+2. Place the bundle in the `assets/` folder
+3. Edit `index.html` and modify the bundle path:
 ```javascript
-dosInstance = await Dos(jsdosContainer).run("YOUR_BUNDLE_URL.jsdos");
+dosInstance = Dos(jsdosContainer, {
+    url: "assets/YOUR_BUNDLE.jsdos",
+    pathPrefix: "assets/emulators/",
+    noCloud: true,
+    // ... other options
+});
 ```
 
 ### Styling
@@ -107,14 +126,7 @@ All styles are inline in `index.html`. Modify the `<style>` section to customize
 - Fullscreen behavior
 
 ### Adding Save States
-JS-DOS v7 supports save states. To enable:
-```javascript
-// Save
-const state = await dosInstance.persist();
-
-// Load
-await dosInstance.restore(state);
-```
+JS-DOS v8 supports save states through the cloud feature or local persistence.
 
 ## 📜 Legal
 
@@ -126,10 +138,11 @@ await dosInstance.restore(state);
 ## 🐛 Troubleshooting
 
 ### Game Won't Load
-1. Check internet connection (CDN resources required)
+1. Ensure all files in the `assets/` folder are present
 2. Try a different browser
 3. Clear browser cache
 4. Check browser console for errors
+5. If hosting locally, make sure to use a local server (WASM requires proper MIME types)
 
 ### No Sound
 1. Click inside the game canvas after loading
@@ -144,7 +157,7 @@ await dosInstance.restore(state);
 ## 🔗 Resources
 
 - [JS-DOS Documentation](https://js-dos.com/overview.html)
-- [JS-DOS v7 API](https://js-dos.com/v7/build/)
+- [JS-DOS v8 API](https://js-dos.com/)
 - [Freedoom Project](https://freedoom.github.io/)
 - [DOOM Wiki](https://doom.fandom.com/)
 
