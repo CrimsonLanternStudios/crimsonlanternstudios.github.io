@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRIMSON DOOM - Full Experience</title>
     <style>
+        /* Global hidden class - single definition */
         .hidden {
-            display: none !important;
-        }
-        
-        #mainMenu.hidden,
-        #gameOver.hidden,
-        #levelComplete.hidden {
             display: none !important;
         }
         
@@ -77,10 +72,6 @@
         #health .stat-value { color: #f00; }
         #armor .stat-value { color: #0f0; }
         #ammo .stat-value { color: #ff0; }
-        
-        .hidden {
-            display: none !important;
-        }
         
         #mainMenu, #gameOver, #levelComplete {
             position: absolute;
@@ -227,7 +218,7 @@
             </div>
         </div>
         
-        <div class="weapon-indicator hidden">
+        <div id="weaponIndicator" class="weapon-indicator hidden">
             <div class="weapon-name" id="currentWeaponName">PISTOL</div>
             <div class="weapon-hint">1-6: Switch | Q/E: Cycle | Scroll: Cycle</div>
         </div>

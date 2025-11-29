@@ -262,28 +262,30 @@ class CrimsonDoom {
         this.time = 0;
         
         this.ui = {
-            health: document.getElementById('health'),
-            armor: document.getElementById('armor'),
-            ammo: document.getElementById('ammo'),
-            weapon: document.getElementById('weapon'),
-            kills: document.getElementById('kills'),
-            level: document.getElementById('level'),
-            keys: document.getElementById('keys'),
+            health: document.querySelector('#health .stat-value'),
+            armor: document.querySelector('#armor .stat-value'),
+            ammo: document.querySelector('#ammo .stat-value'),
+            weapon: document.querySelector('#weapon .stat-value'),
+            kills: document.querySelector('#kills .stat-value'),
+            level: document.querySelector('#level .stat-value'),
+            keys: document.querySelector('#keys .stat-value'),
             container: document.getElementById('ui'),
             menu: document.getElementById('mainMenu'),
             gameOver: document.getElementById('gameOver'),
             levelComplete: document.getElementById('levelComplete'),
             finalKills: document.getElementById('finalKills'),
-            finalLevel: document.getElementById('finalLevel')
+            finalLevel: document.getElementById('finalLevel'),
+            weaponIndicator: document.getElementById('weaponIndicator'),
+            currentWeaponName: document.getElementById('currentWeaponName')
         };
+        
+        // Volume control - initialize before setupControls to avoid NaN display
+        this.masterVolume = parseFloat(localStorage.getItem('crimsonDoomVolume') || '1.0');
         
         loadSprites();
         this.setupControls();
         this.setupAudio();
         this.loadGame();
-        
-        // Volume control
-        this.masterVolume = parseFloat(localStorage.getItem('crimsonDoomVolume') || '1.0');
     }
     
     setVolume(volume) {
@@ -573,6 +575,11 @@ class CrimsonDoom {
         this.ui.levelComplete.style.display = 'none';
         this.ui.container.classList.add('hidden');
         
+        // Hide weapon indicator
+        if (this.ui.weaponIndicator) {
+            this.ui.weaponIndicator.classList.add('hidden');
+        }
+        
         // Show main menu
         this.ui.menu.classList.remove('hidden');
         
@@ -651,6 +658,11 @@ class CrimsonDoom {
         
         this.ui.menu.classList.add('hidden');
         this.ui.container.classList.remove('hidden');
+        
+        // Show weapon indicator
+        if (this.ui.weaponIndicator) {
+            this.ui.weaponIndicator.classList.remove('hidden');
+        }
         
         // Show canvas
         this.canvas.style.display = 'block';
@@ -1001,6 +1013,11 @@ class CrimsonDoom {
         this.ui.kills.textContent = this.kills;
         this.ui.level.textContent = this.level;
         
+        // Update weapon indicator
+        if (this.ui.currentWeaponName) {
+            this.ui.currentWeaponName.textContent = this.currentWeapon.name;
+        }
+        
         // Update key display
         const keyText = [];
         if (this.keys.red) keyText.push('🔴');
@@ -1228,7 +1245,109 @@ class CrimsonDoom {
             ctx.fillText(this.pickupMessage, centerX, centerY - 60);
         }
         
+        // Render minimap
+        this.renderMinimap();
+        
         this.renderWeapon();
+    }
+    
+    renderMinimap() {
+        const ctx = this.engine.ctx;
+        const map = this.engine.map;
+        if (!map) return;
+        
+        const minimapSize = 100;
+        const minimapX = 10;
+        const minimapY = 10;
+        const cellSize = minimapSize / Math.max(map.length, map[0].length);
+        const viewRadius = 8; // How many cells around player to show
+        
+        // Draw minimap background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(minimapX - 2, minimapY - 2, minimapSize + 4, minimapSize + 4);
+        
+        // Draw visible area of the map centered on player
+        const playerMapX = Math.floor(this.engine.player.x);
+        const playerMapY = Math.floor(this.engine.player.y);
+        
+        for (let dy = -viewRadius; dy <= viewRadius; dy++) {
+            for (let dx = -viewRadius; dx <= viewRadius; dx++) {
+                const mapX = playerMapX + dx;
+                const mapY = playerMapY + dy;
+                
+                if (mapY >= 0 && mapY < map.length && mapX >= 0 && mapX < map[0].length) {
+                    const cell = map[mapY][mapX];
+                    const screenX = minimapX + (dx + viewRadius) * (minimapSize / (viewRadius * 2 + 1));
+                    const screenY = minimapY + (dy + viewRadius) * (minimapSize / (viewRadius * 2 + 1));
+                    const cellDrawSize = minimapSize / (viewRadius * 2 + 1);
+                    
+                    // Wall colors
+                    if (cell === 0) {
+                        ctx.fillStyle = '#333'; // Floor
+                    } else if (cell === 9) {
+                        ctx.fillStyle = '#0ff'; // Exit
+                    } else if (cell >= 5 && cell <= 7) {
+                        // Doors
+                        ctx.fillStyle = cell === 5 ? '#a00' : cell === 6 ? '#00a' : '#aa0';
+                    } else {
+                        ctx.fillStyle = '#666'; // Walls
+                    }
+                    
+                    ctx.fillRect(screenX, screenY, cellDrawSize, cellDrawSize);
+                }
+            }
+        }
+        
+        // Draw enemies on minimap
+        this.enemies.forEach(enemy => {
+            if (enemy.dead) return;
+            const dx = enemy.x - this.engine.player.x;
+            const dy = enemy.y - this.engine.player.y;
+            if (Math.abs(dx) <= viewRadius && Math.abs(dy) <= viewRadius) {
+                const screenX = minimapX + (dx + viewRadius) * (minimapSize / (viewRadius * 2 + 1));
+                const screenY = minimapY + (dy + viewRadius) * (minimapSize / (viewRadius * 2 + 1));
+                ctx.fillStyle = '#f00';
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        });
+        
+        // Draw pickups on minimap
+        this.pickups.forEach(pickup => {
+            if (pickup.collected) return;
+            const dx = pickup.x - this.engine.player.x;
+            const dy = pickup.y - this.engine.player.y;
+            if (Math.abs(dx) <= viewRadius && Math.abs(dy) <= viewRadius) {
+                const screenX = minimapX + (dx + viewRadius) * (minimapSize / (viewRadius * 2 + 1));
+                const screenY = minimapY + (dy + viewRadius) * (minimapSize / (viewRadius * 2 + 1));
+                ctx.fillStyle = pickup.type === 'health' ? '#0f0' : pickup.type === 'armor' ? '#00f' : '#ff0';
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        });
+        
+        // Draw player on minimap (center)
+        const playerScreenX = minimapX + minimapSize / 2;
+        const playerScreenY = minimapY + minimapSize / 2;
+        
+        ctx.fillStyle = '#0f0';
+        ctx.beginPath();
+        ctx.arc(playerScreenX, playerScreenY, 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw player direction
+        const dirLen = 8;
+        ctx.strokeStyle = '#0f0';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(playerScreenX, playerScreenY);
+        ctx.lineTo(
+            playerScreenX + Math.cos(this.engine.player.angle) * dirLen,
+            playerScreenY + Math.sin(this.engine.player.angle) * dirLen
+        );
+        ctx.stroke();
     }
     
     renderWeapon() {
