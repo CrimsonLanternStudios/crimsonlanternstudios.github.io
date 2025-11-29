@@ -185,8 +185,29 @@ class LevelGenerator {
         const rooms = root.getAllRooms();
         const corridors = root.getAllCorridors();
         
-        // Carve out rooms
+        // Assign texture zones to rooms for visual variety (1-4 are wall types)
+        rooms.forEach((room, index) => {
+            room.wallType = (index % 4) + 1; // Cycle through wall types 1-4
+        });
+        
+        // Carve out rooms and set surrounding wall texture
         rooms.forEach(room => {
+            // Set walls around this room to its texture type
+            for (let y = room.y - 1; y <= room.y + room.height; y++) {
+                for (let x = room.x - 1; x <= room.x + room.width; x++) {
+                    if (y >= 0 && y < this.height && x >= 0 && x < this.width) {
+                        if (y < room.y || y >= room.y + room.height || 
+                            x < room.x || x >= room.x + room.width) {
+                            // Only set wall texture if it's still a wall
+                            if (map[y][x] !== 0) {
+                                map[y][x] = room.wallType;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Carve out the room floor
             for (let y = room.y; y < room.y + room.height; y++) {
                 for (let x = room.x; x < room.x + room.width; x++) {
                     if (y >= 0 && y < this.height && x >= 0 && x < this.width) {
