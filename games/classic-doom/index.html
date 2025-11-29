@@ -523,6 +523,14 @@
                             errorMessage.classList.add('visible');
                             errorMessage.querySelector('p').textContent = 
                                 'Failed to load the game. Please try refreshing.';
+                        } else if (event === "exit" || event === "ws-exit" || event === "wc-exit") {
+                            console.log('DOOM exited, returning to main menu');
+                            // Deactivate window lock on exit
+                            if (windowLock) {
+                                windowLock.deactivate();
+                            }
+                            // Redirect to main website menu
+                            window.location.href = '../../index.html';
                         }
                     }
                 });
