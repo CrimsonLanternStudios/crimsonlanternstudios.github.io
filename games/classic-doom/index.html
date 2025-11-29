@@ -443,6 +443,9 @@
         <p>Game content: <a href="https://freedoom.github.io" target="_blank" rel="noopener">Freedoom Project</a> (GNU GPL)</p>
     </footer>
     
+    <!-- Window Lock Module -->
+    <script src="../window-lock.js"></script>
+    
     <!-- JS-DOS v8 Scripts (hosted locally to avoid CORS issues) -->
     <script src="assets/js-dos.js"></script>
     
@@ -451,6 +454,12 @@
         let dosInstance = null;
         let isMuted = false;
         let isFullscreen = false;
+        let windowLock = null;
+        
+        // Initialize window lock
+        if (typeof WindowLock !== 'undefined') {
+            windowLock = new WindowLock();
+        }
         
         // DOM Elements
         const playButton = document.getElementById('play-button');
@@ -495,8 +504,16 @@
                     onEvent: (event, ci) => {
                         if (event === "ci-ready") {
                             console.log('DOOM loaded successfully!');
+                            // Activate window lock when game is ready
+                            if (windowLock) {
+                                windowLock.activate();
+                            }
                         } else if (event === "error") {
                             console.error('JS-DOS Error:', ci);
+                            // Deactivate window lock on error
+                            if (windowLock) {
+                                windowLock.deactivate();
+                            }
                             // Show error to user
                             jsdosContainer.classList.remove('active');
                             gameControls.classList.remove('active');
@@ -515,6 +532,11 @@
                 loadingScreen.style.display = 'none';
                 jsdosContainer.classList.add('active');
                 gameControls.classList.add('active');
+                
+                // Activate window lock when game starts
+                if (windowLock) {
+                    windowLock.activate();
+                }
                 
             } catch (error) {
                 console.error('Failed to load DOOM:', error);
@@ -596,6 +618,11 @@
          */
         function backToMenu() {
             if (confirm('Return to main menu? Your progress will be lost.')) {
+                // Deactivate window lock
+                if (windowLock) {
+                    windowLock.deactivate();
+                }
+                
                 // Clean up DOS instance safely
                 try {
                     if (dosInstance && typeof dosInstance.exit === 'function') {
@@ -621,6 +648,27 @@
                 isFullscreen = false;
                 fullscreenBtn.textContent = '⛶ Fullscreen';
                 document.body.classList.remove('fullscreen-mode');
+            }
+        });
+        
+        // Handle visibility changes and focus to manage window lock
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && windowLock) {
+                windowLock.deactivate();
+            } else if (!document.hidden && dosInstance && jsdosContainer.classList.contains('active') && windowLock) {
+                windowLock.activate();
+            }
+        });
+        
+        window.addEventListener('focus', () => {
+            if (dosInstance && jsdosContainer.classList.contains('active') && windowLock) {
+                windowLock.activate();
+            }
+        });
+        
+        window.addEventListener('blur', () => {
+            if (windowLock) {
+                windowLock.deactivate();
             }
         });
         

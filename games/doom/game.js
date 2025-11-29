@@ -282,6 +282,16 @@ class CrimsonDoom {
         // Volume control - initialize before setupControls to avoid NaN display
         this.masterVolume = parseFloat(localStorage.getItem('crimsonDoomVolume') || '1.0');
         
+        // Initialize window lock feature
+        this.windowLock = typeof WindowLock !== 'undefined' ? new WindowLock({
+            onDeactivate: () => {
+                // When window lock is deactivated via Escape, also release pointer lock
+                if (document.pointerLockElement && this.running) {
+                    document.exitPointerLock();
+                }
+            }
+        }) : null;
+        
         loadSprites();
         this.setupControls();
         this.setupAudio();
@@ -520,6 +530,15 @@ class CrimsonDoom {
         
         document.addEventListener('pointerlockchange', () => {
             this.engine.handlePointerLockChange();
+            
+            // Activate/deactivate window lock based on pointer lock state
+            if (this.windowLock) {
+                if (document.pointerLockElement) {
+                    this.windowLock.activate();
+                } else {
+                    this.windowLock.deactivate();
+                }
+            }
         });
         
         document.getElementById('startButton').addEventListener('click', () => this.startGame());
@@ -568,6 +587,11 @@ class CrimsonDoom {
         // Release pointer lock
         if (document.pointerLockElement) {
             document.exitPointerLock();
+        }
+        
+        // Deactivate window lock
+        if (this.windowLock) {
+            this.windowLock.deactivate();
         }
         
         // Hide all overlays
@@ -970,6 +994,11 @@ class CrimsonDoom {
             document.exitPointerLock();
         }
         
+        // Deactivate window lock
+        if (this.windowLock) {
+            this.windowLock.deactivate();
+        }
+        
         // Hide canvas
         this.canvas.style.display = 'none';
         
@@ -988,6 +1017,11 @@ class CrimsonDoom {
         if (document.pointerLockElement) {
             document.exitPointerLock();
             console.log('Pointer unlocked');
+        }
+        
+        // Deactivate window lock
+        if (this.windowLock) {
+            this.windowLock.deactivate();
         }
         
         // Hide canvas to ensure overlay shows
