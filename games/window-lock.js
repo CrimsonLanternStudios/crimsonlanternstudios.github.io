@@ -22,7 +22,7 @@ class WindowLock {
         
         // Configuration options with defaults
         this.options = {
-            overlayMessage: options.overlayMessage || 'Game Locked – Press Escape to unlock browser controls',
+            overlayMessage: options.overlayMessage || 'Game Locked — Press Escape to unlock browser controls',
             zIndex: options.zIndex || 10000,
             onActivate: options.onActivate || null,
             onDeactivate: options.onDeactivate || null,
@@ -89,7 +89,7 @@ class WindowLock {
                 color: #fff;
                 padding: 8px 16px;
                 border-radius: 20px;
-                font-family: 'Segoe UI', 'Courier New', monospace;
+                font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
                 font-size: 12px;
                 z-index: ${this.options.zIndex};
                 display: none;
@@ -262,10 +262,8 @@ class WindowLock {
             if (this.isActive) {
                 this.deactivate();
             }
-        } else if (this.options.autoActivateOnFocus) {
-            // Page is visible again - reactivate if configured
-            // We don't auto-reactivate here to let the game decide
         }
+        // Note: We don't auto-reactivate on visibility change to let the game control this behavior
     }
     
     /**

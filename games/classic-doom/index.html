@@ -655,13 +655,13 @@
         document.addEventListener('visibilitychange', () => {
             if (document.hidden && windowLock) {
                 windowLock.deactivate();
-            } else if (!document.hidden && jsdosContainer.classList.contains('active') && windowLock) {
+            } else if (!document.hidden && dosInstance && jsdosContainer.classList.contains('active') && windowLock) {
                 windowLock.activate();
             }
         });
         
         window.addEventListener('focus', () => {
-            if (jsdosContainer.classList.contains('active') && windowLock) {
+            if (dosInstance && jsdosContainer.classList.contains('active') && windowLock) {
                 windowLock.activate();
             }
         });
