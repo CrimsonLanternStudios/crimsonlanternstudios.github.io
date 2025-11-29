@@ -262,28 +262,30 @@ class CrimsonDoom {
         this.time = 0;
         
         this.ui = {
-            health: document.getElementById('health'),
-            armor: document.getElementById('armor'),
-            ammo: document.getElementById('ammo'),
-            weapon: document.getElementById('weapon'),
-            kills: document.getElementById('kills'),
-            level: document.getElementById('level'),
-            keys: document.getElementById('keys'),
+            health: document.querySelector('#health .stat-value'),
+            armor: document.querySelector('#armor .stat-value'),
+            ammo: document.querySelector('#ammo .stat-value'),
+            weapon: document.querySelector('#weapon .stat-value'),
+            kills: document.querySelector('#kills .stat-value'),
+            level: document.querySelector('#level .stat-value'),
+            keys: document.querySelector('#keys .stat-value'),
             container: document.getElementById('ui'),
             menu: document.getElementById('mainMenu'),
             gameOver: document.getElementById('gameOver'),
             levelComplete: document.getElementById('levelComplete'),
             finalKills: document.getElementById('finalKills'),
-            finalLevel: document.getElementById('finalLevel')
+            finalLevel: document.getElementById('finalLevel'),
+            weaponIndicator: document.getElementById('weaponIndicator'),
+            currentWeaponName: document.getElementById('currentWeaponName')
         };
+        
+        // Volume control - initialize before setupControls to avoid NaN display
+        this.masterVolume = parseFloat(localStorage.getItem('crimsonDoomVolume') || '1.0');
         
         loadSprites();
         this.setupControls();
         this.setupAudio();
         this.loadGame();
-        
-        // Volume control
-        this.masterVolume = parseFloat(localStorage.getItem('crimsonDoomVolume') || '1.0');
     }
     
     setVolume(volume) {
@@ -573,6 +575,11 @@ class CrimsonDoom {
         this.ui.levelComplete.style.display = 'none';
         this.ui.container.classList.add('hidden');
         
+        // Hide weapon indicator
+        if (this.ui.weaponIndicator) {
+            this.ui.weaponIndicator.classList.add('hidden');
+        }
+        
         // Show main menu
         this.ui.menu.classList.remove('hidden');
         
@@ -651,6 +658,11 @@ class CrimsonDoom {
         
         this.ui.menu.classList.add('hidden');
         this.ui.container.classList.remove('hidden');
+        
+        // Show weapon indicator
+        if (this.ui.weaponIndicator) {
+            this.ui.weaponIndicator.classList.remove('hidden');
+        }
         
         // Show canvas
         this.canvas.style.display = 'block';
@@ -1000,6 +1012,11 @@ class CrimsonDoom {
         this.ui.weapon.textContent = this.currentWeapon.name;
         this.ui.kills.textContent = this.kills;
         this.ui.level.textContent = this.level;
+        
+        // Update weapon indicator
+        if (this.ui.currentWeaponName) {
+            this.ui.currentWeaponName.textContent = this.currentWeapon.name;
+        }
         
         // Update key display
         const keyText = [];
