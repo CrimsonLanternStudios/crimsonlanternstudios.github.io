@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import games from '../../data/win-games.json';
 ---
 
 <BaseLayout title="Windows Classics — Crimson Lantern Studios">
@@ -12,43 +13,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </p>
 
     <div class="card-grid">
-      <!-- Card 1 — Grand Theft Auto (1997) -->
-      <div class="card game-card coming-soon">
-        <div class="card-header">
-          <h3 class="game-title">Grand Theft Auto</h3>
-          <span class="game-year">1997</span>
+      {games.map((game: any) => (
+        <div class={`card game-card ${game.available ? '' : 'coming-soon'}`}>
+          <div class="card-header">
+            <h3 class="game-title">{game.title}</h3>
+            <span class="game-year">{game.year}</span>
+          </div>
+          <div class="game-meta">
+            <span class="genre-tag">{game.genre}</span>
+            <span class="freeware-badge">{game.status.toUpperCase()}</span>
+          </div>
+          <p class="game-status">Freeware (Rockstar Classics)</p>
+          <p class="game-description">
+            {game.description}
+          </p>
+          <div class="card-footer">
+            {game.available ? (
+              <a href={`/arcade/win-play/${game.slug}`} class="play-now-badge">▶ PLAY NOW</a>
+            ) : (
+              <span class="coming-soon-badge">COMING SOON</span>
+            )}
+          </div>
         </div>
-        <div class="game-meta">
-          <span class="genre-tag">Action / Open World</span>
-          <span class="freeware-badge">FREEWARE</span>
-        </div>
-        <p class="game-status">Freeware (Rockstar Classics)</p>
-        <p class="game-description">
-          Top-down mayhem through Liberty City, San Andreas, and Vice City. Where it all began.
-        </p>
-        <div class="card-footer">
-          <span class="coming-soon-badge">COMING SOON</span>
-        </div>
-      </div>
-
-      <!-- Card 2 — Grand Theft Auto 2 (1999) -->
-      <div class="card game-card coming-soon">
-        <div class="card-header">
-          <h3 class="game-title">Grand Theft Auto 2</h3>
-          <span class="game-year">1999</span>
-        </div>
-        <div class="game-meta">
-          <span class="genre-tag">Action / Open World</span>
-          <span class="freeware-badge">FREEWARE</span>
-        </div>
-        <p class="game-status">Freeware (Rockstar Classics)</p>
-        <p class="game-description">
-          Anywhere City. Seven gangs. One criminal. Officially free from Rockstar.
-        </p>
-        <div class="card-footer">
-          <span class="coming-soon-badge">COMING SOON</span>
-        </div>
-      </div>
+      ))}
     </div>
 
     <p class="more-coming">
@@ -161,6 +148,26 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     display: flex;
     justify-content: flex-end;
     margin-top: 0.5rem;
+  }
+
+  .play-now-badge {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    padding: 0.3em 0.8em;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .play-now-badge:hover {
+    background: rgba(74, 222, 128, 0.2);
+    border-color: rgba(74, 222, 128, 0.4);
   }
 
   .coming-soon-badge {
