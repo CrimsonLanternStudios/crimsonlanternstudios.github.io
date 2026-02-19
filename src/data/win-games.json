@@ -8,6 +8,8 @@
     "description": "Anywhere City. Seven gangs. One criminal. Officially free from Rockstar.",
     "available": true,
     "diskImage": "win98-gta2.img",
+    "diskImageUrl": "",
+    "diskImageSize": 268435456,
     "controls": {
       "Movement": "Arrow Keys",
       "Enter/Exit Vehicle": "Enter",
@@ -26,6 +28,8 @@
     "description": "Top-down mayhem through Liberty City, San Andreas, and Vice City. Where it all began.",
     "available": false,
     "diskImage": "",
+    "diskImageUrl": "",
+    "diskImageSize": 0,
     "controls": {}
   }
 ]

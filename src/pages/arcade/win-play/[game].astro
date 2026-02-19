@@ -575,7 +575,7 @@ if (!game) {
             <!-- v86 Emulator Library -->
             <script is:inline src="/games/win-emulator/libv86.js"></script>
 
-            <script is:inline define:vars={{ diskImage: game.diskImage, gameTitle: game.title }}>
+            <script is:inline define:vars={{ diskImage: game.diskImage, diskImageUrl: game.diskImageUrl || '', diskImageSize: game.diskImageSize || 0, gameTitle: game.title }}>
                 // Game state
                 var emulator = null;
                 var isFullscreen = false;
@@ -610,7 +610,7 @@ if (!game) {
                         progressText.textContent = 'Initializing emulator...';
                         progressBarFill.style.width = '5%';
 
-                        var imagePath = '/games/win-images/' + diskImage;
+                        var imagePath = diskImageUrl || ('/games/win-images/' + diskImage);
 
                         // First fetch the image with progress tracking
                         var xhr = new XMLHttpRequest();

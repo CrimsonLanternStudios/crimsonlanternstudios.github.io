@@ -2,6 +2,12 @@
 
 This directory holds bootable Windows disk images used by the v86 browser-based x86 emulator.
 
+## Status
+
+**The disk image `win98-gta2.img` has not been created yet.** It must be built manually on a machine with a graphical desktop (the Windows 98 installer requires interactive GUI input and cannot be automated headlessly).
+
+Git LFS is configured (see `.gitattributes` in the repo root) to track `*.img` and `*.img.zst` files in this directory.
+
 ## Required Image: `win98-gta2.img`
 
 A flat (raw) hard disk image containing a minimal Windows 98 SE installation with GTA 2 pre-installed.
@@ -11,7 +17,7 @@ A flat (raw) hard disk image containing a minimal Windows 98 SE installation wit
 | Property | Value |
 |---|---|
 | Format | Raw / flat disk image (`.img`) |
-| Target size | 150–200 MB (smaller is better) |
+| Target size | 150–300 MB (smaller is better) |
 | OS | Windows 98 Second Edition |
 | Pre-installed game | Grand Theft Auto 2 (freeware) |
 | Resolution | 800×600, 256-color or 16-bit |
@@ -19,97 +25,154 @@ A flat (raw) hard disk image containing a minimal Windows 98 SE installation wit
 
 ### How to Create the Image
 
-1. **Install QEMU** (or another x86 virtualizer):
-   ```bash
-   # Ubuntu/Debian
-   sudo apt install qemu-system-x86
+> **Requirements:** A machine with a graphical desktop environment, QEMU installed, and a Windows 98 SE ISO.
 
-   # macOS (Homebrew)
-   brew install qemu
-   ```
+#### 1. Install QEMU
 
-2. **Create a blank disk image** (256 MB is a good starting size):
-   ```bash
-   qemu-img create -f raw win98-gta2.img 256M
-   ```
-
-3. **Install Windows 98 SE** using a legitimate CD image:
-   ```bash
-   qemu-system-i386 -hda win98-gta2.img -cdrom win98se.iso -boot d -m 128
-   ```
-   - Use 128 MB RAM, Sound Blaster 16 compatible audio
-   - Install minimal components (skip optional accessories, tools, etc.)
-   - Set display to 800×600
-
-4. **Install GTA 2 freeware**:
-   - GTA 2 was officially released as freeware by Rockstar Games via their "Rockstar Classics" program
-   - The freeware installer can be found on archive.org:
-     - Search for "GTA2 freeware Rockstar" on https://archive.org
-     - Original URL (defunct): https://www.rockstargames.com/classics/
-   - Mount the GTA 2 installer ISO or files as a secondary drive in QEMU:
-     ```bash
-     qemu-system-i386 -hda win98-gta2.img -cdrom gta2-setup.iso -m 128
-     ```
-   - Install GTA 2 and create a desktop shortcut
-   - Test that the game launches successfully
-
-5. **Strip unnecessary files** to reduce image size:
-   - Remove Windows help files, wallpapers, screensavers
-   - Clear Temp folders
-   - Remove setup/install caches
-   - Run Disk Cleanup if available
-   - Delete `WIN386.SWP` (swap file)
-
-6. **Compact the image**:
-   - Inside Windows, use a tool to zero-fill free space (e.g., `sdelete` or manually write zeros)
-   - Then shrink the image:
-     ```bash
-     qemu-img convert -f raw -O raw win98-gta2.img win98-gta2-compact.img
-     ```
-
-7. **Place the final image** in this directory:
-   ```
-   public/games/win-images/win98-gta2.img
-   ```
-
-### GitHub File Size Limits
-
-GitHub has a 100 MB per-file limit. If your image exceeds this:
-
-**Option A — Git LFS:**
 ```bash
-git lfs install
-git lfs track "public/games/win-images/*.img"
-git add .gitattributes
+# Ubuntu/Debian
+sudo apt install qemu-system-x86 qemu-utils
+
+# macOS (Homebrew)
+brew install qemu
+
+# Windows (via MSYS2 or Chocolatey)
+choco install qemu
+```
+
+#### 2. Create a blank disk image (256 MB)
+
+```bash
+qemu-img create -f raw win98-gta2.img 256M
+```
+
+#### 3. Install Windows 98 SE
+
+You need a Windows 98 SE ISO. Sources:
+- WinWorldPC: https://winworldpc.com/product/windows-98/98-second-edition
+- Archive.org: search "Windows 98 SE ISO"
+
+Run the installer in QEMU (requires a graphical desktop for the interactive setup):
+```bash
+qemu-system-i386 -m 128 -M pc,acpi=off -hda win98-gta2.img -cdrom win98se.iso -boot d -device sb16
+```
+
+Follow the v86 project's Windows 9x installation guide for troubleshooting:
+https://github.com/copy/v86/blob/master/docs/windows-9x.md
+
+Key notes:
+- Use 128 MB RAM
+- Disable ACPI (`-M pc,acpi=off`) for v86 compatibility
+- Install minimal components (skip optional accessories, tools, etc.)
+- Set display to 800×600
+
+#### 4. Optimize the Windows 98 installation
+
+After installing Windows 98, boot the image and:
+- Disable screen saver (Display Properties → Screen Saver → None)
+- Disable Active Desktop
+- Set desktop wallpaper to solid black
+- Remove unnecessary startup programs (Start → Run → `msconfig`)
+- Delete Windows help files, wallpapers, screensavers from `C:\WINDOWS\`
+- Delete `C:\WINDOWS\WIN386.SWP` (swap file) — it gets recreated on boot
+- Clear `C:\WINDOWS\TEMP\`
+
+#### 5. Install GTA 2 freeware
+
+GTA 2 was officially released as freeware by Rockstar Games via their "Rockstar Classics" program.
+
+Source the freeware installer:
+- Archive.org: search "GTA2 freeware Rockstar" at https://archive.org
+- Original URL (now defunct): https://www.rockstargames.com/classics/
+
+Transfer the installer into the VM using a secondary ISO:
+```bash
+# Create an ISO with the GTA 2 installer
+genisoimage -o gta2-installer.iso -J -r /path/to/gta2-setup-files/
+
+# Boot the VM with the installer ISO as a CD-ROM
+qemu-system-i386 -m 128 -M pc,acpi=off -hda win98-gta2.img -cdrom gta2-installer.iso -device sb16
+```
+
+Inside the VM:
+- Run the GTA 2 installer from the CD-ROM drive
+- Create a desktop shortcut to `GTA2.exe`
+- (Optional) Add a shortcut to the Startup folder for auto-launch
+- Test that the game launches successfully
+
+#### 6. Compact the image
+
+Inside the VM, zero-fill free space (makes compression much more effective):
+```bat
+REM Inside Windows 98 MS-DOS Prompt:
+REM Create a file that fills all free space with zeros
+copy /b NUL C:\ZERO.FIL
+REM Then delete it
+del C:\ZERO.FIL
+```
+
+Or use a tool like `sdelete -z C:` if available.
+
+#### 7. Compress with Zstandard (optional, recommended)
+
+```bash
+zstd --ultra -22 win98-gta2.img -o win98-gta2.img.zst
+```
+
+Note: If using a `.zst` compressed image, the player template currently downloads and decompresses the full image. Update the `diskImage` field in `src/data/win-games.json` to use the `.zst` filename.
+
+#### 8. Place the final image
+
+Copy the image to this directory:
+```
+public/games/win-images/win98-gta2.img
+```
+
+Then commit with Git LFS (already configured in `.gitattributes`):
+```bash
 git add public/games/win-images/win98-gta2.img
 git commit -m "Add Win98 + GTA2 disk image via LFS"
 ```
 
-**Option B — External hosting:**
-Host the image on a CDN, cloud storage, or other file host and update the image URL in `src/pages/arcade/win-play/[game].astro`. The v86 emulator supports loading disk images from arbitrary URLs:
-```javascript
-// Replace IMAGE_SIZE_BYTES with the exact file size in bytes (e.g., from `ls -l` or `stat`)
-hda: { url: "https://your-cdn.example.com/win98-gta2.img", size: 268435456 }
-```
+### Alternative: External Hosting
 
-When using an external URL, ensure the server sends proper CORS headers (`Access-Control-Allow-Origin: *`).
+If the image is too large for Git LFS or GitHub Pages, host it externally:
+
+1. Upload to a CDN (Cloudflare R2, AWS S3, etc.)
+2. Ensure CORS is enabled: `Access-Control-Allow-Origin: *`
+3. Update `src/data/win-games.json` — set the `diskImageUrl` field:
+   ```json
+   {
+     "diskImageUrl": "https://your-cdn.example.com/win98-gta2.img",
+     "diskImageSize": 268435456
+   }
+   ```
+4. The player template automatically uses `diskImageUrl` when set
 
 ### v86 Compatibility Notes
 
 - v86 expects **raw/flat disk images** (not VMDK, VDI, QCOW2, etc.)
 - The emulator maps the image as the primary hard drive (HDA)
-- v86 supports `async: true` for the disk image, which enables lazy-loading (chunks are fetched on demand rather than downloading the entire image upfront). This requires the server to support HTTP Range requests.
 - Windows 98 SE works best with v86; Windows 95 also works but has fewer driver options
 - Set memory to 128 MB in the emulator config for best Win98 compatibility
+- Use `-M pc,acpi=off` during QEMU installation for v86 compatibility
+- See the full v86 Windows 9x guide: https://github.com/copy/v86/blob/master/docs/windows-9x.md
 
 ### Testing the Image
 
-You can test the image locally with v86's demo page or with QEMU:
+Test locally with QEMU before deploying:
 ```bash
-qemu-system-i386 -hda win98-gta2.img -m 128
+qemu-system-i386 -m 128 -M pc,acpi=off -hda win98-gta2.img
 ```
 
 The image should:
 1. Boot to Windows 98 desktop without user intervention
 2. Have a GTA 2 shortcut on the desktop or in the Start Menu
 3. Launch GTA 2 successfully when the shortcut is double-clicked
+
+Test in the browser:
+```bash
+cd /path/to/repo
+npm run dev
+# Navigate to http://localhost:4321/arcade/win-play/gta2
+```
