@@ -1,5 +1,8 @@
 ---
 import '../styles/global.css';
+import AmbientBackground from '../components/AmbientBackground.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
   title: string;
@@ -29,8 +32,11 @@ const { title } = Astro.props;
     />
   </head>
   <body>
-    <!-- Step 2: Navigation goes here -->
-    <slot />
-    <!-- Step 2: Footer goes here -->
+    <AmbientBackground />
+    <Nav />
+    <main style="padding-top: var(--nav-height, 64px);">
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>
