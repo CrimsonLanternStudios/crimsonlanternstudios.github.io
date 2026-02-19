@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('devlog')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<BaseLayout title="Devlog — Crimson Lantern Studios">
+  <section class="devlog-listing">
+    <div class="section-label">DEVELOPMENT LOG</div>
+    <h1 class="section-title">All Updates</h1>
+    <div class="section-divider"></div>
+
+    {posts.map((post) => (
+      <a href={`/devlog/${post.id.replace(/\.md$/, '')}/`} class="devlog-card-link">
+        <article class="devlog-card fade-in">
+          <time class="devlog-date" datetime={post.data.date.toISOString().slice(0, 10)}>
+            {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
+          </time>
+          <h3 class="devlog-title">{post.data.title}</h3>
+          <p class="devlog-excerpt">{post.data.excerpt}</p>
+          <span class="devlog-tag">{post.data.tag}</span>
+        </article>
+      </a>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .devlog-listing {
+    max-width: 800px;
+  }
+
+  .devlog-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .devlog-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .devlog-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-glow);
+    background: var(--bg-card-hover);
+    border-left: 3px solid var(--crimson);
+    border-image: linear-gradient(to bottom, var(--crimson), var(--purple-deep)) 1;
+    border-image-slice: 0 0 0 1;
+  }
+
+  .devlog-date {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--crimson);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .devlog-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+
+  .devlog-excerpt {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 0.8rem;
+  }
+
+  .devlog-tag {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--crimson);
+    background: rgba(220, 20, 60, 0.1);
+    padding: 0.2rem 0.65rem;
+    border-radius: 3px;
+  }
+</style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll('.fade-in').forEach((el) => {
+    observer.observe(el);
+  });
+</script>
