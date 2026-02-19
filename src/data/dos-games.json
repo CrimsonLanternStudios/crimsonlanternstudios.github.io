@@ -29,7 +29,7 @@
     "status": "shareware",
     "description": "Side-scrolling action. Save Earth from Dr. Proton's techno-terrors.",
     "bundle": "duke-nukem-1.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Movement": "Arrow Keys",
       "Jump": "Alt",
@@ -130,7 +130,7 @@
     "status": "freeware",
     "description": "EA released the Gold edition free. GDI vs Nod begins here.",
     "bundle": "command-and-conquer.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Select": "Left Click",
       "Move/Attack": "Right Click",
@@ -247,7 +247,7 @@
     "status": "freeware",
     "description": "Sierra released it free. Raymond E. Feist's epic in nine chapters.",
     "bundle": "betrayal-at-krondor.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Movement": "Arrow Keys",
       "Interact": "Enter",
