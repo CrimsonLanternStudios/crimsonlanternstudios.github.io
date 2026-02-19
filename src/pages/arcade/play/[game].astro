@@ -1,0 +1,777 @@
+---
+import games from '../../../data/dos-games.json';
+
+export function getStaticPaths() {
+  return games.map((game: any) => ({
+    params: { game: game.slug },
+  }));
+}
+
+const { game: slug } = Astro.params;
+const game = games.find((g: any) => g.slug === slug);
+
+if (!game) {
+  return Astro.redirect('/arcade/dos');
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{game.title} - Crimson Lantern Studios</title>
+
+    {game.available && (
+        <link rel="stylesheet" href="/games/emulator/js-dos.css">
+    )}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header styling - compact CLS branded header */
+        header {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .header-divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(255,255,255,0.4);
+        }
+
+        .header-game-title {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Main content area */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        /* Game container */
+        #game-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Loading screen */
+        #loading-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        #loading-screen h2 {
+            color: #8B0000;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #loading-screen .subtitle {
+            color: #aaa;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        /* Play button */
+        .play-button {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            color: #fff;
+            border: 3px solid #fff;
+            padding: 20px 60px;
+            font-size: 28px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+            margin: 1rem;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.5);
+        }
+
+        .play-button:hover {
+            background: linear-gradient(135deg, #A00000 0%, #FF1744 100%);
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(139, 0, 0, 0.8);
+        }
+
+        .play-button:disabled {
+            background: #444;
+            border-color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Controls panel */
+        .controls-panel {
+            background: rgba(40, 40, 40, 0.9);
+            border: 2px solid #8B0000;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .controls-panel h3 {
+            color: #DC143C;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .control-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .control-key {
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        /* JS-DOS canvas container */
+        #jsdos-container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: #000;
+            border: 3px solid #8B0000;
+            border-radius: 5px;
+            display: none;
+            position: relative;
+        }
+
+        #jsdos-container.active {
+            display: block;
+        }
+
+        /* Canvas within container */
+        #jsdos-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+        }
+
+        /* Control buttons bar */
+        .game-controls {
+            display: none;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .game-controls.active {
+            display: flex;
+        }
+
+        .control-btn {
+            background: #333;
+            color: #fff;
+            border: 2px solid #8B0000;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+
+        .control-btn:hover {
+            background: #8B0000;
+            transform: translateY(-2px);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Loading indicator */
+        .loader {
+            border: 4px solid #333;
+            border-top: 4px solid #DC143C;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loading-status {
+            color: #aaa;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Legal notice */
+        .legal-notice {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.8rem;
+            color: #888;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .legal-notice a {
+            color: #DC143C;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: #888;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.8rem;
+            border-top: 1px solid #333;
+        }
+
+        footer a {
+            color: #DC143C;
+        }
+
+        /* Fullscreen styles */
+        .fullscreen-mode #jsdos-container {
+            max-width: 100%;
+            max-height: 100vh;
+            border: none;
+            border-radius: 0;
+        }
+
+        /* Mobile touch controls hint */
+        .touch-hint {
+            display: none;
+            color: #FFD700;
+            text-align: center;
+            margin: 0.5rem 0;
+            font-size: 0.85rem;
+        }
+
+        @media (pointer: coarse) {
+            .touch-hint {
+                display: block;
+            }
+        }
+
+        /* Coming soon state */
+        .coming-soon {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .coming-soon h2 {
+            color: #8B0000;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .coming-soon .subtitle {
+            color: #aaa;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .coming-soon .badge {
+            display: inline-block;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 0.4rem 1.2rem;
+            border-radius: 4px;
+            color: #FFB300;
+            background: rgba(255, 179, 0, 0.12);
+            margin-bottom: 2rem;
+        }
+
+        .coming-soon .back-arcade {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #DC143C;
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+
+        .coming-soon .back-arcade:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Error message */
+        .error-message {
+            background: rgba(139, 0, 0, 0.3);
+            border: 2px solid #8B0000;
+            color: #ff6666;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .header-left {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+
+            .header-divider {
+                display: none;
+            }
+
+            .play-button {
+                padding: 15px 40px;
+                font-size: 20px;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <a href="/" class="header-logo">🔥 CLS</a>
+            <div class="header-divider"></div>
+            <span class="header-game-title">{game.title}</span>
+        </div>
+        <a href="/arcade/dos" class="back-link">◀ Back to Arcade</a>
+    </header>
+
+    <main>
+        <div id="game-container">
+            {game.available ? (
+                <>
+                    <!-- Loading Screen -->
+                    <div id="loading-screen">
+                        <h2>{game.title}</h2>
+                        <p class="subtitle">Play {game.title} ({game.year}) in your browser</p>
+
+                        <!-- Error Message -->
+                        <div id="error-message" class="error-message">
+                            <p>Failed to load the game. Please try refreshing the page.</p>
+                        </div>
+
+                        <!-- Play Button -->
+                        <button id="play-button" class="play-button">
+                            ▶ PLAY {game.title}
+                        </button>
+
+                        <!-- Loading Indicator (hidden by default) -->
+                        <div id="loader" class="loader" style="display: none;"></div>
+                        <p id="loading-status" style="display: none;">Initializing DOS emulator...</p>
+
+                        <!-- Controls Panel -->
+                        <div class="controls-panel">
+                            <h3>🎮 CONTROLS</h3>
+                            <div class="controls-grid">
+                                {Object.entries(game.controls).map(([action, key]) => (
+                                    <div class="control-item">
+                                        <span>{action}</span>
+                                        <span class="control-key">{key}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <p class="touch-hint">📱 Touch controls are available on mobile devices</p>
+                        </div>
+
+                        <!-- Legal Notice -->
+                        <div class="legal-notice">
+                            <p>Powered by <a href="https://js-dos.com" target="_blank" rel="noopener">JS-DOS</a> emulator.</p>
+                            <p>Game distributed under its original {game.status} license.</p>
+                        </div>
+                    </div>
+
+                    <!-- Game Canvas Container (hidden until game starts) -->
+                    <div id="jsdos-container"></div>
+
+                    <!-- Game Controls Bar -->
+                    <div id="game-controls" class="game-controls">
+                        <button id="fullscreen-btn" class="control-btn">⛶ Fullscreen</button>
+                        <button id="mute-btn" class="control-btn">🔊 Mute</button>
+                        <button id="restart-btn" class="control-btn">🔄 Restart</button>
+                        <button id="back-btn" class="control-btn">◀ Back to Arcade</button>
+                    </div>
+                </>
+            ) : (
+                <div class="coming-soon">
+                    <h2>{game.title}</h2>
+                    <p class="subtitle">{game.description}</p>
+                    <span class="badge">COMING SOON</span>
+                    <br />
+                    <p class="subtitle">{game.year} · {game.genre} · {game.status.toUpperCase()}</p>
+                    <a href="/arcade/dos" class="back-arcade">◀ Browse the Arcade</a>
+                </div>
+            )}
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Crimson Lantern Studios. All rights reserved.</p>
+        <p>DOS emulation by <a href="https://js-dos.com" target="_blank" rel="noopener">JS-DOS</a></p>
+    </footer>
+
+    {game.available && (
+        <>
+            <!-- Window Lock Module -->
+            <script is:inline src="/games/emulator/window-lock.js"></script>
+
+            <!-- JS-DOS v8 Scripts -->
+            <script is:inline src="/games/emulator/js-dos.js"></script>
+
+            <script is:inline define:vars={{ bundlePath: `/games/bundles/${game.bundle}`, gameTitle: game.title }}>
+                // Game state
+                let dosInstance = null;
+                let isMuted = false;
+                let isFullscreen = false;
+                let windowLock = null;
+
+                // Initialize window lock
+                if (typeof WindowLock !== 'undefined') {
+                    windowLock = new WindowLock();
+                }
+
+                // DOM Elements
+                const playButton = document.getElementById('play-button');
+                const loadingScreen = document.getElementById('loading-screen');
+                const jsdosContainer = document.getElementById('jsdos-container');
+                const gameControls = document.getElementById('game-controls');
+                const loader = document.getElementById('loader');
+                const loadingStatus = document.getElementById('loading-status');
+                const errorMessage = document.getElementById('error-message');
+                const fullscreenBtn = document.getElementById('fullscreen-btn');
+                const muteBtn = document.getElementById('mute-btn');
+                const restartBtn = document.getElementById('restart-btn');
+                const backBtn = document.getElementById('back-btn');
+
+                /**
+                 * Start the game
+                 */
+                async function startGame() {
+                    try {
+                        // Show loading state
+                        playButton.disabled = true;
+                        playButton.textContent = 'LOADING...';
+                        loader.style.display = 'block';
+                        loadingStatus.style.display = 'block';
+                        errorMessage.classList.remove('visible');
+
+                        loadingStatus.textContent = 'Loading ' + gameTitle + '...';
+
+                        // Initialize Dos with shared emulator assets
+                        dosInstance = Dos(jsdosContainer, {
+                            url: bundlePath,
+                            pathPrefix: "/games/emulator/emulators/",
+                            noCloud: true,
+                            autoStart: true,
+                            onEvent: function(event, ci) {
+                                if (event === "ci-ready") {
+                                    console.log(gameTitle + ' loaded successfully!');
+                                    if (windowLock) {
+                                        windowLock.activate();
+                                    }
+                                } else if (event === "error") {
+                                    console.error('JS-DOS Error:', ci);
+                                    if (windowLock) {
+                                        windowLock.deactivate();
+                                    }
+                                    jsdosContainer.classList.remove('active');
+                                    gameControls.classList.remove('active');
+                                    loadingScreen.style.display = 'flex';
+                                    playButton.disabled = false;
+                                    playButton.textContent = '▶ PLAY ' + gameTitle;
+                                    errorMessage.classList.add('visible');
+                                    errorMessage.querySelector('p').textContent =
+                                        'Failed to load the game. Please try refreshing.';
+                                } else if (event === "exit" || event === "ws-exit" || event === "wc-exit") {
+                                    console.log(gameTitle + ' exited');
+                                    if (windowLock) {
+                                        windowLock.deactivate();
+                                    }
+                                    window.location.href = '/arcade/dos';
+                                }
+                            }
+                        });
+
+                        // Hide loading screen and show the JS-DOS container
+                        loadingScreen.style.display = 'none';
+                        jsdosContainer.classList.add('active');
+                        gameControls.classList.add('active');
+
+                        if (windowLock) {
+                            windowLock.activate();
+                        }
+
+                    } catch (error) {
+                        console.error('Failed to load ' + gameTitle + ':', error);
+                        playButton.disabled = false;
+                        playButton.textContent = '▶ PLAY ' + gameTitle;
+                        loader.style.display = 'none';
+                        loadingStatus.style.display = 'none';
+                        errorMessage.classList.add('visible');
+                        errorMessage.querySelector('p').textContent =
+                            'Failed to load the game: ' + (error.message || 'Unknown error') + '. Please try refreshing.';
+                    }
+                }
+
+                /**
+                 * Toggle fullscreen mode
+                 */
+                function toggleFullscreen() {
+                    var container = jsdosContainer;
+
+                    if (!document.fullscreenElement) {
+                        if (container.requestFullscreen) {
+                            container.requestFullscreen();
+                        } else if (container.webkitRequestFullscreen) {
+                            container.webkitRequestFullscreen();
+                        } else if (container.msRequestFullscreen) {
+                            container.msRequestFullscreen();
+                        }
+                        isFullscreen = true;
+                        fullscreenBtn.textContent = '⛶ Exit Fullscreen';
+                        document.body.classList.add('fullscreen-mode');
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen();
+                        }
+                        isFullscreen = false;
+                        fullscreenBtn.textContent = '⛶ Fullscreen';
+                        document.body.classList.remove('fullscreen-mode');
+                    }
+                }
+
+                /**
+                 * Toggle mute state
+                 */
+                function toggleMute() {
+                    isMuted = !isMuted;
+                    muteBtn.textContent = isMuted ? '🔇 Unmute' : '🔊 Mute';
+
+                    try {
+                        if (dosInstance && typeof dosInstance.setVolume === 'function') {
+                            dosInstance.setVolume(isMuted ? 0 : 1);
+                        }
+                    } catch (e) {
+                        console.log('setVolume not available:', e);
+                    }
+
+                    var audioElements = document.querySelectorAll('audio');
+                    audioElements.forEach(function(audio) {
+                        audio.muted = isMuted;
+                    });
+                }
+
+                /**
+                 * Restart the game
+                 */
+                function restartGame() {
+                    if (confirm('Are you sure you want to restart? Your progress will be lost.')) {
+                        location.reload();
+                    }
+                }
+
+                /**
+                 * Go back to arcade
+                 */
+                function backToArcade() {
+                    if (confirm('Return to the arcade? Your progress will be lost.')) {
+                        if (windowLock) {
+                            windowLock.deactivate();
+                        }
+
+                        try {
+                            if (dosInstance && typeof dosInstance.exit === 'function') {
+                                dosInstance.exit();
+                            }
+                        } catch (e) {
+                            console.log('exit not available:', e);
+                        }
+
+                        window.location.href = '/arcade/dos';
+                    }
+                }
+
+                // Handle fullscreen change events
+                document.addEventListener('fullscreenchange', function() {
+                    if (!document.fullscreenElement) {
+                        isFullscreen = false;
+                        fullscreenBtn.textContent = '⛶ Fullscreen';
+                        document.body.classList.remove('fullscreen-mode');
+                    }
+                });
+
+                // Handle visibility changes and focus to manage window lock
+                document.addEventListener('visibilitychange', function() {
+                    if (document.hidden && windowLock) {
+                        windowLock.deactivate();
+                    } else if (!document.hidden && dosInstance && jsdosContainer.classList.contains('active') && windowLock) {
+                        windowLock.activate();
+                    }
+                });
+
+                window.addEventListener('focus', function() {
+                    if (dosInstance && jsdosContainer.classList.contains('active') && windowLock) {
+                        windowLock.activate();
+                    }
+                });
+
+                window.addEventListener('blur', function() {
+                    if (windowLock) {
+                        windowLock.deactivate();
+                    }
+                });
+
+                // Event Listeners
+                playButton.addEventListener('click', startGame);
+                fullscreenBtn.addEventListener('click', toggleFullscreen);
+                muteBtn.addEventListener('click', toggleMute);
+                restartBtn.addEventListener('click', restartGame);
+                backBtn.addEventListener('click', backToArcade);
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'F11' || (e.key === 'f' && e.altKey)) {
+                        e.preventDefault();
+                        if (jsdosContainer.classList.contains('active')) {
+                            toggleFullscreen();
+                        }
+                    }
+
+                    if (e.key === 'm' && e.altKey) {
+                        e.preventDefault();
+                        if (jsdosContainer.classList.contains('active')) {
+                            toggleMute();
+                        }
+                    }
+                });
+
+                // Gamepad support detection
+                window.addEventListener('gamepadconnected', function(e) {
+                    console.log('Gamepad connected:', e.gamepad.id);
+                });
+
+                // Prevent context menu on game canvas
+                jsdosContainer.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                });
+            </script>
+        </>
+    )}
+</body>
+</html>
