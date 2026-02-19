@@ -23,17 +23,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
 
-    <!-- Secondary Project -->
-    <div class="project-card fade-in">
-      <h4 class="project-title">Game 8 — VR Racing Concept</h4>
-      <p class="project-desc">Early concept phase. Rock n' Roll Racing meets Burnout 3's destruction mechanics in VR. Vehicular combat at breakneck speed.</p>
-      <span class="project-status">○ Concept Phase</span>
-      <div class="tag-row">
-        <span class="tag">VR</span>
-        <span class="tag">Racing</span>
-        <span class="tag">Vehicular Combat</span>
-      </div>
-    </div>
+
   </section>
 
 </BaseLayout>
@@ -115,44 +105,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border-radius: 3px;
   }
 
-  /* Secondary Project Card */
-  .project-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    padding: 1.5rem;
-    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
-  }
 
-  .project-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--border-glow);
-    background: var(--bg-card-hover);
-  }
-
-  .project-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-  }
-
-  .project-desc {
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    line-height: 1.65;
-    margin-bottom: 0.75rem;
-  }
-
-  .project-status {
-    display: block;
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 0.75rem;
-  }
 
   /* Responsive */
   @media (max-width: 768px) {

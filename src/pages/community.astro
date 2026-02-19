@@ -31,12 +31,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </a>
     </div>
 
-    <!-- Methodology Section -->
-    <div class="methodology-card fade-in">
-      <h3 class="methodology-title">Want to build like we do?</h3>
-      <p class="methodology-desc">We believe in sharing knowledge, not gatekeeping it. If you're a developer interested in ethical AI-augmented pipelines, we'll teach you our methodology for free. All we ask is that you spread the word.</p>
-      <a href="#" class="cta-btn">Get in Touch</a>
-    </div>
+
   </section>
 
 </BaseLayout>
@@ -84,56 +79,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     letter-spacing: 0.12em;
   }
 
-  /* Methodology Card */
-  .methodology-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    padding: 2rem;
-    transition: border-color 0.3s ease;
-  }
 
-  .methodology-card:hover {
-    border-color: var(--border-glow);
-  }
-
-  .methodology-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.75rem;
-  }
-
-  .methodology-desc {
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 1rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    margin-bottom: 1.25rem;
-  }
-
-  /* CTA Button */
-  .cta-btn {
-    display: inline-block;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: #fff;
-    background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
-    padding: 0.65rem 1.75rem;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .cta-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(220, 20, 60, 0.3);
-    color: #fff;
-  }
 
   /* Responsive */
   @media (max-width: 768px) {
