@@ -114,12 +114,17 @@ const games = [
     border-left: 3px solid var(--crimson);
   }
 
-  /* Coming soon card: dimmed */
+  /* Coming soon card: dimmed — :global(.visible) overrides .fade-in.visible opacity */
   .game-card--soon {
     opacity: 0.7;
   }
 
-  .game-card--soon:hover {
+  .game-card--soon:global(.visible) {
+    opacity: 0.7;
+  }
+
+  .game-card--soon:hover,
+  .game-card--soon:global(.visible):hover {
     opacity: 1;
   }
 
