@@ -88,7 +88,8 @@ git commit -m "Add Win98 + GTA2 disk image via LFS"
 **Option B — External hosting:**
 Host the image on a CDN, cloud storage, or other file host and update the image URL in `src/pages/arcade/win-play/[game].astro`. The v86 emulator supports loading disk images from arbitrary URLs:
 ```javascript
-hda: { url: "https://your-cdn.example.com/win98-gta2.img", size: IMAGE_SIZE_BYTES }
+// Replace IMAGE_SIZE_BYTES with the exact file size in bytes (e.g., from `ls -l` or `stat`)
+hda: { url: "https://your-cdn.example.com/win98-gta2.img", size: 268435456 }
 ```
 
 When using an external URL, ensure the server sends proper CORS headers (`Access-Control-Allow-Origin: *`).
