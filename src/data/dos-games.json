@@ -147,7 +147,7 @@
     "status": "preservation",
     "description": "The grandfather of real-time strategy. Control the spice.",
     "bundle": "dune-ii.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Select": "Left Click",
       "Move/Attack": "Left Click",
@@ -163,7 +163,7 @@
     "status": "preservation",
     "description": "Build an empire from the stone age to the space age.",
     "bundle": "civilization-1.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Move Unit": "Arrow Keys / Numpad",
       "Center Map": "C",
@@ -180,7 +180,7 @@
     "status": "preservation",
     "description": "The definitive city builder. Arcologies await.",
     "bundle": "simcity-2000.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Place Tool": "Left Click",
       "Scroll Map": "Arrow Keys",
@@ -197,7 +197,7 @@
     "status": "preservation",
     "description": "Shape an entire planet's evolution. Will Wright's Gaia experiment.",
     "bundle": "simearth.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Place Tool": "Left Click",
       "Select Menu": "Right Click",
