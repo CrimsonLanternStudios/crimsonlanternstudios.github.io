@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "gta2",
+    "title": "Grand Theft Auto 2",
+    "year": 1999,
+    "genre": "Action / Open World",
+    "status": "freeware",
+    "description": "Anywhere City. Seven gangs. One criminal. Officially free from Rockstar.",
+    "available": true,
+    "diskImage": "win98-gta2.img",
+    "controls": {
+      "Movement": "Arrow Keys",
+      "Enter/Exit Vehicle": "Enter",
+      "Fire Weapon": "Ctrl",
+      "Jump": "Space",
+      "Weapon Cycle": "Tab",
+      "Camera": "Insert / Delete"
+    }
+  },
+  {
+    "slug": "gta1",
+    "title": "Grand Theft Auto",
+    "year": 1997,
+    "genre": "Action / Open World",
+    "status": "freeware",
+    "description": "Top-down mayhem through Liberty City, San Andreas, and Vice City. Where it all began.",
+    "available": false,
+    "diskImage": "",
+    "controls": {}
+  }
+]
