@@ -63,7 +63,7 @@
     "status": "freeware",
     "description": "Collect gems, dodge hazards, build your own levels.",
     "bundle": "jetpack.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Movement": "Arrow Keys",
       "Jetpack": "Alt",
@@ -98,7 +98,7 @@
     "status": "freeware",
     "description": "140+ levels of brick-breaking with power-ups galore.",
     "bundle": "aquanoid.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Move Paddle": "← / →",
       "Launch Ball": "Space"
@@ -113,7 +113,7 @@
     "status": "freeware",
     "description": "One of the greatest vertical shooters ever made. Full game.",
     "bundle": "tyrian-2000.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Movement": "Arrow Keys",
       "Fire": "Space",
@@ -230,7 +230,7 @@
     "status": "freeware",
     "description": "All 3 episodes free. Snake Logan versus mutant hordes.",
     "bundle": "bio-menace.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Movement": "Arrow Keys",
       "Jump": "Alt",
