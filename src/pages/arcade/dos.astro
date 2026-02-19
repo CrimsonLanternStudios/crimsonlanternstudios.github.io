@@ -1,8 +1,251 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const games = [
+  { title: "Doom", year: 1993, genre: "FPS", genreColor: "crimson", legal: "SHAREWARE", desc: "The one that started it all. Fight through demon-infested corridors on Mars.", status: "play", url: "/games/classic-doom/index.html" },
+  { title: "Duke Nukem 1", year: 1991, genre: "Platformer", genreColor: "purple", legal: "SHAREWARE", desc: "Side-scrolling action. Save Earth from Dr. Proton's techno-terrors.", status: "soon" },
+  { title: "Duke Nukem II", year: 1993, genre: "Platformer", genreColor: "purple", legal: "SHAREWARE", desc: "Duke's back with bigger guns and alien-busting attitude.", status: "soon" },
+  { title: "Jetpack", year: 1993, genre: "Puzzle-Platformer", genreColor: "green", legal: "FREEWARE", desc: "Collect gems, dodge hazards, build your own levels.", status: "soon" },
+  { title: "Descent", year: 1995, genre: "6DOF Shooter", genreColor: "crimson", legal: "SHAREWARE", desc: "Full 360° zero-gravity combat inside asteroid mines.", status: "soon" },
+  { title: "Aquanoid", year: 1992, genre: "Brick Breaker", genreColor: "green", legal: "FREEWARE", desc: "140+ levels of brick-breaking with power-ups galore.", status: "soon" },
+  { title: "Tyrian 2000", year: 1999, genre: "Shmup", genreColor: "crimson", legal: "FREEWARE", desc: "One of the greatest vertical shooters ever made. Full game.", status: "soon" },
+  { title: "Command & Conquer", year: 1995, genre: "RTS", genreColor: "cyan", legal: "FREEWARE", desc: "EA released the Gold edition free. GDI vs Nod begins here.", status: "soon" },
+  { title: "Dune II", year: 1992, genre: "RTS", genreColor: "cyan", legal: "PRESERVATION", desc: "The grandfather of real-time strategy. Control the spice.", status: "soon" },
+  { title: "Civilization 1", year: 1991, genre: "4X Strategy", genreColor: "cyan", legal: "PRESERVATION", desc: "Build an empire from the stone age to the space age.", status: "soon" },
+  { title: "SimCity 2000", year: 1993, genre: "City Builder", genreColor: "cyan", legal: "PRESERVATION", desc: "The definitive city builder. Arcologies await.", status: "soon" },
+  { title: "SimEarth", year: 1990, genre: "Planet Sim", genreColor: "cyan", legal: "PRESERVATION", desc: "Shape an entire planet's evolution. Will Wright's Gaia experiment.", status: "soon" },
+  { title: "Oh No! More Lemmings", year: 1991, genre: "Puzzle", genreColor: "green", legal: "PRESERVATION", desc: "The brutally hard expansion. Guide the lemmings or watch them die.", status: "soon" },
+  { title: "Bio Menace", year: 1993, genre: "Platformer", genreColor: "purple", legal: "FREEWARE", desc: "All 3 episodes free. Snake Logan versus mutant hordes.", status: "soon" },
+  { title: "Betrayal at Krondor", year: 1993, genre: "RPG", genreColor: "purple-deep", legal: "FREEWARE", desc: "Sierra released it free. Raymond E. Feist's epic in nine chapters.", status: "soon" },
+  { title: "Ravenloft: Strahd's Possession", year: 1994, genre: "RPG (Dungeon Crawler)", genreColor: "purple-deep", legal: "PRESERVATION", desc: "AD&D gothic horror. First-person through Count Strahd's domain.", status: "soon" },
+  { title: "Dark Sun: Shattered Lands", year: 1993, genre: "RPG (Tactical)", genreColor: "purple-deep", legal: "PRESERVATION", desc: "AD&D in a dying desert world. Escape the gladiator arena.", status: "soon" },
+];
 ---
 
 <BaseLayout title="DOS Classics — Crimson Lantern Studios">
-  <!-- Step 5: DOS Classics hub page content goes here -->
-  <h1>DOS Classics</h1>
+
+  <!-- ===== Section Header ===== -->
+  <section class="dos-hub">
+    <div class="section-label">DOS CLASSICS</div>
+    <h2 class="section-title">The Arcade</h2>
+    <div class="section-divider"></div>
+    <p class="hub-intro">Classic DOS games preserved and playable in your browser. A curated collection of freeware, shareware, and preservation titles from the golden age of PC gaming.</p>
+
+    <!-- ===== Disclaimer Bar ===== -->
+    <div class="disclaimer-bar">
+      These classic titles are provided for preservation purposes. Freeware and shareware titles are distributed per their original licenses. If you are the rights holder of any title and wish for removal, please contact us.
+    </div>
+
+    <!-- ===== Game Card Grid ===== -->
+    <div class="game-grid">
+      {games.map((game) => (
+        <div class:list={["game-card", "fade-in", { "game-card--playable": game.status === "play", "game-card--soon": game.status === "soon" }]}>
+          <h3 class="game-title">{game.title}</h3>
+          <div class="game-meta">
+            <span class="game-year">{game.year}</span>
+            <span class="game-genre-sep">·</span>
+            <span class={`game-genre game-genre--${game.genreColor}`}>{game.genre}</span>
+          </div>
+          <span class:list={["game-badge", `game-badge--${game.legal.toLowerCase()}`]}>{game.legal}</span>
+          <p class="game-desc">{game.desc}</p>
+          {game.status === "play" ? (
+            <a href={game.url} class="game-status game-status--play">▶ PLAY NOW</a>
+          ) : (
+            <span class="game-status game-status--soon">COMING SOON</span>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+
 </BaseLayout>
+
+<style>
+  /* ===== Hub Intro ===== */
+  .hub-intro {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 700px;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ===== Disclaimer Bar ===== */
+  .disclaimer-bar {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.5;
+  }
+
+  /* ===== Game Grid ===== */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  /* ===== Game Card ===== */
+  .game-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  }
+
+  .game-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-glow);
+    box-shadow: 0 8px 32px rgba(220, 20, 60, 0.1), 0 0 20px rgba(220, 20, 60, 0.05);
+    background: var(--bg-card-hover);
+  }
+
+  /* Playable card: crimson left border accent */
+  .game-card--playable {
+    border-left: 3px solid var(--crimson);
+  }
+
+  /* Coming soon card: dimmed */
+  .game-card--soon {
+    opacity: 0.7;
+  }
+
+  .game-card--soon:hover {
+    opacity: 1;
+  }
+
+  /* ===== Card Contents ===== */
+  .game-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+  }
+
+  .game-meta {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .game-genre-sep {
+    color: var(--text-muted);
+  }
+
+  /* Genre color coding */
+  .game-genre--crimson { color: var(--crimson); }
+  .game-genre--purple { color: var(--purple-light); }
+  .game-genre--cyan { color: var(--cyan-blue); }
+  .game-genre--purple-deep { color: var(--purple-deep); }
+  .game-genre--green { color: #4CAF50; }
+
+  /* ===== Legal Status Badges ===== */
+  .game-badge {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.15rem 0.55rem;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    width: fit-content;
+  }
+
+  .game-badge--freeware {
+    color: #4CAF50;
+    background: rgba(76, 175, 80, 0.12);
+  }
+
+  .game-badge--shareware {
+    color: #FFB300;
+    background: rgba(255, 179, 0, 0.12);
+  }
+
+  .game-badge--preservation {
+    color: var(--text-muted);
+    background: rgba(92, 90, 110, 0.15);
+  }
+
+  /* ===== Description ===== */
+  .game-desc {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    flex-grow: 1;
+  }
+
+  /* ===== Status Link/Text ===== */
+  .game-status {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .game-status--play {
+    color: var(--crimson);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .game-status--play:hover {
+    color: var(--purple-light);
+  }
+
+  .game-status--soon {
+    color: var(--text-muted);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 1024px) {
+    .game-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .game-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll('.dos-hub .fade-in').forEach((el) => {
+    observer.observe(el);
+  });
+</script>
