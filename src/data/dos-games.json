@@ -46,7 +46,7 @@
     "status": "shareware",
     "description": "Duke's back with bigger guns and alien-busting attitude.",
     "bundle": "duke-nukem-ii.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Movement": "Arrow Keys",
       "Jump": "Alt",
@@ -79,7 +79,7 @@
     "status": "shareware",
     "description": "Full 360° zero-gravity combat inside asteroid mines.",
     "bundle": "descent.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Pitch Up/Down": "Numpad 8 / 2",
       "Turn Left/Right": "Numpad 4 / 6",
