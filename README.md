@@ -82,7 +82,6 @@ crimsonlanternstudios.github.io/
 │   │   ├── store.astro         # Store page
 │   │   ├── arcade/
 │   │   │   ├── dos.astro       # DOS Classics hub
-│   │   │   └── windows.astro   # Windows Classics hub
 │   │   ├── projects.astro      # Projects page
 │   │   ├── about.astro         # About page
 │   │   └── community.astro     # Community page
