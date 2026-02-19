@@ -102,16 +102,21 @@ Inside the VM:
 
 #### 6. Compact the image
 
-Inside the VM, zero-fill free space (makes compression much more effective):
-```bat
-REM Inside Windows 98 MS-DOS Prompt:
-REM Create a file that fills all free space with zeros
-copy /b NUL C:\ZERO.FIL
-REM Then delete it
-del C:\ZERO.FIL
+Inside the VM, zero-fill free space (makes compression much more effective).
+
+From the host system after shutting down the VM:
+```bash
+# Mount the image and zero-fill free space from Linux
+sudo modprobe nbd max_part=8
+sudo qemu-nbd --connect=/dev/nbd0 win98-gta2.img
+sudo zerofree /dev/nbd0p1   # install zerofree: sudo apt install zerofree
+sudo qemu-nbd --disconnect /dev/nbd0
 ```
 
-Or use a tool like `sdelete -z C:` if available.
+Alternatively, inside Windows 98, download and use SDelete from Sysinternals:
+```bat
+sdelete -z C:
+```
 
 #### 7. Compress with Zstandard (optional, recommended)
 
