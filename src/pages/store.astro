@@ -3,6 +3,448 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Store — Crimson Lantern Studios">
-  <!-- Step 4: Store page content goes here -->
-  <h1>Store</h1>
+
+  <!-- ===== Section Header ===== -->
+  <section class="store-section">
+    <div class="section-label">ASSET STORE</div>
+    <h2 class="section-title">Our Collections</h2>
+    <div class="section-divider"></div>
+
+    <!-- ===== Card Grid ===== -->
+    <div class="store-grid">
+
+      <!-- Card 1 — Music Packs (LIVE) -->
+      <div class="store-card fade-in">
+        <div class="store-card-header">
+          <div class="icon-box icon-crimson">🎵</div>
+          <div>
+            <h3 class="store-card-title">Music Packs</h3>
+            <span class="status status-live">● Available Now</span>
+          </div>
+        </div>
+        <p class="store-card-desc">60 professionally curated tracks across three interconnected packs. Ambient, combat, and boss battle music in our signature G# minor.</p>
+
+        <button class="expand-toggle" aria-expanded="false" aria-controls="music-sub-cards">
+          <span class="expand-label">View Packs</span>
+          <span class="expand-icon" aria-hidden="true">▾</span>
+        </button>
+
+        <div class="sub-cards" id="music-sub-cards">
+          <!-- Sub-card: Disturbingly Beautiful -->
+          <div class="sub-card">
+            <h4 class="sub-card-title">Disturbingly Beautiful</h4>
+            <p class="sub-card-meta">20 tracks · $80 · Ambient/Synthwave</p>
+            <div class="pack-waveform" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="sub-card-links">
+              <a href="#" class="store-btn">FAB</a>
+              <a href="#" class="store-btn">Unity</a>
+            </div>
+          </div>
+
+          <!-- Sub-card: Blood & Adrenaline -->
+          <div class="sub-card">
+            <h4 class="sub-card-title">Blood &amp; Adrenaline</h4>
+            <p class="sub-card-meta">20 tracks · $80 · Combat/Liquid DnB</p>
+            <div class="pack-waveform" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="sub-card-links">
+              <a href="#" class="store-btn">FAB</a>
+              <a href="#" class="store-btn">Unity</a>
+            </div>
+          </div>
+
+          <!-- Sub-card: Rise To It -->
+          <div class="sub-card">
+            <h4 class="sub-card-title">Rise To It</h4>
+            <p class="sub-card-meta">20 tracks · $80 · Boss Battle/Metal</p>
+            <div class="pack-waveform" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="sub-card-links">
+              <a href="#" class="store-btn">FAB</a>
+              <a href="#" class="store-btn">Unity</a>
+            </div>
+          </div>
+
+          <!-- Sub-card: The Crimson Collection (Bundle) -->
+          <div class="sub-card sub-card-bundle">
+            <span class="bundle-badge">COMPLETE BUNDLE</span>
+            <h4 class="sub-card-title">The Crimson Collection</h4>
+            <p class="sub-card-meta">60 tracks · $200</p>
+            <div class="pack-waveform" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="sub-card-links">
+              <a href="#" class="store-btn">FAB</a>
+              <a href="#" class="store-btn">Unity</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 — VFX Packs (COMING SOON) -->
+      <div class="store-card store-card-dimmed fade-in">
+        <span class="coming-soon-badge">Coming Soon</span>
+        <div class="store-card-header">
+          <div class="icon-box icon-purple">✦</div>
+          <div>
+            <h3 class="store-card-title">VFX Packs</h3>
+            <span class="status status-muted">○ In Development</span>
+          </div>
+        </div>
+        <p class="store-card-desc">Techno-arcane visual effects organized by magical school. Hand-painted, LoRA-trained, protected with Nightshade.</p>
+      </div>
+
+      <!-- Card 3 — Characters & Environments (PLANNED) -->
+      <div class="store-card store-card-dimmed fade-in">
+        <span class="coming-soon-badge">Coming Soon</span>
+        <div class="store-card-header">
+          <div class="icon-box icon-cyan">◈</div>
+          <div>
+            <h3 class="store-card-title">Characters &amp; Environments</h3>
+            <span class="status status-muted">○ Planned</span>
+          </div>
+        </div>
+        <p class="store-card-desc">Dark fantasy characters and environments built with ethical AI-augmented workflows. Original training data only.</p>
+      </div>
+
+    </div>
+  </section>
+
 </BaseLayout>
+
+<style>
+  /* ===== Store Section ===== */
+  .store-section {
+    text-align: center;
+  }
+
+  .store-section .section-divider {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ===== Card Grid ===== */
+  .store-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    text-align: left;
+    margin-top: 1rem;
+  }
+
+  /* ===== Store Card ===== */
+  .store-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 1.5rem;
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  }
+
+  .store-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-glow);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    background: var(--bg-card-hover);
+  }
+
+  /* ===== Dimmed / Coming Soon Cards ===== */
+  .store-card-dimmed {
+    opacity: 0.55;
+  }
+
+  .store-card-dimmed:hover {
+    opacity: 0.75;
+  }
+
+  .coming-soon-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+  }
+
+  /* ===== Card Header ===== */
+  .store-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* ===== Icon Box ===== */
+  .icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .icon-crimson {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.2), rgba(220, 20, 60, 0.08));
+    border: 1px solid rgba(220, 20, 60, 0.2);
+  }
+
+  .icon-purple {
+    background: linear-gradient(135deg, rgba(102, 51, 153, 0.25), rgba(102, 51, 153, 0.1));
+    border: 1px solid rgba(102, 51, 153, 0.2);
+  }
+
+  .icon-cyan {
+    background: linear-gradient(135deg, rgba(102, 204, 255, 0.2), rgba(102, 204, 255, 0.08));
+    border: 1px solid rgba(102, 204, 255, 0.2);
+  }
+
+  /* ===== Card Title & Status ===== */
+  .store-card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+
+  .status {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .status-live {
+    color: var(--crimson);
+  }
+
+  .status-muted {
+    color: var(--text-muted);
+  }
+
+  /* ===== Card Description ===== */
+  .store-card-desc {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  /* ===== Expand Toggle ===== */
+  .expand-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    color: var(--crimson);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    margin-bottom: 0;
+  }
+
+  .expand-toggle:hover {
+    background: rgba(220, 20, 60, 0.08);
+    border-color: var(--border-glow);
+  }
+
+  .expand-icon {
+    transition: transform 0.3s ease;
+    font-size: 0.9rem;
+  }
+
+  .expand-toggle[aria-expanded="true"] .expand-icon {
+    transform: rotate(180deg);
+  }
+
+  /* ===== Sub-Cards Container ===== */
+  .sub-cards {
+    display: grid;
+    gap: 0.75rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, margin-top 0.3s ease;
+    margin-top: 0;
+  }
+
+  .sub-cards.open {
+    max-height: 800px;
+    margin-top: 1rem;
+  }
+
+  /* ===== Sub-Card ===== */
+  .sub-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1rem;
+  }
+
+  .sub-card-bundle {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.06), rgba(102, 51, 153, 0.06));
+    border-color: var(--border-glow);
+  }
+
+  .sub-card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+  }
+
+  .sub-card-meta {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .bundle-badge {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #fff;
+    background: var(--crimson);
+    padding: 0.12rem 0.5rem;
+    border-radius: 3px;
+    margin-bottom: 0.4rem;
+  }
+
+  /* ===== Store Buttons ===== */
+  .sub-card-links {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .store-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    border-radius: 3px;
+    padding: 0.3rem 0.75rem;
+    text-decoration: none;
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+
+  .store-btn:hover {
+    background: rgba(220, 20, 60, 0.12);
+    border-color: var(--crimson);
+    color: var(--crimson);
+  }
+
+  /* ===== Waveform Bars ===== */
+  .pack-waveform {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 20px;
+    margin-bottom: 0.6rem;
+  }
+
+  .pack-waveform span {
+    display: block;
+    width: 3px;
+    background: var(--crimson);
+    border-radius: 1px;
+    opacity: 0.35;
+    transition: opacity 0.3s ease;
+  }
+
+  .pack-waveform span:nth-child(1) { height: 40%; animation-delay: 0s; }
+  .pack-waveform span:nth-child(2) { height: 70%; animation-delay: 0.1s; }
+  .pack-waveform span:nth-child(3) { height: 50%; animation-delay: 0.2s; }
+  .pack-waveform span:nth-child(4) { height: 90%; animation-delay: 0.3s; }
+  .pack-waveform span:nth-child(5) { height: 30%; animation-delay: 0.4s; }
+  .pack-waveform span:nth-child(6) { height: 80%; animation-delay: 0.5s; }
+  .pack-waveform span:nth-child(7) { height: 55%; animation-delay: 0.6s; }
+  .pack-waveform span:nth-child(8) { height: 65%; animation-delay: 0.7s; }
+
+  .sub-card:hover .pack-waveform span {
+    opacity: 1;
+    animation: waveform-pulse 0.8s ease-in-out infinite alternate;
+  }
+
+  @keyframes waveform-pulse {
+    0%   { transform: scaleY(1); }
+    100% { transform: scaleY(0.5); }
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 900px) {
+    .store-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Scroll fade-in observer
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll('.store-section .fade-in').forEach((el) => {
+    observer.observe(el);
+  });
+
+  // Expand/collapse toggle for sub-cards
+  document.querySelectorAll('.expand-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      const targetId = btn.getAttribute('aria-controls');
+      if (targetId) {
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.classList.toggle('open');
+        }
+      }
+    });
+  });
+</script>
