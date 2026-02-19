@@ -1,0 +1,312 @@
+---
+/**
+ * Nav — fixed top navigation bar with glassmorphism effect,
+ * brand mark with animated SVG lantern, dropdown for Arcade Games,
+ * and responsive mobile hamburger menu.
+ */
+---
+
+<nav class="site-nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <!-- Brand -->
+    <a href="/" class="nav-brand" aria-label="Crimson Lantern Studios home">
+      <svg class="nav-lantern" viewBox="0 0 40 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M20 2 C20 2 12 2 12 8 L12 12 L28 12 L28 8 C28 2 20 2 20 2Z" stroke="#DC143C" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <rect x="10" y="12" width="20" height="4" rx="1" fill="#DC143C" opacity="0.3"/>
+        <ellipse cx="20" cy="32" rx="12" ry="16" stroke="#DC143C" stroke-width="1" fill="none" opacity="0.25"/>
+        <ellipse cx="20" cy="32" rx="8" ry="11" fill="url(#lanternGlow)" opacity="0.6"/>
+        <rect x="10" y="44" width="20" height="6" rx="2" fill="#DC143C" opacity="0.2"/>
+        <circle cx="20" cy="31" r="4" fill="#DC143C" opacity="0.5">
+          <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="20" cy="31" r="7" fill="#DC143C" opacity="0.1">
+          <animate attributeName="r" values="6;9;6" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.1;0.05;0.1" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <defs>
+          <radialGradient id="lanternGlow" cx="50%" cy="45%" r="50%">
+            <stop offset="0%" stop-color="#DC143C" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#DC143C" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+      </svg>
+      <span class="nav-brand-text">CRIMSON LANTERN STUDIOS</span>
+    </a>
+
+    <!-- Hamburger toggle (mobile) -->
+    <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+
+    <!-- Desktop + mobile links -->
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/store">Store</a></li>
+      <li><a href="/arcade/dos">Arcade</a></li>
+      <li><a href="/projects">Projects</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/community">Community</a></li>
+    </ul>
+  </div>
+</nav>
+
+<style>
+  /* ===== Nav bar ===== */
+  .site-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: var(--nav-height, 64px);
+    background: rgba(10, 10, 15, 0.85);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+    animation: slide-down 0.5s ease-out;
+  }
+
+  @keyframes slide-down {
+    from { transform: translateY(-100%); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+  }
+
+  /* ===== Brand ===== */
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    flex-shrink: 0;
+  }
+
+  .nav-lantern {
+    width: 28px;
+    height: auto;
+    filter: drop-shadow(0 0 6px rgba(220, 20, 60, 0.4));
+  }
+
+  .nav-brand-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+  }
+
+  /* ===== Links ===== */
+  .nav-links {
+    display: flex;
+    list-style: none;
+    gap: 1.8rem;
+    align-items: center;
+  }
+
+  .nav-links a,
+  .nav-dropdown-trigger {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .nav-links a::after,
+  .nav-dropdown-trigger::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--crimson);
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover,
+  .nav-dropdown-trigger:hover {
+    color: var(--text-primary);
+  }
+
+  .nav-links a:hover::after,
+  .nav-dropdown-trigger:hover::after {
+    width: 100%;
+  }
+
+  /* ===== Dropdown ===== */
+  .nav-dropdown {
+    position: relative;
+  }
+
+  .nav-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    list-style: none;
+    background: rgba(10, 10, 15, 0.92);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    min-width: 180px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+  }
+
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .nav-dropdown-menu li a {
+    display: block;
+    padding: 0.5rem 1.2rem;
+    white-space: nowrap;
+  }
+
+  .nav-dropdown-menu li a::after {
+    bottom: 2px;
+  }
+
+  /* ===== Hamburger ===== */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+  }
+
+  .hamburger-bar {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* ===== Mobile ===== */
+  @media (max-width: 768px) {
+    .nav-hamburger {
+      display: flex;
+    }
+
+    .nav-brand-text {
+      font-size: 0.7rem;
+    }
+
+    .nav-links {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 280px;
+      height: 100vh;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      padding: 5rem 2rem 2rem;
+      background: rgba(10, 10, 15, 0.97);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border-left: 1px solid var(--border-subtle);
+      transform: translateX(100%);
+      transition: transform 0.35s ease;
+    }
+
+    .nav-links.open {
+      transform: translateX(0);
+    }
+
+    .nav-links li {
+      width: 100%;
+    }
+
+    .nav-links a,
+    .nav-dropdown-trigger {
+      display: block;
+      padding: 0.75rem 0;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-links a::after,
+    .nav-dropdown-trigger::after {
+      display: none;
+    }
+
+    /* Mobile dropdown — always visible when parent is open */
+    .nav-dropdown-menu {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0 0 0 1rem;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      min-width: unset;
+    }
+
+    .nav-dropdown-menu li a {
+      padding: 0.5rem 0;
+      font-size: 0.85rem;
+    }
+
+    /* Hamburger X state */
+    .nav-hamburger.active .hamburger-bar:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .nav-hamburger.active .hamburger-bar:nth-child(2) {
+      opacity: 0;
+    }
+    .nav-hamburger.active .hamburger-bar:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+  }
+</style>
+
+<script>
+  const hamburger = document.querySelector('.nav-hamburger');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (hamburger && navLinks) {
+    hamburger.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      hamburger.classList.toggle('active');
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+    });
+  }
+</script>
