@@ -1,3 +1,4 @@
+/* ===== Custom Properties ===== */
 :root {
   --crimson: #DC143C;
   --crimson-dark: #8B0A1E;
@@ -14,8 +15,10 @@
   --text-muted: #5C5A6E;
   --border-subtle: rgba(220, 20, 60, 0.12);
   --border-glow: rgba(220, 20, 60, 0.25);
+  --nav-height: 64px;
 }
 
+/* ===== Reset ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
@@ -25,4 +28,118 @@ body {
   color: var(--text-primary);
   overflow-x: hidden;
   line-height: 1.6;
+}
+
+/* ===== Typography ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+p {
+  font-family: 'Source Sans 3', sans-serif;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+a {
+  color: var(--crimson);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--purple-light);
+}
+
+/* ===== Section Styling ===== */
+section {
+  padding: 5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.section-separator {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+/* ===== Section Header Pattern ===== */
+.section-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--crimson);
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.section-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--crimson), transparent);
+  margin-bottom: 2rem;
+}
+
+/* ===== Card Component ===== */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-glow);
+  box-shadow: 0 8px 32px rgba(220, 20, 60, 0.1), 0 0 20px rgba(220, 20, 60, 0.05);
+  background: var(--bg-card-hover);
+}
+
+/* ===== Scroll Fade-In Animation ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Responsive Breakpoints ===== */
+@media (max-width: 768px) {
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+
+  section {
+    padding: 3rem 1.25rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
 }
