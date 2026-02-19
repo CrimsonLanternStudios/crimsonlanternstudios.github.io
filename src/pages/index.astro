@@ -3,6 +3,478 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Crimson Lantern Studios — Indie Game Development">
-  <!-- Step 3: Home page content goes here -->
-  <h1>Crimson Lantern Studios</h1>
+
+  <!-- ===== Hero Section ===== -->
+  <section class="hero">
+    <div class="hero-pulse" aria-hidden="true"></div>
+
+    <div class="hero-lantern fade-in" style="--delay:0s">
+      <svg class="hero-lantern-svg" viewBox="0 0 40 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M20 2 C20 2 12 2 12 8 L12 12 L28 12 L28 8 C28 2 20 2 20 2Z" stroke="#DC143C" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <rect x="10" y="12" width="20" height="4" rx="1" fill="#DC143C" opacity="0.3"/>
+        <ellipse cx="20" cy="32" rx="12" ry="16" stroke="#DC143C" stroke-width="1" fill="none" opacity="0.25"/>
+        <ellipse cx="20" cy="32" rx="8" ry="11" fill="url(#heroLanternGlow)" opacity="0.6"/>
+        <rect x="10" y="44" width="20" height="6" rx="2" fill="#DC143C" opacity="0.2"/>
+        <circle cx="20" cy="31" r="4" fill="#DC143C" opacity="0.5">
+          <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="20" cy="31" r="7" fill="#DC143C" opacity="0.1">
+          <animate attributeName="r" values="6;9;6" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.1;0.05;0.1" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="20" cy="31" r="14" fill="none" stroke="#663399" stroke-width="0.5" opacity="0.15">
+          <animate attributeName="r" values="12;16;12" dur="4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.15;0.05;0.15" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <defs>
+          <radialGradient id="heroLanternGlow" cx="50%" cy="45%" r="50%">
+            <stop offset="0%" stop-color="#DC143C" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#DC143C" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <h1 class="hero-title fade-in" style="--delay:0.2s">
+      <span class="hero-crimson">Crimson</span> Lantern Studios
+    </h1>
+
+    <p class="hero-tagline fade-in" style="--delay:0.4s">
+      Indie Game Development · Asset Creation · AI-Augmented Pipeline
+    </p>
+
+    <div class="hero-divider fade-in" style="--delay:0.6s" aria-hidden="true"></div>
+
+    <p class="hero-description fade-in" style="--delay:0.8s">
+      A solo indie studio building games, music, and assets with an ethical AI-augmented pipeline. Creativity first. Community always. No extraction, only connection.
+    </p>
+  </section>
+
+  <!-- ===== Section Separator ===== -->
+  <hr class="section-separator" />
+
+  <!-- ===== Devlog + Featured Packs ===== -->
+  <section class="content-grid">
+    <!-- Left column: Devlog -->
+    <div class="devlog-column">
+      <div class="section-label">DEVELOPMENT LOG</div>
+      <h2 class="section-title">Latest Updates</h2>
+      <div class="section-divider"></div>
+
+      <article class="devlog-card fade-in">
+        <time class="devlog-date" datetime="2026-02-18">February 18, 2026</time>
+        <h3 class="devlog-title">Music Packs Finalized — Store Launch Imminent</h3>
+        <p class="devlog-excerpt">Three interconnected music packs totaling 60 tracks are ready for launch on FAB and Unity Asset Store. The Disturbingly Beautiful ambient collection, Blood &amp; Adrenaline combat suite, and Rise To It boss battle anthology — all in our signature G# minor.</p>
+        <span class="devlog-tag">Music</span>
+      </article>
+
+      <article class="devlog-card fade-in">
+        <time class="devlog-date" datetime="2026-02-15">February 15, 2026</time>
+        <h3 class="devlog-title">Website Construction Begins</h3>
+        <p class="devlog-excerpt">Building the official Crimson Lantern Studios home on the web. Astro-powered, GitHub Pages hosted, with a CMS for ongoing devlog updates. The railway lantern logo is in development.</p>
+        <span class="devlog-tag">Studio</span>
+      </article>
+
+      <article class="devlog-card fade-in">
+        <time class="devlog-date" datetime="2026-02-10">February 10, 2026</time>
+        <h3 class="devlog-title">VFX Pack Strategy Refined</h3>
+        <p class="devlog-excerpt">Pivoting to separate 30-asset packs organized by magical school. Each pack will showcase our techno-arcane aesthetic — hand-painted LoRA-trained effects that blur the line between magic and technology.</p>
+        <span class="devlog-tag">VFX</span>
+      </article>
+    </div>
+
+    <!-- Right column: Featured Packs -->
+    <aside class="packs-sidebar">
+      <div class="section-label">FEATURED PACKS</div>
+
+      <div class="pack-card fade-in">
+        <h4 class="pack-title">Disturbingly Beautiful</h4>
+        <p class="pack-desc">Ambient synthwave. Impossible to categorize. Deeply compelling.</p>
+        <div class="pack-waveform" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="pack-meta">
+          <span class="pack-tracks">20 Tracks</span>
+          <span class="pack-price">$80</span>
+        </div>
+      </div>
+
+      <div class="pack-card fade-in">
+        <h4 class="pack-title">Blood &amp; Adrenaline</h4>
+        <p class="pack-desc">Combat music. Liquid DnB meets dystopian intensity.</p>
+        <div class="pack-waveform" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="pack-meta">
+          <span class="pack-tracks">20 Tracks</span>
+          <span class="pack-price">$80</span>
+        </div>
+      </div>
+
+      <div class="pack-card fade-in">
+        <h4 class="pack-title">Rise To It</h4>
+        <p class="pack-desc">Boss battle anthology. Angelic metal meets hypnotic fury.</p>
+        <div class="pack-waveform" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="pack-meta">
+          <span class="pack-tracks">20 Tracks</span>
+          <span class="pack-price">$80</span>
+        </div>
+      </div>
+
+      <div class="pack-card pack-bundle fade-in">
+        <span class="bundle-badge">COMPLETE BUNDLE</span>
+        <h4 class="pack-title">The Crimson Collection</h4>
+        <p class="pack-desc">All 60 tracks. Three worlds of sound.</p>
+        <div class="pack-waveform" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="pack-meta">
+          <span class="pack-tracks">60 Tracks</span>
+          <span class="pack-price">$200</span>
+        </div>
+      </div>
+    </aside>
+  </section>
+
 </BaseLayout>
+
+<style>
+  /* ===== Hero ===== */
+  .hero {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-pulse {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(220, 20, 60, 0.06) 0%,
+      rgba(102, 51, 153, 0.04) 40%,
+      transparent 70%
+    );
+    animation: hero-breathe 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes hero-breathe {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.08); }
+  }
+
+  .hero-lantern {
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-lantern-svg {
+    width: 120px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(220, 20, 60, 0.4)) drop-shadow(0 0 40px rgba(102, 51, 153, 0.2));
+  }
+
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-crimson {
+    color: var(--crimson);
+  }
+
+  .hero-tagline {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--crimson), transparent);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-description {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 620px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Hero staggered fade-in */
+  .hero .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: hero-fade-in 0.8s ease-out forwards;
+    animation-delay: var(--delay, 0s);
+  }
+
+  @keyframes hero-fade-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Content Grid (Devlog + Packs) ===== */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* ===== Devlog Cards ===== */
+  .devlog-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .devlog-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .devlog-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-glow);
+    background: var(--bg-card-hover);
+    border-left: 3px solid var(--crimson);
+    border-image: linear-gradient(to bottom, var(--crimson), var(--purple-deep)) 1;
+    border-image-slice: 0 0 0 1;
+  }
+
+  .devlog-date {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--crimson);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .devlog-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+
+  .devlog-excerpt {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 0.8rem;
+  }
+
+  .devlog-tag {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--crimson);
+    background: rgba(220, 20, 60, 0.1);
+    padding: 0.2rem 0.65rem;
+    border-radius: 3px;
+  }
+
+  /* ===== Packs Sidebar ===== */
+  .packs-sidebar {
+    position: sticky;
+    top: 88px;
+  }
+
+  .pack-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .pack-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-glow);
+    background: var(--bg-card-hover);
+  }
+
+  .pack-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+  }
+
+  .pack-desc {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Waveform bars */
+  .pack-waveform {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 24px;
+    margin-bottom: 0.75rem;
+  }
+
+  .pack-waveform span {
+    display: block;
+    width: 3px;
+    background: var(--crimson);
+    border-radius: 1px;
+    opacity: 0.35;
+    transition: opacity 0.3s ease;
+  }
+
+  .pack-waveform span:nth-child(1) { height: 40%; animation-delay: 0s; }
+  .pack-waveform span:nth-child(2) { height: 70%; animation-delay: 0.1s; }
+  .pack-waveform span:nth-child(3) { height: 50%; animation-delay: 0.2s; }
+  .pack-waveform span:nth-child(4) { height: 90%; animation-delay: 0.3s; }
+  .pack-waveform span:nth-child(5) { height: 30%; animation-delay: 0.4s; }
+  .pack-waveform span:nth-child(6) { height: 80%; animation-delay: 0.5s; }
+  .pack-waveform span:nth-child(7) { height: 55%; animation-delay: 0.6s; }
+  .pack-waveform span:nth-child(8) { height: 65%; animation-delay: 0.7s; }
+
+  .pack-card:hover .pack-waveform span {
+    opacity: 1;
+    animation: waveform-pulse 0.8s ease-in-out infinite alternate;
+  }
+
+  @keyframes waveform-pulse {
+    0%   { transform: scaleY(1); }
+    100% { transform: scaleY(0.5); }
+  }
+
+  /* Pack meta row */
+  .pack-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pack-tracks {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .pack-price {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--cyan-blue);
+  }
+
+  /* Bundle card */
+  .pack-bundle {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.08), rgba(102, 51, 153, 0.08));
+    border-color: var(--border-glow);
+    position: relative;
+  }
+
+  .bundle-badge {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #fff;
+    background: var(--crimson);
+    padding: 0.15rem 0.6rem;
+    border-radius: 3px;
+    margin-bottom: 0.6rem;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 900px) {
+    .content-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .packs-sidebar {
+      position: static;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-tagline {
+      font-size: 0.8rem;
+    }
+
+    .hero-description {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll('.content-grid .fade-in').forEach((el) => {
+    observer.observe(el);
+  });
+</script>
