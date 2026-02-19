@@ -1,8 +1,24 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import dosGames from '../../data/dos-games.json';
 ---
 
 <BaseLayout title="DOS Classics — Crimson Lantern Studios">
   <!-- Step 5: DOS Classics hub page content goes here -->
   <h1>DOS Classics</h1>
+
+  <div class="dos-games-list">
+    {dosGames.map((game) => (
+      <div class="dos-game-card">
+        <h2>{game.title} <span class="game-year">({game.year})</span></h2>
+        <p class="game-genre">{game.genre}</p>
+        <p>{game.description}</p>
+        {game.available ? (
+          <a href={`/arcade/play/${game.slug}`} class="play-link">▶ PLAY NOW</a>
+        ) : (
+          <span class="coming-soon-badge">Coming Soon</span>
+        )}
+      </div>
+    ))}
+  </div>
 </BaseLayout>
