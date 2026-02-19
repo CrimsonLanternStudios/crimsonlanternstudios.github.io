@@ -1,0 +1,20 @@
+backend:
+  name: github
+  repo: CrimsonLanternStudios/crimsonlanternstudios.github.io
+  branch: main
+
+media_folder: "public/images/devlog"
+public_folder: "/images/devlog"
+
+collections:
+  - name: "devlog"
+    label: "Devlog Posts"
+    folder: "src/content/devlog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Tag", name: "tag", widget: "select", options: ["Music", "VFX", "Studio", "Game Dev", "Community", "Tech"] }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Body", name: "body", widget: "markdown" }

@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('devlog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={`${post.data.title} — Crimson Lantern Studios`}>
+
+  <article class="devlog-post">
+    <a href="/devlog/" class="back-link">&larr; Back to Devlog</a>
+
+    <header class="post-header">
+      <time class="devlog-date" datetime={post.data.date.toISOString().slice(0, 10)}>
+        {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
+      </time>
+      <h1 class="post-title">{post.data.title}</h1>
+      <span class="devlog-tag">{post.data.tag}</span>
+    </header>
+
+    <div class="post-body">
+      <Content />
+    </div>
+  </article>
+
+</BaseLayout>
+
+<style>
+  .devlog-post {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--crimson);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2rem;
+    transition: opacity 0.2s ease;
+  }
+
+  .back-link:hover {
+    opacity: 0.7;
+  }
+
+  .post-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .devlog-date {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--crimson);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  .post-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.25;
+    margin-bottom: 1rem;
+  }
+
+  .devlog-tag {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--crimson);
+    background: rgba(220, 20, 60, 0.1);
+    padding: 0.2rem 0.65rem;
+    border-radius: 3px;
+  }
+
+  .post-body {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+
+  .post-body :global(h2) {
+    font-family: 'Cinzel', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-body :global(ul) {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .post-body :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .post-body :global(strong) {
+    color: var(--text-primary);
+  }
+
+  @media (max-width: 768px) {
+    .post-title {
+      font-size: 1.5rem;
+    }
+  }
+</style>
