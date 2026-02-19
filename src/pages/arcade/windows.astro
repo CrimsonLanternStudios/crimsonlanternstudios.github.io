@@ -3,6 +3,191 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Windows Classics — Crimson Lantern Studios">
-  <!-- Step 7: Windows Classics hub page content goes here -->
-  <h1>Windows Classics</h1>
+  <section class="windows-section">
+    <div class="section-label">WINDOWS CLASSICS</div>
+    <h2 class="section-title">The Arcade — Windows Era</h2>
+    <div class="section-divider"></div>
+    <p class="section-intro">
+      Early Windows games preserved and playable in your browser. These titles were officially released as freeware by their publishers.
+    </p>
+
+    <div class="card-grid">
+      <!-- Card 1 — Grand Theft Auto (1997) -->
+      <div class="card game-card coming-soon">
+        <div class="card-header">
+          <h3 class="game-title">Grand Theft Auto</h3>
+          <span class="game-year">1997</span>
+        </div>
+        <div class="game-meta">
+          <span class="genre-tag">Action / Open World</span>
+          <span class="freeware-badge">FREEWARE</span>
+        </div>
+        <p class="game-status">Freeware (Rockstar Classics)</p>
+        <p class="game-description">
+          Top-down mayhem through Liberty City, San Andreas, and Vice City. Where it all began.
+        </p>
+        <div class="card-footer">
+          <span class="coming-soon-badge">COMING SOON</span>
+        </div>
+      </div>
+
+      <!-- Card 2 — Grand Theft Auto 2 (1999) -->
+      <div class="card game-card coming-soon">
+        <div class="card-header">
+          <h3 class="game-title">Grand Theft Auto 2</h3>
+          <span class="game-year">1999</span>
+        </div>
+        <div class="game-meta">
+          <span class="genre-tag">Action / Open World</span>
+          <span class="freeware-badge">FREEWARE</span>
+        </div>
+        <p class="game-status">Freeware (Rockstar Classics)</p>
+        <p class="game-description">
+          Anywhere City. Seven gangs. One criminal. Officially free from Rockstar.
+        </p>
+        <div class="card-footer">
+          <span class="coming-soon-badge">COMING SOON</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="more-coming">
+      This collection is just getting started. Know a freeware Windows classic that should be here? Let us know on Discord.
+    </p>
+  </section>
 </BaseLayout>
+
+<style>
+  .windows-section {
+    background: linear-gradient(180deg, rgba(20, 25, 40, 0.4) 0%, transparent 100%);
+    border-radius: 16px;
+    margin-top: 2rem;
+  }
+
+  .section-intro {
+    max-width: 640px;
+    margin-bottom: 3rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .game-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .game-card.coming-soon {
+    opacity: 0.7;
+  }
+
+  .game-card.coming-soon:hover {
+    opacity: 0.9;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .game-title {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  .game-year {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .game-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .genre-tag {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--cyan-blue);
+    background: rgba(102, 204, 255, 0.08);
+    border: 1px solid rgba(102, 204, 255, 0.15);
+    padding: 0.2em 0.6em;
+    border-radius: 4px;
+  }
+
+  .freeware-badge {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.15);
+    padding: 0.2em 0.6em;
+    border-radius: 4px;
+  }
+
+  .game-status {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .game-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    flex-grow: 1;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+
+  .coming-soon-badge {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    background: rgba(92, 90, 110, 0.15);
+    border: 1px solid rgba(92, 90, 110, 0.25);
+    padding: 0.3em 0.8em;
+    border-radius: 4px;
+  }
+
+  .more-coming {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
