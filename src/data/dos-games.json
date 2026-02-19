@@ -213,7 +213,7 @@
     "status": "preservation",
     "description": "The brutally hard expansion. Guide the lemmings or watch them die.",
     "bundle": "oh-no-more-lemmings.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Select Skill": "F1 - F8",
       "Assign Skill": "Left Click on Lemming",
@@ -264,7 +264,7 @@
     "status": "preservation",
     "description": "AD&D gothic horror. First-person through Count Strahd's domain.",
     "bundle": "ravenloft-strahds-possession.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Movement": "Arrow Keys",
       "Attack": "Left Click",
@@ -281,7 +281,7 @@
     "status": "preservation",
     "description": "AD&D in a dying desert world. Escape the gladiator arena.",
     "bundle": "dark-sun-shattered-lands.jsdos",
-    "available": false,
+    "available": true,
     "controls": {
       "Select Character": "Left Click",
       "Move/Attack": "Right Click",
