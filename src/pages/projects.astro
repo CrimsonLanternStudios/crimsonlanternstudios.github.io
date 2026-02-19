@@ -3,6 +3,183 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Projects — Crimson Lantern Studios">
-  <!-- Step 8: Projects page content goes here -->
-  <h1>Projects</h1>
+
+  <section class="projects-section">
+    <div class="section-label">GAME PROJECTS</div>
+    <h2 class="section-title">In Development</h2>
+    <div class="section-divider"></div>
+
+    <!-- Featured Project: Crimson Labyrinth -->
+    <div class="featured-card fade-in">
+      <span class="featured-label">DARK FANTASY RPG TRILOGY</span>
+      <h3 class="featured-title"><span class="crimson">Crimson</span> Labyrinth</h3>
+      <p class="featured-desc">A post-apocalyptic world where divine war killed 97% of humanity. The survivors built a research labyrinth from the fragments of their shattered paradise. Heroes enhanced with blood-nanite technology descend through 100 floors of escalating danger, absorbing soul energy to grow stronger, unraveling the mysteries of the catastrophe that turned the sky permanently crimson.</p>
+      <div class="tag-row">
+        <span class="tag">Techno-Arcane</span>
+        <span class="tag">Blood-Nanites</span>
+        <span class="tag">100 Floors</span>
+        <span class="tag">Dark Fantasy</span>
+        <span class="tag">RPG Trilogy</span>
+      </div>
+    </div>
+
+    <!-- Secondary Project -->
+    <div class="project-card fade-in">
+      <h4 class="project-title">Game 8 — VR Racing Concept</h4>
+      <p class="project-desc">Early concept phase. Rock n' Roll Racing meets Burnout 3's destruction mechanics in VR. Vehicular combat at breakneck speed.</p>
+      <span class="project-status">○ Concept Phase</span>
+      <div class="tag-row">
+        <span class="tag">VR</span>
+        <span class="tag">Racing</span>
+        <span class="tag">Vehicular Combat</span>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>
+
+<style>
+  .projects-section {
+    max-width: 900px;
+  }
+
+  /* Featured Card */
+  .featured-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(90deg, var(--crimson), var(--purple-deep), var(--cyan-blue)) 1;
+    border-image-slice: 0 0 1 0;
+  }
+
+  .featured-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-glow);
+    box-shadow: 0 8px 32px rgba(220, 20, 60, 0.12), 0 4px 16px rgba(102, 51, 153, 0.08);
+  }
+
+  .featured-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--crimson);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .featured-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .crimson {
+    color: var(--crimson);
+  }
+
+  .featured-desc {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Tag Pills */
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--cyan-blue);
+    background: rgba(102, 204, 255, 0.1);
+    padding: 0.25rem 0.7rem;
+    border-radius: 3px;
+  }
+
+  /* Secondary Project Card */
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .project-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-glow);
+    background: var(--bg-card-hover);
+  }
+
+  .project-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .project-desc {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-status {
+    display: block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .featured-card {
+      padding: 1.75rem;
+    }
+
+    .featured-title {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll('.fade-in').forEach((el) => {
+    observer.observe(el);
+  });
+</script>
