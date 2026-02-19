@@ -3,6 +3,121 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="About — Crimson Lantern Studios">
-  <!-- Step 8: About page content goes here -->
-  <h1>About</h1>
+
+  <section class="about-section">
+    <div class="section-label">ABOUT</div>
+    <h2 class="section-title">The Studio</h2>
+    <div class="section-divider"></div>
+
+    <div class="about-grid">
+      <!-- Left Column: Story -->
+      <div class="about-story fade-in">
+        <p>Crimson Lantern Studios is a <strong>solo indie game development studio</strong> based in Alberta, Canada. We build games, music, and digital assets using an ethical AI-augmented pipeline — every model trained exclusively on our own original artwork.</p>
+        <p>In an industry increasingly defined by extraction, we chose a different path. <strong>Community over profit. Creativity over monetization. Connection over KPIs.</strong> We believe the future of gaming belongs to passionate creators, not boardrooms.</p>
+        <p>Our pipeline combines human curation with AI tools to achieve what would otherwise be impossible for a solo developer — without compromising on originality or ethics. Every asset we release is protected, every process is transparent.</p>
+      </div>
+
+      <!-- Right Column: Values -->
+      <div class="about-values">
+        <div class="value-card fade-in">
+          <h4 class="value-title">◆ Ethical AI Pipeline</h4>
+          <p class="value-desc">Models trained only on our own original artwork. No stolen data. No shortcuts.</p>
+        </div>
+        <div class="value-card fade-in">
+          <h4 class="value-title">◆ Community First</h4>
+          <p class="value-desc">Building a creative ecosystem, not a monetization machine. Players are people, not KPIs.</p>
+        </div>
+        <div class="value-card fade-in">
+          <h4 class="value-title">◆ Transparent Process</h4>
+          <p class="value-desc">We share how we work because we have nothing to hide. Our methodology is our strength.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>
+
+<style>
+  /* Two-Column Grid */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* Story Text */
+  .about-story p {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+  }
+
+  .about-story strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Values Column */
+  .about-values {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .value-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 1.25rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .value-card:hover {
+    border-color: var(--border-glow);
+    background: var(--bg-card-hover);
+  }
+
+  .value-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .value-desc {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Responsive: stack on mobile */
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll('.fade-in').forEach((el) => {
+    observer.observe(el);
+  });
+</script>
