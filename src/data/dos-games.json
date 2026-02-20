@@ -21,40 +21,6 @@
     }
   },
   {
-    "slug": "duke-nukem-1",
-    "title": "Duke Nukem 1",
-    "year": 1991,
-    "genre": "Platformer",
-    "genreColor": "purple",
-    "status": "shareware",
-    "description": "Side-scrolling action. Save Earth from Dr. Proton's techno-terrors.",
-    "bundle": "duke-nukem-1.jsdos",
-    "available": true,
-    "controls": {
-      "Movement": "Arrow Keys",
-      "Jump": "Alt",
-      "Fire": "Ctrl",
-      "Toggle Inventory": "Space"
-    }
-  },
-  {
-    "slug": "duke-nukem-ii",
-    "title": "Duke Nukem II",
-    "year": 1993,
-    "genre": "Platformer",
-    "genreColor": "purple",
-    "status": "shareware",
-    "description": "Duke's back with bigger guns and alien-busting attitude.",
-    "bundle": "duke-nukem-ii.jsdos",
-    "available": true,
-    "controls": {
-      "Movement": "Arrow Keys",
-      "Jump": "Alt",
-      "Fire": "Ctrl",
-      "Toggle Inventory": "Space"
-    }
-  },
-  {
     "slug": "jetpack",
     "title": "Jetpack",
     "year": 1993,
@@ -122,23 +88,6 @@
     }
   },
   {
-    "slug": "command-and-conquer",
-    "title": "Command & Conquer",
-    "year": 1995,
-    "genre": "RTS",
-    "genreColor": "cyan",
-    "status": "freeware",
-    "description": "EA released the Gold edition free. GDI vs Nod begins here.",
-    "bundle": "command-and-conquer.jsdos",
-    "available": true,
-    "controls": {
-      "Select": "Left Click",
-      "Move/Attack": "Right Click",
-      "Band-Select": "Click + Drag",
-      "Sidebar Scroll": "↑ / ↓"
-    }
-  },
-  {
     "slug": "dune-ii",
     "title": "Dune II",
     "year": 1992,
@@ -152,73 +101,6 @@
       "Select": "Left Click",
       "Move/Attack": "Left Click",
       "Scroll Map": "Move Mouse to Edge"
-    }
-  },
-  {
-    "slug": "civilization-1",
-    "title": "Civilization 1",
-    "year": 1991,
-    "genre": "4X Strategy",
-    "genreColor": "cyan",
-    "status": "preservation",
-    "description": "Build an empire from the stone age to the space age.",
-    "bundle": "civilization-1.jsdos",
-    "available": true,
-    "controls": {
-      "Move Unit": "Arrow Keys / Numpad",
-      "Center Map": "C",
-      "Wait": "W",
-      "Build": "B"
-    }
-  },
-  {
-    "slug": "simcity-2000",
-    "title": "SimCity 2000",
-    "year": 1993,
-    "genre": "City Builder",
-    "genreColor": "cyan",
-    "status": "preservation",
-    "description": "The definitive city builder. Arcologies await.",
-    "bundle": "simcity-2000.jsdos",
-    "available": true,
-    "controls": {
-      "Place Tool": "Left Click",
-      "Scroll Map": "Arrow Keys",
-      "Rotate View": "Tab",
-      "Zoom": "+ / -"
-    }
-  },
-  {
-    "slug": "simearth",
-    "title": "SimEarth",
-    "year": 1990,
-    "genre": "Planet Sim",
-    "genreColor": "cyan",
-    "status": "preservation",
-    "description": "Shape an entire planet's evolution. Will Wright's Gaia experiment.",
-    "bundle": "simearth.jsdos",
-    "available": true,
-    "controls": {
-      "Place Tool": "Left Click",
-      "Select Menu": "Right Click",
-      "Scroll Map": "Arrow Keys"
-    }
-  },
-  {
-    "slug": "oh-no-more-lemmings",
-    "title": "Oh No! More Lemmings",
-    "year": 1991,
-    "genre": "Puzzle",
-    "genreColor": "green",
-    "status": "preservation",
-    "description": "The brutally hard expansion. Guide the lemmings or watch them die.",
-    "bundle": "oh-no-more-lemmings.jsdos",
-    "available": true,
-    "controls": {
-      "Select Skill": "F1 - F8",
-      "Assign Skill": "Left Click on Lemming",
-      "Increase Rate": "+ / -",
-      "Nuke": "F12"
     }
   },
   {
@@ -253,40 +135,6 @@
       "Interact": "Enter",
       "Cast Spell": "C",
       "Camp": "R"
-    }
-  },
-  {
-    "slug": "ravenloft-strahds-possession",
-    "title": "Ravenloft: Strahd's Possession",
-    "year": 1994,
-    "genre": "RPG (Dungeon Crawler)",
-    "genreColor": "purple-deep",
-    "status": "preservation",
-    "description": "AD&D gothic horror. First-person through Count Strahd's domain.",
-    "bundle": "ravenloft-strahds-possession.jsdos",
-    "available": true,
-    "controls": {
-      "Movement": "Arrow Keys",
-      "Attack": "Left Click",
-      "Cast Spell": "Right Click",
-      "Inventory": "I"
-    }
-  },
-  {
-    "slug": "dark-sun-shattered-lands",
-    "title": "Dark Sun: Shattered Lands",
-    "year": 1993,
-    "genre": "RPG (Tactical)",
-    "genreColor": "purple-deep",
-    "status": "preservation",
-    "description": "AD&D in a dying desert world. Escape the gladiator arena.",
-    "bundle": "dark-sun-shattered-lands.jsdos",
-    "available": true,
-    "controls": {
-      "Select Character": "Left Click",
-      "Move/Attack": "Right Click",
-      "Cast Spell": "S",
-      "Inventory": "I"
     }
   }
 ]
