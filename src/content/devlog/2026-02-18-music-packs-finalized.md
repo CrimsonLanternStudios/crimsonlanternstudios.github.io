@@ -2,10 +2,10 @@
 title: "Music Packs Finalized — Store Launch Imminent"
 date: 2026-02-18
 tag: "Music"
-excerpt: "Three interconnected music packs totaling 60 tracks are ready for launch on FAB and Unity Asset Store. The Disturbingly Beautiful ambient collection, Blood & Adrenaline combat suite, and Rise To It boss battle anthology — all in our signature G# minor."
+excerpt: "Three interconnected music packs totaling 60 tracks are ready for launch on itch.io, Unity Asset Store, and FAB. The Disturbingly Beautiful ambient collection, Blood & Adrenaline combat suite, and Rise To It boss battle anthology — all in our signature G# minor."
 ---
 
-Three interconnected music packs totaling 60 tracks are ready for launch on FAB and Unity Asset Store.
+Three interconnected music packs totaling 60 tracks are ready for launch on itch.io, Unity Asset Store, and FAB.
 
 The **Disturbingly Beautiful** ambient collection, **Blood & Adrenaline** combat suite, and **Rise To It** boss battle anthology — all in our signature G# minor.
 
