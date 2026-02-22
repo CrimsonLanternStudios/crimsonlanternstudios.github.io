@@ -93,6 +93,12 @@ const devlogPosts = (await getCollection('devlog')).sort(
           <span class="pack-tracks">20 Tracks</span>
           <span class="pack-price">$80</span>
         </div>
+        <p class="store-links" id="store-db">
+          Coming soon on
+          <span class="store-link" data-platform="itchio">itch.io</span> ·
+          <span class="store-link" data-platform="unity">Unity Asset Store</span> ·
+          <span class="store-link" data-platform="fab">FAB</span>
+        </p>
       </div>
 
       <div class="pack-card fade-in">
@@ -106,6 +112,12 @@ const devlogPosts = (await getCollection('devlog')).sort(
           <span class="pack-tracks">20 Tracks</span>
           <span class="pack-price">$80</span>
         </div>
+        <p class="store-links" id="store-ba">
+          Coming soon on
+          <span class="store-link" data-platform="itchio">itch.io</span> ·
+          <span class="store-link" data-platform="unity">Unity Asset Store</span> ·
+          <span class="store-link" data-platform="fab">FAB</span>
+        </p>
       </div>
 
       <div class="pack-card fade-in">
@@ -119,6 +131,12 @@ const devlogPosts = (await getCollection('devlog')).sort(
           <span class="pack-tracks">20 Tracks</span>
           <span class="pack-price">$80</span>
         </div>
+        <p class="store-links" id="store-rti">
+          Coming soon on
+          <span class="store-link" data-platform="itchio">itch.io</span> ·
+          <span class="store-link" data-platform="unity">Unity Asset Store</span> ·
+          <span class="store-link" data-platform="fab">FAB</span>
+        </p>
       </div>
 
       <div class="pack-card pack-bundle fade-in">
@@ -133,6 +151,12 @@ const devlogPosts = (await getCollection('devlog')).sort(
           <span class="pack-tracks">60 Tracks</span>
           <span class="pack-price">$200</span>
         </div>
+        <p class="store-links" id="store-bundle">
+          Coming soon on
+          <span class="store-link" data-platform="itchio">itch.io</span> ·
+          <span class="store-link" data-platform="unity">Unity Asset Store</span> ·
+          <span class="store-link" data-platform="fab">FAB</span>
+        </p>
       </div>
     </aside>
   </section>
@@ -428,6 +452,31 @@ const devlogPosts = (await getCollection('devlog')).sort(
     padding: 0.15rem 0.6rem;
     border-radius: 3px;
     margin-bottom: 0.6rem;
+  }
+
+  /* ===== Store Links (Coming Soon placeholders) ===== */
+  .store-links {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 0.6rem;
+  }
+
+  .store-link {
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  a.store-link {
+    color: var(--crimson);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a.store-link:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
   }
 
   /* ===== Responsive ===== */

@@ -38,10 +38,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <span></span><span></span><span></span><span></span>
               <span></span><span></span><span></span><span></span>
             </div>
-            <div class="sub-card-links">
-              <a href="#" class="store-btn">FAB</a>
-              <a href="#" class="store-btn">Unity</a>
-            </div>
+            <p class="store-links" id="store-db">
+              Coming soon on
+              <span class="store-link" data-platform="itchio">itch.io</span> ·
+              <span class="store-link" data-platform="unity">Unity Asset Store</span> ·
+              <span class="store-link" data-platform="fab">FAB</span>
+            </p>
           </div>
 
           <!-- Sub-card: Blood & Adrenaline -->
@@ -52,10 +54,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <span></span><span></span><span></span><span></span>
               <span></span><span></span><span></span><span></span>
             </div>
-            <div class="sub-card-links">
-              <a href="#" class="store-btn">FAB</a>
-              <a href="#" class="store-btn">Unity</a>
-            </div>
+            <p class="store-links" id="store-ba">
+              Coming soon on
+              <span class="store-link" data-platform="itchio">itch.io</span> ·
+              <span class="store-link" data-platform="unity">Unity Asset Store</span> ·
+              <span class="store-link" data-platform="fab">FAB</span>
+            </p>
           </div>
 
           <!-- Sub-card: Rise To It -->
@@ -66,10 +70,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <span></span><span></span><span></span><span></span>
               <span></span><span></span><span></span><span></span>
             </div>
-            <div class="sub-card-links">
-              <a href="#" class="store-btn">FAB</a>
-              <a href="#" class="store-btn">Unity</a>
-            </div>
+            <p class="store-links" id="store-rti">
+              Coming soon on
+              <span class="store-link" data-platform="itchio">itch.io</span> ·
+              <span class="store-link" data-platform="unity">Unity Asset Store</span> ·
+              <span class="store-link" data-platform="fab">FAB</span>
+            </p>
           </div>
 
           <!-- Sub-card: The Crimson Collection (Bundle) -->
@@ -81,10 +87,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <span></span><span></span><span></span><span></span>
               <span></span><span></span><span></span><span></span>
             </div>
-            <div class="sub-card-links">
-              <a href="#" class="store-btn">FAB</a>
-              <a href="#" class="store-btn">Unity</a>
-            </div>
+            <p class="store-links" id="store-bundle">
+              Coming soon on
+              <span class="store-link" data-platform="itchio">itch.io</span> ·
+              <span class="store-link" data-platform="unity">Unity Asset Store</span> ·
+              <span class="store-link" data-platform="fab">FAB</span>
+            </p>
           </div>
         </div>
       </div>
@@ -343,31 +351,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: 0.4rem;
   }
 
-  /* ===== Store Buttons ===== */
-  .sub-card-links {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .store-btn {
+  /* ===== Store Links (Coming Soon placeholders) ===== */
+  .store-links {
     font-family: 'Rajdhani', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-subtle);
-    border-radius: 3px;
-    padding: 0.3rem 0.75rem;
-    text-decoration: none;
-    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 0.6rem;
   }
 
-  .store-btn:hover {
-    background: rgba(220, 20, 60, 0.12);
-    border-color: var(--crimson);
+  .store-link {
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  a.store-link {
     color: var(--crimson);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a.store-link:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
   }
 
   /* ===== Waveform Bars ===== */
