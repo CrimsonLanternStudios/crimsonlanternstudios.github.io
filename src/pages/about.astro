@@ -35,6 +35,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
+  <section class="about-section pipeline-section">
+    <h2 class="section-title">Our Creative Pipeline</h2>
+    <div class="section-divider"></div>
+    <div class="pipeline-content fade-in">
+      <p>Crimson Lantern Studios uses an ethical AI-augmented pipeline. Our music is composed using AIVA, with full copyright ownership transferred to the studio upon generation. All visual assets are created using LoRA models trained exclusively on our own original artwork, with IP protection applied to all published work.</p>
+      <p>We believe in transparency: every product created with AI tools is clearly labeled. We don't extract — we create.</p>
+    </div>
+  </section>
+
 </BaseLayout>
 
 <style>
@@ -93,6 +102,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 0.9rem;
     color: var(--text-secondary);
     line-height: 1.6;
+  }
+
+  /* Pipeline Section */
+  .pipeline-content p {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+    max-width: 720px;
+  }
+
+  .pipeline-content strong {
+    color: var(--text-primary);
+    font-weight: 600;
   }
 
   /* Responsive: stack on mobile */
