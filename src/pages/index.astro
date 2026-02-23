@@ -507,6 +507,31 @@ const devlogPosts = (await getCollection('devlog')).sort(
     margin-bottom: 0.6rem;
   }
 
+  /* ===== Store Links (Coming Soon placeholders) ===== */
+  .store-links {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 0.6rem;
+  }
+
+  .store-link {
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  a.store-link {
+    color: var(--crimson);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a.store-link:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
+  }
+
   /* ===== Responsive ===== */
   @media (max-width: 900px) {
     .content-grid {
