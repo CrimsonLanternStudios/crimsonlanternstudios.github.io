@@ -23,53 +23,61 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="store-card fade-in">
         <h3 class="store-card-title">Disturbingly Beautiful — Ambient Synthwave</h3>
         <p class="store-card-desc">Impossible to categorize. Deeply compelling. Atmosphere that pulls you in and doesn't let go.</p>
-        <p class="store-card-meta">20 tracks · 100+ minutes · 3 formats · G# minor</p>
+        <p class="store-card-meta">20 original compositions · 100+ minutes · 3 formats · G# minor</p>
+        <p class="store-card-format">Full-length compositions — not loops. Built for cinematics, menus, exploration, and extended gameplay.</p>
         <div class="pack-waveform" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
         <p class="store-card-price">$80</p>
-        <p class="store-card-availability">Coming soon on: itch.io · Unity Asset Store · FAB</p>
+        <!-- Coming soon: swap <span> to <a href="..."> when live -->
+        <p class="store-card-availability">Coming soon on: <span class="store-link">itch.io</span> · <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
       </div>
 
       <!-- Pack 2 — Blood & Adrenaline -->
       <div class="store-card fade-in">
         <h3 class="store-card-title">Blood &amp; Adrenaline — Combat Music</h3>
         <p class="store-card-desc">Liquid DnB meets dystopian intensity. Built for combat encounters, chase sequences, and high-tension gameplay.</p>
-        <p class="store-card-meta">20 tracks · 100+ minutes · 3 formats · G# minor</p>
+        <p class="store-card-meta">20 original compositions · 100+ minutes · 3 formats · G# minor</p>
+        <p class="store-card-format">Full-length compositions — not loops. Built for combat, pursuit, and high-tension gameplay.</p>
         <div class="pack-waveform" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
         <p class="store-card-price">$80</p>
-        <p class="store-card-availability">Coming soon on: itch.io · Unity Asset Store · FAB</p>
+        <!-- Coming soon: swap <span> to <a href="..."> when live -->
+        <p class="store-card-availability">Coming soon on: <span class="store-link">itch.io</span> · <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
       </div>
 
       <!-- Pack 3 — Rise To It -->
       <div class="store-card fade-in">
         <h3 class="store-card-title">Rise To It — Boss Battle Anthology</h3>
         <p class="store-card-desc">Angelic metal meets hypnotic fury. Built for boss encounters, climactic moments, and final confrontations.</p>
-        <p class="store-card-meta">20 tracks · 100+ minutes · 3 formats · G# minor</p>
+        <p class="store-card-meta">20 original compositions · 100+ minutes · 3 formats · G# minor</p>
+        <p class="store-card-format">Full-length compositions — not loops. Built for boss encounters, climax moments, and endgame content.</p>
         <div class="pack-waveform" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
         <p class="store-card-price">$80</p>
-        <p class="store-card-availability">Coming soon on: itch.io · Unity Asset Store · FAB</p>
+        <!-- Coming soon: swap <span> to <a href="..."> when live -->
+        <p class="store-card-availability">Coming soon on: <span class="store-link">itch.io</span> · <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
       </div>
 
       <!-- Bundle — The Crimson Collection -->
       <div class="store-card store-card-bundle fade-in">
         <span class="bundle-badge">COMPLETE BUNDLE</span>
         <h3 class="store-card-title">The Crimson Collection — Complete Bundle</h3>
-        <p class="store-card-desc">All three packs. 60 tracks. 300+ minutes. Three worlds of sound in one cohesive key.</p>
-        <p class="store-card-meta">60 tracks · 300+ minutes · 3 formats · G# minor</p>
+        <p class="store-card-desc">All three packs. 60 compositions. 300+ minutes. Three worlds of sound in one cohesive key.</p>
+        <p class="store-card-meta">60 original compositions · 300+ minutes · 3 formats · G# minor</p>
+        <p class="store-card-format">Full-length compositions — not loops.</p>
         <div class="pack-waveform" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
         <p class="store-card-price">$200 <span class="bundle-savings">(Save $40 vs. buying individually)</span></p>
-        <p class="store-card-availability">Coming soon on: itch.io · Unity Asset Store · FAB</p>
+        <!-- Coming soon: swap <span> to <a href="..."> when live -->
+        <p class="store-card-availability">Coming soon on: <span class="store-link">itch.io</span> · <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
       </div>
 
     </div>
@@ -189,6 +197,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-weight: 500;
     color: var(--text-muted);
     margin-bottom: 0.6rem;
+  }
+
+  /* ===== Card Format ===== */
+  .store-card-format {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 0.6rem;
+  }
+
+  /* ===== Store Links (Coming Soon placeholders) ===== */
+  .store-link {
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  a.store-link {
+    color: var(--crimson);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a.store-link:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
   }
 
   /* ===== Card Price ===== */
