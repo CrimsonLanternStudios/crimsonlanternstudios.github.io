@@ -1,7 +1,7 @@
 ---
 title: "Store Launch Preparation — Three Platforms Confirmed"
 date: 2026-02-22
-tag: "Music"
+tag: "Music · Store"
 excerpt: "All three music packs are being prepared for launch across itch.io, Unity Asset Store, and FAB. Each pack ships in three formats — WAV, OGG Vorbis, and MP3 — with 30-second demo previews included. Pricing is $80 per pack or $200 for The Crimson Collection bundle (all 60 tracks)."
 ---
 

@@ -5,7 +5,7 @@ const devlog = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.date(),
-    tag: z.enum(['Music', 'VFX', 'Studio', 'Game Dev', 'Community', 'Tech']),
+    tag: z.enum(['Music', 'VFX', 'Studio', 'Game Dev', 'Community', 'Tech', 'Music · Store']),
     excerpt: z.string(),
   }),
 });
