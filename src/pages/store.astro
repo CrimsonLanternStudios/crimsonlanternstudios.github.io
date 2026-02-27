@@ -1,5 +1,144 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AudioPreviews from '../components/AudioPreviews.astro';
+
+const disturbinglyBeautifulTracks = [
+  { number: 1, name: "Porcelain Vein", file: "01_Porcelain_Vein.mp3" },
+  { number: 2, name: "Soft Collapse", file: "02_Soft_Collapse.mp3" },
+  { number: 3, name: "Neon Requiem", file: "03_Neon_Requiem.mp3" },
+  { number: 4, name: "Tender Fracture", file: "04_Tender_Fracture.mp3" },
+  { number: 5, name: "Glass Hymn", file: "05_Glass_Hymn.mp3" },
+  { number: 6, name: "Velvet Decay", file: "06_Velvet_Decay.mp3" },
+  { number: 7, name: "Still Gorgeous", file: "07_Still_Gorgeous.mp3" },
+  { number: 8, name: "Luminous Wound", file: "08_Luminous_Wound.mp3" },
+  { number: 9, name: "Silk Erosion", file: "09_Silk_Erosion.mp3" },
+  { number: 10, name: "Pretty Damage", file: "10_Pretty_Damage.mp3" },
+  { number: 11, name: "Warm Static", file: "11_Warm_Static.mp3" },
+  { number: 12, name: "Hollow Bloom", file: "12_Hollow_Bloom.mp3" },
+  { number: 13, name: "Ache in Amber", file: "13_Ache_in_Amber.mp3" },
+  { number: 14, name: "Fading Gilded", file: "14_Fading_Gilded.mp3" },
+  { number: 15, name: "Crystalline Rot", file: "15_Crystalline_Rot.mp3" },
+  { number: 16, name: "Beautiful Wreckage", file: "16_Beautiful_Wreckage.mp3" },
+  { number: 17, name: "Moth Light", file: "17_Moth_Light.mp3" },
+  { number: 18, name: "Gentle Severance", file: "18_Gentle_Severance.mp3" },
+  { number: 19, name: "Dusk Membrane", file: "19_Dusk_Membrane.mp3" },
+  { number: 20, name: "Last Beautiful Thing", file: "20_Last_Beautiful_Thing.mp3" },
+];
+
+const bloodAndAdrenalineTracks = [
+  { number: 1, name: "First Blood", file: "01_First_Blood.mp3" },
+  { number: 2, name: "Nerve Wire", file: "02_Nerve_Wire.mp3" },
+  { number: 3, name: "Flatline Sprint", file: "03_Flatline_Sprint.mp3" },
+  { number: 4, name: "Red Momentum", file: "04_Red_Momentum.mp3" },
+  { number: 5, name: "Teeth and Voltage", file: "05_Teeth_and_Voltage.mp3" },
+  { number: 6, name: "Pressure Lock", file: "06_Pressure_Lock.mp3" },
+  { number: 7, name: "Sharpnel Waltz", file: "07_Sharpnel_Waltz.mp3" },
+  { number: 8, name: "Cardiac Override", file: "08_Cardiac_Override.mp3" },
+  { number: 9, name: "Kill Rhythm", file: "09_Kill_Rhythm.mp3" },
+  { number: 10, name: "Scorched Synapse", file: "10_Scorched_Synapse.mp3" },
+  { number: 11, name: "Burst Vessel", file: "11_Burst_Vessel.mp3" },
+  { number: 12, name: "Combat Bloom", file: "12_Combat_Bloom.mp3" },
+  { number: 13, name: "Trigger Pull", file: "13_Trigger_Pull.mp3" },
+  { number: 14, name: "Jagged Current", file: "14_Jagged_Current.mp3" },
+  { number: 15, name: "Sever and Run", file: "15_Sever_and_Run.mp3" },
+  { number: 16, name: "Blood Price", file: "16_Blood_Price.mp3" },
+  { number: 17, name: "Iron Reflex", file: "17_Iron_Reflex.mp3" },
+  { number: 18, name: "Adrenaline Debt", file: "18_Adrenaline_Debt.mp3" },
+  { number: 19, name: "No Clean Exit", file: "19_No_Clean_Exit.mp3" },
+  { number: 20, name: "Final Push", file: "20_Final_Push.mp3" },
+];
+
+const riseToItTracks = [
+  { number: 1, name: "Herald of Ruin", file: "01_Herald_of_Ruin.mp3" },
+  { number: 2, name: "Throne Collapse", file: "02_Throne_Collapse.mp3" },
+  { number: 3, name: "Divine Fracture", file: "03_Divine_Fracture.mp3" },
+  { number: 4, name: "Wrath Ascendant", file: "04_Wrath_Ascendant.mp3" },
+  { number: 5, name: "Burning Halo", file: "05_Burning_Halo.mp3" },
+  { number: 6, name: "Titan Phase", file: "06_Titan_Phase.mp3" },
+  { number: 7, name: "Unholy Crescendo", file: "07_Unholy_Crescendo.mp3" },
+  { number: 8, name: "Sovereign Rage", file: "08_Sovereign_Rage.mp3" },
+  { number: 9, name: "Wings of Carnage", file: "09_Wings_of_Carnage.mp3" },
+  { number: 10, name: "Apex Predator", file: "10_Apex_Predator.mp3" },
+  { number: 11, name: "Sacred Violence", file: "11_Sacred_Violence.mp3" },
+  { number: 12, name: "Crown and Ruin", file: "12_Crown_and_Ruin.mp3" },
+  { number: 13, name: "Eclipse Wrath", file: "13_Eclipse_Wrath.mp3" },
+  { number: 14, name: "Gilded Destroyer", file: "14_Gilded_Destroyer.mp3" },
+  { number: 15, name: "Seraphim Down", file: "15_Seraphim_Down.mp3" },
+  { number: 16, name: "Broken Colossus", file: "16_Broken_Colossus.mp3" },
+  { number: 17, name: "God Killer", file: "17_God_Killer.mp3" },
+  { number: 18, name: "Fury Incarnate", file: "18_Fury_Incarnate.mp3" },
+  { number: 19, name: "Final Form", file: "19_Final_Form.mp3" },
+  { number: 20, name: "Rise To It", file: "20_Rise_To_It.mp3" },
+];
+
+const hearthstoneAndCobbleTracks = [
+  { number: 1, name: "Morning Errand", file: "01_Morning_Errand.mp3" },
+  { number: 2, name: "Copper and Grain", file: "02_Copper_and_Grain.mp3" },
+  { number: 3, name: "Familiar Chimney", file: "03_Familiar_Chimney.mp3" },
+  { number: 4, name: "Old Well Square", file: "04_Old_Well_Square.mp3" },
+  { number: 5, name: "Baker's Window", file: "05_Baker's_Window.mp3" },
+  { number: 6, name: "Linen and Dust", file: "06_Linen_and_Dust.mp3" },
+  { number: 7, name: "Penny Farthing", file: "07_Penny_Farthing.mp3" },
+  { number: 8, name: "Cobble Warmth", file: "08_Cobble_Warmth.mp3" },
+  { number: 9, name: "Idle Fountain", file: "09_Idle_Fountain.mp3" },
+  { number: 10, name: "Candle Hour", file: "10_Candle_Hour.mp3" },
+  { number: 11, name: "Merchant's Noon", file: "11_Merchant's_Noon.mp3" },
+  { number: 12, name: "Stray Cat Lane", file: "12_Stray_Cat_Lane.mp3" },
+  { number: 13, name: "Patchwork Roof", file: "13_Patchwork_Roof.mp3" },
+  { number: 14, name: "Tavern Threshold", file: "14_Tavern_Threshold.mp3" },
+  { number: 15, name: "Mended Gate", file: "15_Mended_Gate.mp3" },
+  { number: 16, name: "Smoke and Cider", file: "16_Smoke_and_Cider.mp3" },
+  { number: 17, name: "Drying Herbs", file: "17_Drying_Herbs.mp3" },
+  { number: 18, name: "Lamplit Return", file: "18_Lamplit_Return.mp3" },
+  { number: 19, name: "Quiet Provisions", file: "19_Quiet_Provisions.mp3" },
+  { number: 20, name: "Hearth and Home", file: "20_Hearth_and_Home.mp3" },
+];
+
+const wanderersRestTracks = [
+  { number: 1, name: "Fork in the Path", file: "01_Fork_in_the_Path.mp3" },
+  { number: 2, name: "Distant Chimney", file: "02_Distant_Chimney.mp3" },
+  { number: 3, name: "Traveler's Noon", file: "03_Traveler's_Noon.mp3" },
+  { number: 4, name: "Salt Wind Pass", file: "04_Salt_Wind_Pass.mp3" },
+  { number: 5, name: "Clover Field", file: "05_Clover_Field.mp3" },
+  { number: 6, name: "Bridge at Dusk", file: "06_Bridge_at_Dusk.mp3" },
+  { number: 7, name: "Mapless Mile", file: "07_Mapless_Mile.mp3" },
+  { number: 8, name: "Weathered Signpost", file: "08_Weathered_Signpost.mp3" },
+  { number: 9, name: "Camp Smoke Rising", file: "09_Camp_Smoke_Rising.mp3" },
+  { number: 10, name: "River Bend Rest", file: "10_River_Bend_Rest.mp3" },
+  { number: 11, name: "Stranger's Lantern", file: "11_Stranger's_Lantern.mp3" },
+  { number: 12, name: "Worn Boot Trail", file: "12_Worn_Boot_Trail.mp3" },
+  { number: 13, name: "Open Country", file: "13_Open_Country.mp3" },
+  { number: 14, name: "Harvest Detour", file: "14_Harvest_Detour.mp3" },
+  { number: 15, name: "Twilight Crossing", file: "15_Twilight_Crossing.mp3" },
+  { number: 16, name: "Shelter Found", file: "16_Shelter_Found.mp3" },
+  { number: 17, name: "Borrowed Stable", file: "17_Borrowed_Stable.mp3" },
+  { number: 18, name: "Stars Over Stone", file: "18_Stars_Over_Stone.mp3" },
+  { number: 19, name: "Long Way Round", file: "19_Long_Way_Round.mp3" },
+  { number: 20, name: "Almost There", file: "20_Almost_There.mp3" },
+];
+
+const thinAirTracks = [
+  { number: 1, name: "Measured Silence", file: "01_Measured_Silence.mp3" },
+  { number: 2, name: "Paper Terms", file: "02_Paper_Terms.mp3" },
+  { number: 3, name: "Borrowed Trust", file: "03_Borrowed_Trust.mp3" },
+  { number: 4, name: "Uneven Ground", file: "04_Uneven_Ground.mp3" },
+  { number: 5, name: "Between Teeth", file: "05_Between_Teeth.mp3" },
+  { number: 6, name: "Weight of Mention", file: "06_Weight_of_Mention.mp3" },
+  { number: 7, name: "Civil Distance", file: "07_Civil_Distance.mp3" },
+  { number: 8, name: "Careful Tongue", file: "08_Careful_Tongue.mp3" },
+  { number: 9, name: "Fraying Accord", file: "09_Fraying_Accord.mp3" },
+  { number: 10, name: "Restrained Tide", file: "10_Restrained_Tide.mp3" },
+  { number: 11, name: "Thinning Patience", file: "11_Thinning_Patience.mp3" },
+  { number: 12, name: "Under Oath", file: "12_Under_Oath.mp3" },
+  { number: 13, name: "Polished Lie", file: "13_Polished_Lie.mp3" },
+  { number: 14, name: "Narrowing Room", file: "14_Narrowing_Room.mp3" },
+  { number: 15, name: "Held Breath", file: "15_Held_Breath.mp3" },
+  { number: 16, name: "False Calm", file: "16_False_Calm.mp3" },
+  { number: 17, name: "Cold Courtesy", file: "17_Cold_Courtesy.mp3" },
+  { number: 18, name: "Shifting Allegiance", file: "18_Shifting_Allegiance.mp3" },
+  { number: 19, name: "Last Civil Word", file: "19_Last_Civil_Word.mp3" },
+  { number: 20, name: "Point of No Return", file: "20_Point_of_No_Return.mp3" },
+];
 ---
 
 <BaseLayout title="Store — Crimson Lantern Studios">
@@ -29,6 +168,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
+        <AudioPreviews packSlug="disturbingly-beautiful" tracks={disturbinglyBeautifulTracks} />
         <p class="store-card-price">$80</p>
         <!-- Coming soon: swap <span> to <a href="..."> when live -->
         <p class="store-card-availability">Available now on: <span class="store-link">itch.io</span> · Coming soon to: <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
@@ -44,6 +184,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
+        <AudioPreviews packSlug="blood-and-adrenaline" tracks={bloodAndAdrenalineTracks} />
         <p class="store-card-price">$80</p>
         <!-- Coming soon: swap <span> to <a href="..."> when live -->
         <p class="store-card-availability">Available now on: <span class="store-link">itch.io</span> · Coming soon to: <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
@@ -59,6 +200,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
+        <AudioPreviews packSlug="rise-to-it" tracks={riseToItTracks} />
         <p class="store-card-price">$80</p>
         <!-- Coming soon: swap <span> to <a href="..."> when live -->
         <p class="store-card-availability">Available now on: <span class="store-link">itch.io</span> · Coming soon to: <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
@@ -74,6 +216,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
+        <AudioPreviews packSlug="hearthstone-and-cobble" tracks={hearthstoneAndCobbleTracks} />
         <p class="store-card-price">$80</p>
         <!-- Coming soon: swap <span> to <a href="..."> when live -->
         <p class="store-card-availability">Available now on: <span class="store-link">itch.io</span> · Coming soon to: <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
@@ -89,6 +232,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
+        <AudioPreviews packSlug="wanderers-rest" tracks={wanderersRestTracks} />
         <p class="store-card-price">$80</p>
         <!-- Coming soon: swap <span> to <a href="..."> when live -->
         <p class="store-card-availability">Available now on: <span class="store-link">itch.io</span> · Coming soon to: <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
@@ -104,6 +248,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
+        <AudioPreviews packSlug="thin-air" tracks={thinAirTracks} />
         <p class="store-card-price">$80</p>
         <!-- Coming soon: swap <span> to <a href="..."> when live -->
         <p class="store-card-availability">Available now on: <span class="store-link">itch.io</span> · Coming soon to: <span class="store-link">Unity Asset Store</span> · <span class="store-link">FAB</span></p>
