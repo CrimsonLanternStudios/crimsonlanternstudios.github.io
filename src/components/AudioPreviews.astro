@@ -1,0 +1,111 @@
+---
+interface Track {
+  number: number;
+  name: string;
+  file: string;
+}
+
+interface Props {
+  packSlug: string;
+  tracks: Track[];
+}
+
+const { packSlug, tracks } = Astro.props;
+---
+
+<div class="audio-previews">
+  <details>
+    <summary class="preview-toggle">&#9654; Preview All {tracks.length} Tracks</summary>
+    <div class="preview-list">
+      {tracks.map((track) => (
+        <div class="preview-row">
+          <span class="preview-label">
+            <span class="preview-number">{String(track.number).padStart(2, '0')}</span>
+            {track.name}
+          </span>
+          <audio controls preload="none">
+            <source src={`/audio/demos/${packSlug}/${track.file}`} type="audio/mpeg" />
+          </audio>
+        </div>
+      ))}
+    </div>
+  </details>
+</div>
+
+<style>
+  .audio-previews {
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .preview-toggle {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--crimson);
+    cursor: pointer;
+    list-style: none;
+    letter-spacing: 0.04em;
+    user-select: none;
+  }
+
+  .preview-toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .preview-toggle:hover {
+    color: var(--text-primary);
+  }
+
+  .preview-list {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .preview-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.2rem 0;
+  }
+
+  .preview-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .preview-number {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-right: 0.4rem;
+  }
+
+  audio {
+    height: 28px;
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    .preview-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.2rem;
+    }
+
+    audio {
+      width: 100%;
+      min-width: unset;
+    }
+  }
+</style>
