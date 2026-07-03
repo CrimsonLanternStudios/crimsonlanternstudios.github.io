@@ -395,6 +395,64 @@ if (!game) {
             text-decoration: underline;
         }
 
+        /* Save/Load state buttons */
+        .control-btn.save-btn {
+            border-color: #2e7d32;
+        }
+
+        .control-btn.save-btn:hover {
+            background: #2e7d32;
+        }
+
+        .control-btn.load-btn {
+            border-color: #1565c0;
+        }
+
+        .control-btn.load-btn:hover {
+            background: #1565c0;
+        }
+
+        /* Save/Load status message */
+        #save-load-status {
+            display: none;
+            margin: 0.5rem 0;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        #save-load-status.info {
+            display: block;
+            background: rgba(30, 80, 160, 0.3);
+            border: 1px solid #1565c0;
+            color: #90caf9;
+        }
+
+        #save-load-status.success {
+            display: block;
+            background: rgba(27, 94, 32, 0.35);
+            border: 1px solid #2e7d32;
+            color: #a5d6a7;
+        }
+
+        #save-load-status.warning {
+            display: block;
+            background: rgba(130, 80, 0, 0.35);
+            border: 1px solid #f57c00;
+            color: #ffcc80;
+        }
+
+        #save-load-status.error {
+            display: block;
+            background: rgba(139, 0, 0, 0.3);
+            border: 1px solid #8B0000;
+            color: #ff6666;
+        }
+
         /* Error message */
         .error-message {
             background: rgba(139, 0, 0, 0.3);
@@ -500,9 +558,17 @@ if (!game) {
                     <div id="game-controls" class="game-controls">
                         <button id="fullscreen-btn" class="control-btn">⛶ Fullscreen</button>
                         <button id="mute-btn" class="control-btn">🔊 Mute</button>
+                        <button id="save-state-btn" class="control-btn save-btn" title="Export save state to your local machine">💾 Save State</button>
+                        <button id="load-state-btn" class="control-btn load-btn" title="Import a previously exported save state file">📂 Load State</button>
                         <button id="restart-btn" class="control-btn">🔄 Restart</button>
                         <button id="back-btn" class="control-btn">◀ Back to Arcade</button>
                     </div>
+
+                    <!-- Hidden file input for state import -->
+                    <input type="file" id="state-file-input" accept=".jsdos" style="display:none" aria-label="Select save state file">
+
+                    <!-- Save/Load status message -->
+                    <div id="save-load-status" role="status" aria-live="polite"></div>
                 </>
             ) : (
                 <div class="coming-soon">
@@ -530,12 +596,15 @@ if (!game) {
             <!-- JS-DOS v8 Scripts -->
             <script is:inline src="/games/emulator/js-dos.js"></script>
 
-            <script is:inline define:vars={{ bundlePath: `/games/bundles/${game.bundle}`, gameTitle: game.title }}>
+            <script is:inline define:vars={{ bundlePath: `/games/bundles/${game.bundle}`, gameTitle: game.title, gameSlug: game.slug }}>
                 // Game state
                 let dosInstance = null;
+                let ciRef = null;
                 let isMuted = false;
                 let isFullscreen = false;
                 let windowLock = null;
+                let activeBlobUrl = null;
+                let statusTimeout = null;
 
                 // Initialize window lock
                 if (typeof WindowLock !== 'undefined') {
@@ -552,13 +621,42 @@ if (!game) {
                 const errorMessage = document.getElementById('error-message');
                 const fullscreenBtn = document.getElementById('fullscreen-btn');
                 const muteBtn = document.getElementById('mute-btn');
+                const saveStateBtn = document.getElementById('save-state-btn');
+                const loadStateBtn = document.getElementById('load-state-btn');
+                const stateFileInput = document.getElementById('state-file-input');
+                const saveLoadStatus = document.getElementById('save-load-status');
                 const restartBtn = document.getElementById('restart-btn');
                 const backBtn = document.getElementById('back-btn');
 
                 /**
-                 * Start the game
+                 * Show a temporary status message below the game controls.
+                 * @param {string} msg - The message text.
+                 * @param {'info'|'success'|'warning'|'error'} type - Visual style.
+                 * @param {number} [duration=5000] - Auto-hide delay in ms (0 = no auto-hide).
                  */
-                async function startGame() {
+                function showStatus(msg, type, duration) {
+                    if (duration === undefined) duration = 5000;
+                    if (statusTimeout) {
+                        clearTimeout(statusTimeout);
+                        statusTimeout = null;
+                    }
+                    saveLoadStatus.textContent = msg;
+                    saveLoadStatus.className = type;
+                    if (duration > 0) {
+                        statusTimeout = setTimeout(function() {
+                            saveLoadStatus.className = '';
+                            saveLoadStatus.style.display = 'none';
+                            saveLoadStatus.textContent = '';
+                        }, duration);
+                    }
+                }
+
+                /**
+                 * Initialize (or re-initialize) the JS-DOS emulator with the given bundle URL.
+                 * Handles all show/hide transitions for loading screen and game view.
+                 * @param {string} url - Bundle URL (.jsdos file path or blob: URL).
+                 */
+                async function startGameWithBundle(url) {
                     try {
                         // Show loading state
                         playButton.disabled = true;
@@ -571,18 +669,20 @@ if (!game) {
 
                         // Initialize Dos with shared emulator assets
                         dosInstance = Dos(jsdosContainer, {
-                            url: bundlePath,
+                            url: url,
                             pathPrefix: "/games/emulator/emulators/",
                             noCloud: true,
                             autoStart: true,
                             onEvent: function(event, ci) {
                                 if (event === "ci-ready") {
+                                    ciRef = ci;
                                     console.log(gameTitle + ' loaded successfully!');
                                     if (windowLock) {
                                         windowLock.activate();
                                     }
                                 } else if (event === "error") {
                                     console.error('JS-DOS Error:', ci);
+                                    ciRef = null;
                                     if (windowLock) {
                                         windowLock.deactivate();
                                     }
@@ -596,8 +696,13 @@ if (!game) {
                                         'Failed to load the game. Please try refreshing.';
                                 } else if (event === "exit" || event === "ws-exit" || event === "wc-exit") {
                                     console.log(gameTitle + ' exited');
+                                    ciRef = null;
                                     if (windowLock) {
                                         windowLock.deactivate();
+                                    }
+                                    if (activeBlobUrl) {
+                                        URL.revokeObjectURL(activeBlobUrl);
+                                        activeBlobUrl = null;
                                     }
                                     window.location.href = '/arcade/dos';
                                 }
@@ -624,6 +729,130 @@ if (!game) {
                             'Failed to load the game: ' + (error.message || 'Unknown error') + '. Please try refreshing.';
                     }
                 }
+
+                /**
+                 * Start the game with the default bundle.
+                 */
+                async function startGame() {
+                    return startGameWithBundle(bundlePath);
+                }
+
+                /**
+                 * Export the current emulator filesystem state to a .jsdos file that the
+                 * user can download and later re-import to resume play.
+                 */
+                async function saveState() {
+                    if (!ciRef) {
+                        showStatus('⚠️ No active game session — start the game first.', 'warning');
+                        return;
+                    }
+                    try {
+                        showStatus('💾 Capturing save state…', 'info', 0);
+                        // persist(false) returns the full bundle (original files + any changes)
+                        // as a Uint8Array in jsdos/zip format.
+                        var stateData = await ciRef.persist(false);
+                        if (!stateData) {
+                            showStatus('⚠️ Nothing to save — no filesystem changes detected yet.', 'warning');
+                            return;
+                        }
+                        var timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+                        var filename = gameSlug + '-' + timestamp + '.jsdos';
+                        var blob = new Blob([stateData], { type: 'application/zip' });
+                        var url = URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        a.style.display = 'none';
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        URL.revokeObjectURL(url);
+                        showStatus('✅ Save state exported: ' + filename, 'success');
+                    } catch (err) {
+                        console.error('Save state failed:', err);
+                        showStatus('❌ Save failed: ' + (err.message || 'Unknown error'), 'error');
+                    }
+                }
+
+                /**
+                 * Trigger the file picker so the user can select a previously exported
+                 * .jsdos save state file.
+                 */
+                function loadState() {
+                    stateFileInput.click();
+                }
+
+                /**
+                 * Handle the file the user selected for state import.
+                 */
+                stateFileInput.addEventListener('change', async function() {
+                    var file = this.files[0];
+                    // Reset so the same file can be re-selected later
+                    this.value = '';
+
+                    if (!file) return;
+
+                    if (!file.name.endsWith('.jsdos')) {
+                        showStatus('❌ Invalid file. Please select a .jsdos save state file.', 'error');
+                        return;
+                    }
+
+                    var confirmMsg = jsdosContainer.classList.contains('active')
+                        ? 'Load "' + file.name + '"? The current session will restart with the saved state.'
+                        : 'Load "' + file.name + '" as the starting state?';
+
+                    if (!confirm(confirmMsg)) return;
+
+                    var blobUrl = null;
+                    try {
+                        showStatus('🔄 Loading save state: ' + file.name + '…', 'info', 0);
+
+                        var arrayBuffer = await file.arrayBuffer();
+
+                        // Basic sanity check: jsdos files are zip archives (magic bytes PK\x03\x04)
+                        var header = new Uint8Array(arrayBuffer, 0, 4);
+                        if (header[0] !== 0x50 || header[1] !== 0x4B || header[2] !== 0x03 || header[3] !== 0x04) {
+                            showStatus('❌ Invalid file format — not a valid .jsdos archive.', 'error');
+                            return;
+                        }
+
+                        var uint8 = new Uint8Array(arrayBuffer);
+                        var blob = new Blob([uint8], { type: 'application/zip' });
+                        blobUrl = URL.createObjectURL(blob);
+
+                        // Clean up existing session
+                        if (dosInstance) {
+                            try { await dosInstance.stop(); } catch(e) { console.log('stop non-fatal:', e); }
+                            dosInstance = null;
+                            ciRef = null;
+                        }
+                        if (activeBlobUrl) {
+                            URL.revokeObjectURL(activeBlobUrl);
+                        }
+                        activeBlobUrl = blobUrl;
+
+                        // Clear the rendered JS-DOS UI from the container before re-mounting
+                        jsdosContainer.innerHTML = '';
+                        jsdosContainer.classList.remove('active');
+                        gameControls.classList.remove('active');
+                        loadingScreen.style.display = 'flex';
+                        playButton.disabled = false;
+                        playButton.textContent = '▶ PLAY ' + gameTitle;
+                        loader.style.display = 'none';
+                        loadingStatus.style.display = 'none';
+
+                        // Re-initialize the emulator with the loaded bundle
+                        await startGameWithBundle(blobUrl);
+
+                        showStatus('✅ Save state loaded: ' + file.name, 'success');
+                    } catch (err) {
+                        console.error('Load state failed:', err);
+                        showStatus('❌ Load failed: ' + (err.message || 'Unknown error'), 'error');
+                        if (blobUrl && blobUrl !== activeBlobUrl) {
+                            URL.revokeObjectURL(blobUrl);
+                        }
+                    }
+                });
 
                 /**
                  * Toggle fullscreen mode
@@ -741,6 +970,8 @@ if (!game) {
                 playButton.addEventListener('click', startGame);
                 fullscreenBtn.addEventListener('click', toggleFullscreen);
                 muteBtn.addEventListener('click', toggleMute);
+                saveStateBtn.addEventListener('click', saveState);
+                loadStateBtn.addEventListener('click', loadState);
                 restartBtn.addEventListener('click', restartGame);
                 backBtn.addEventListener('click', backToArcade);
 
