@@ -229,6 +229,13 @@ if (!game) {
             display: block;
         }
 
+        /* Hide JS-DOS built-in sidebar UI — we use our own Save/Load controls */
+        #jsdos-container .sidebar,
+        #jsdos-container .sidebar-button,
+        #jsdos-container .save-buttons {
+            display: none !important;
+        }
+
         /* Canvas within container */
         #jsdos-container canvas {
             width: 100% !important;
@@ -713,6 +720,19 @@ if (!game) {
                         loadingScreen.style.display = 'none';
                         jsdosContainer.classList.add('active');
                         gameControls.classList.add('active');
+
+                        // Intercept any JS-DOS built-in sidebar save/load buttons that may appear
+                        // and redirect their clicks to our custom save/load functions.
+                        var sidebarObserver = new MutationObserver(function() {
+                            var sidebarEls = jsdosContainer.querySelectorAll('.sidebar, .sidebar-button, .save-buttons');
+                            if (sidebarEls.length > 0) {
+                                sidebarEls.forEach(function(el) {
+                                    el.style.display = 'none';
+                                });
+                                sidebarObserver.disconnect();
+                            }
+                        });
+                        sidebarObserver.observe(jsdosContainer, { childList: true, subtree: true });
 
                         if (windowLock) {
                             windowLock.activate();
